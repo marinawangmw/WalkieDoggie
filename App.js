@@ -1,11 +1,12 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { AuthenticationScreen } from './app/screens';
+import { StyleSheet, View } from 'react-native';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Walkie Doggie!</Text>
+      <AuthenticationScreen />
       <StatusBar style="auto" />
     </View>
   );
@@ -14,7 +15,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F3F3EB',
     alignItems: 'center',
     justifyContent: 'center',
   },
