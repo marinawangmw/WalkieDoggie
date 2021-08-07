@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { API_URL } from '@env'
+import { WalkieDoggieAPIError } from './helpers/errorHandler';
 
 const baseURL = API_URL;
 
-export const METHOD = {
+export const HTTP_METHOD = {
   GET: 'get',
   POST: 'post',
   DELETE: 'delete',
@@ -17,6 +18,31 @@ export const axiosInstance = axios.create({
   },
 });
 
-export const privateRequest = (config) => {
-  return axiosInstance.request(config).then(response => response.data);
+
+export const privateRequest = async (config) => {
+  try {
+    const response = await axiosInstance.request(config);
+    return response.data;
+
+  } catch (error) {
+    const metadata = handleError(error);
+    throw new WalkieDoggieAPIError({ metadata });
+  }
+}
+
+const handleError = (error) => {
+  const responseData = {
+    statusCode: 500,
+    errorData: error,
+    message: 'Internal Server Error',
+  };
+
+  if (!error.response) return responseData;
+
+  const statusCode = error.response.status;
+
+  return {
+    statusCode,
+    errorData: error.response.data
+  }
 }

@@ -1,9 +1,11 @@
-import { METHOD, privateRequest } from "../axiosConfig";
+import { HTTP_METHOD, privateRequest } from "../axiosConfig";
 
 export const getHealth = async () => {
-    return privateRequest({
-        method: METHOD.GET,
+    const config = {
+        method: HTTP_METHOD.GET,
         url: '/health'
-    })
+    };
+    return privateRequest(config);
+
 }
 
