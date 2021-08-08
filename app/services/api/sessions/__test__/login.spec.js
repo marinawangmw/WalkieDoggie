@@ -9,12 +9,10 @@ describe('POST /sessions/login', () => {
         expect(response).toHaveProperty('result', true);
         const accessToken = await getStorageItem('access_token');
         const refreshToken = await getStorageItem('refresh_token');
-        expect(accessToken).toMatch(new RegExp(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/));
-        expect(refreshToken).toMatch(new RegExp(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/));
+        const tokenRegex = /^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/;
+        expect(accessToken).toMatch(new RegExp(tokenRegex));
+        expect(refreshToken).toMatch(new RegExp(tokenRegex));
 
-        // Object.values(response).forEach(token => {
-        //     expect(token).toMatch(new RegExp(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/));
-        // });
     });
 
     it('Invalid credentials', async () => {
@@ -25,7 +23,7 @@ describe('POST /sessions/login', () => {
 
         const { result, data } = response;
         expect(result).toEqual(false);
-        const {  statusCode, errorData  } = data;
+        const { statusCode, errorData } = data;
         expect(statusCode).toEqual(400);
         expect(errorData.internal_code).toEqual('invalid_credentials');
 
@@ -40,7 +38,7 @@ describe('POST /sessions/login', () => {
 
         const { result, data } = response;
         expect(result).toEqual(false);
-        const {  statusCode, errorData  } = data;
+        const { statusCode, errorData } = data;
         expect(statusCode).toEqual(404);
         expect(errorData.internal_code).toEqual('not_found');
     });
