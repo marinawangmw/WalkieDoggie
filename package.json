@@ -11,6 +11,7 @@
     "test": "jest --runInBand --detectOpenHandles --forceExit --colors --passWithNoTests"
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.12.1",
     "axios": "^0.21.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-standard": "^16.0.3",
@@ -34,7 +35,16 @@
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-native": "^3.11.0",
-    "jest": "^27.0.6"
+    "jest": "^27.0.6",
+    "jest-environment-jsdom": "^27.0.6",
+    "jest-environment-jsdom-global": "^2.0.4",
+    "jsdom": "16.7.0",
+    "jsdom-global": "3.0.2"
   },
-  "private": true
+  "private": true,
+  "jest": {
+    "setupFilesAfterEnv": [
+      "test/setup.js"
+    ]
+  }
 }

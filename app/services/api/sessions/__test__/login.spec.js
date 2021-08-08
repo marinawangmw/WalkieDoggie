@@ -1,3 +1,4 @@
+import { getStorageItem } from "../../../../utils/storage";
 import { makeAppUserCredentials } from "../../helpers/sessions";
 import { login } from "../login"
 
@@ -5,41 +6,43 @@ describe('POST /sessions/login', () => {
     it('Successful Login', async () => {
         const user = makeAppUserCredentials();
         const response = await login(user);
-        expect(Object.keys(response)).toStrictEqual(expect.arrayContaining(['access_token', 'refresh_token']));
+        expect(response).toHaveProperty('result', true);
+        const accessToken = await getStorageItem('access_token');
+        const refreshToken = await getStorageItem('refresh_token');
+        expect(accessToken).toMatch(new RegExp(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/));
+        expect(refreshToken).toMatch(new RegExp(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/));
 
-        Object.values(response).forEach(token => {
-            expect(token).toMatch(new RegExp(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/));
-        });
+        // Object.values(response).forEach(token => {
+        //     expect(token).toMatch(new RegExp(/^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$/));
+        // });
     });
 
     it('Invalid credentials', async () => {
         const user = makeAppUserCredentials();
         user.password = 'invalid_password';
-        try {
-            await login(user);
-        }
-        catch (error) {
+        const response = await login(user);
+        expect(Object.keys(response)).toStrictEqual(expect.arrayContaining(['result', 'data']));
 
-            const { metadata } = error;
-            const { errorData, statusCode } = metadata;
-            expect(statusCode).toEqual(400);
-            expect(errorData.internal_code).toEqual('invalid_credentials');
-        }
+        const { result, data } = response;
+        expect(result).toEqual(false);
+        const {  statusCode, errorData  } = data;
+        expect(statusCode).toEqual(400);
+        expect(errorData.internal_code).toEqual('invalid_credentials');
+
 
     });
 
     it('User not found', async () => {
         const user = makeAppUserCredentials();
         user.email = 'invalid_email@gmail.com';
-        try {
-            await login(user);
-        }
-        catch (error) {
-            const { metadata } = error;
-            const { errorData, statusCode } = metadata;
-            expect(statusCode).toEqual(404);
-            expect(errorData.internal_code).toEqual('not_found');
-        }
+        const response = await login(user);
+        expect(Object.keys(response)).toStrictEqual(expect.arrayContaining(['result', 'data']));
+
+        const { result, data } = response;
+        expect(result).toEqual(false);
+        const {  statusCode, errorData  } = data;
+        expect(statusCode).toEqual(404);
+        expect(errorData.internal_code).toEqual('not_found');
     });
 
-})
+});

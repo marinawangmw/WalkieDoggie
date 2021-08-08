@@ -1,3 +1,4 @@
 module.exports = {
-    setupFilesAfterEnv: ['./setup.js']
+    setupFilesAfterEnv: ['./setup.js'],
+    testEnvironment: "jest-environment-jsdom-global"
 }

@@ -1,4 +1,4 @@
-import { HTTP_METHOD, privateRequest } from "../axiosConfig"
+import { HTTP_METHOD, publicRequest } from "../axiosConfig"
 
 export const signUp = async (params) => {
     const { type, first_name, last_name, email, password } = params;
@@ -10,5 +10,6 @@ export const signUp = async (params) => {
         }
     };
 
-    return privateRequest(config);
+    return publicRequest(config).then(data => ({ result: true, data }))
+                                .catch(error => ({ result: false, data: error.metadata }));
 }
