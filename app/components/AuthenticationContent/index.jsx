@@ -74,6 +74,7 @@ const AuthenticationContent = () => {
       Boolean(!emailError) &&
       Boolean(userTypeSelected)
     ) {
+      setPending(true);
       const res = await signUp({
         type: userTypeSelected,
         first_name: firstName,
@@ -81,9 +82,15 @@ const AuthenticationContent = () => {
         email,
         password,
       });
-      console.log('signup', res);
+      if (res.result) {
+        setPending(false);
+        setSubmitted(true);
+      } else {
+        setPending(false);
+        setSubmitFailed(true);
+      }
     } else {
-      setErrorMessage('Por favor complete todos los campos');
+      setErrorMessage('Algo esta mal');
     }
   };
 
@@ -187,10 +194,10 @@ const AuthenticationContent = () => {
 
   const renderAuthentication = () => {
     if (pending) {
-      return <ActivityIndicator size="large" color="#00ff00" />;
+      return <ActivityIndicator size="large" color="#f8b444" />;
     }
 
-    if (submitted && hasAccount) {
+    if (submitted) {
       return (
         <Text style={{ height: 100, textAlign: 'center', color: 'red', margin: 20 }}>
           Ustes esta loggeado {'\n'} ¡Bienvenido a Walkie Doggie!
