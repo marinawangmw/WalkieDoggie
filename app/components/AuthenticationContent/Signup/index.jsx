@@ -32,7 +32,7 @@ const Signup = ({
 
       <View style={styles.authentication__userTypeContainer}>
         <TouchableOpacity
-          onPress={() => setUserTypeSelected('owner')}
+          onPress={() => setUserTypeSelected('OWNER')}
           style={[
             styles.authentication__userType,
             {
@@ -41,30 +41,30 @@ const Signup = ({
               marginRight: 10,
             },
 
-            userTypeSelected === 'owner' && styles.authentication__userTypeSelected,
+            userTypeSelected === 'OWNER' && styles.authentication__userTypeSelected,
           ]}
         >
           <Text
             style={[
               styles.authentication__userTypeText,
-              userTypeSelected === 'owner' && styles.authentication__userTypeTextSelected,
+              userTypeSelected === 'OWNER' && styles.authentication__userTypeTextSelected,
             ]}
           >
             Dueño Mascota
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => setUserTypeSelected('walker')}
+          onPress={() => setUserTypeSelected('WALKER')}
           style={[
             styles.authentication__userType,
             { borderTopRightRadius: 25, borderBottomRightRadius: 25 },
-            userTypeSelected === 'walker' && styles.authentication__userTypeSelected,
+            userTypeSelected === 'WALKER' && styles.authentication__userTypeSelected,
           ]}
         >
           <Text
             style={[
               styles.authentication__userTypeText,
-              userTypeSelected === 'walker' && styles.authentication__userTypeTextSelected,
+              userTypeSelected === 'WALKER' && styles.authentication__userTypeTextSelected,
             ]}
           >
             Paseador
