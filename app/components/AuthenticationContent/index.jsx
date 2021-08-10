@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Login from './Login';
-import Signup from './Singup';
+import Signup from './Signup';
 import SvgUri from 'react-native-svg-uri';
-import { Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { login } from '../../services/api/sessions/login';
+import { signUp } from '../../services/api/sessions/signUp';
 import styles from './styles';
 
 const AuthenticationContent = () => {
-  const [firsName, setFirsName] = useState('');
+  const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -14,26 +16,76 @@ const AuthenticationContent = () => {
   const [passwordError, setPasswordError] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [hasAccount, setHasAccount] = useState(true);
   const [userTypeSelected, setUserTypeSelected] = useState('');
   const [hidePassword, setHidePassword] = useState(true);
+  const [pending, setPending] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [submitFailed, setSubmitFailed] = useState(false);
 
   const clearInput = () => {
-    setFirsName('');
+    setFirstName('');
     setLastName('');
     setConfirmPassword('');
     setEmail('');
     setPassword('');
+    setUserTypeSelected('');
   };
 
   const clearErrors = () => {
     setEmailError('');
     setPasswordError('');
     setConfirmPasswordError('');
+    setErrorMessage('');
   };
 
-  const handleLogIn = () => {};
-  const handleSignUp = () => {};
+  useEffect(() => {
+    clearInput();
+    clearErrors();
+  }, [hasAccount]);
+
+  const handleLogIn = async () => {
+    if (Boolean(email) && Boolean(password)) {
+      setPending(true);
+      const res = await login({ email, password });
+
+      if (!res.result) {
+        setPending(false);
+        setSubmitFailed(true);
+        setPasswordError('Error en el email o en la clave ingresada');
+      } else {
+        setPending(false);
+        setSubmitted(true);
+      }
+    } else {
+      setErrorMessage('Por favor complete todos los campos');
+    }
+  };
+
+  const handleSignUp = async () => {
+    if (
+      Boolean(firstName) &&
+      Boolean(lastName) &&
+      Boolean(email) &&
+      Boolean(password) &&
+      Boolean(confirmPassword) &&
+      Boolean(!confirmPasswordError) &&
+      Boolean(!emailError) &&
+      Boolean(userTypeSelected)
+    ) {
+      const res = await signUp({
+        type: userTypeSelected,
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        password,
+      });
+      console.log('signup', res);
+    } else {
+      setErrorMessage('Por favor complete todos los campos');
+    }
+  };
 
   const handleChangeAuthProcess = () => {
     setHasAccount(!hasAccount);
@@ -74,20 +126,19 @@ const AuthenticationContent = () => {
         value={email}
         textContentType="emailAddress"
         onChangeText={validateEmail}
+        autoCapitalize="none"
       />
-      {Boolean(emailError) && (
-        <Text style={styles.authentication__errorMsg}>{emailError}</Text>
-      )}
+      {Boolean(emailError) && <Text style={styles.authentication__errorMsg}>{emailError}</Text>}
 
       <View>
         <TextInput
-          textContentType="password"
           secureTextEntry={hidePassword}
           style={styles.authentication__input}
           placeholder="Clave"
           required
           value={password}
           onChangeText={setPassword}
+          autoCapitalize="none"
         />
 
         {hasAccount && (
@@ -117,48 +168,79 @@ const AuthenticationContent = () => {
       {!hasAccount && (
         <>
           <TextInput
-            textContentType="password"
             secureTextEntry
             style={styles.authentication__input}
             placeholder="Confirmar clave"
             required
             value={confirmPassword}
             onChangeText={handleConfirmPassword}
+            autoCapitalize="none"
           />
 
           {Boolean(confirmPasswordError) && (
-            <Text style={styles.authentication__errorMsg}>
-              {confirmPasswordError}
-            </Text>
+            <Text style={styles.authentication__errorMsg}>{confirmPasswordError}</Text>
           )}
         </>
       )}
     </>
   );
 
-  return (
-    <>
-      {hasAccount ? (
-        <Login
-          renderEmailAndPassword={renderEmailAndPassword}
-          handleLogIn={handleLogIn}
-          handleChangeAuthProcess={handleChangeAuthProcess}
-        />
-      ) : (
-        <Signup
-          renderEmailAndPassword={renderEmailAndPassword}
-          firsName={firsName}
-          setFirsName={setFirsName}
-          lastName={lastName}
-          setLastName={setLastName}
-          setUserTypeSelected={setUserTypeSelected}
-          userTypeSelected={userTypeSelected}
-          handleSignUp={handleSignUp}
-          handleChangeAuthProcess={handleChangeAuthProcess}
-        />
-      )}
-    </>
-  );
+  const renderAuthentication = () => {
+    if (pending) {
+      return <ActivityIndicator size="large" color="#00ff00" />;
+    }
+
+    if (submitted && hasAccount) {
+      return (
+        <Text style={{ height: 100, textAlign: 'center', color: 'red', margin: 20 }}>
+          Ustes esta loggeado {'\n'} ¡Bienvenido a Walkie Doggie!
+        </Text>
+      );
+    }
+
+    if (submitFailed) {
+      return (
+        <Text
+          style={{
+            height: 100,
+            textAlign: 'center',
+            color: 'red',
+            margin: 20,
+          }}
+        >
+          Oops ocurrio un error
+        </Text>
+      );
+    }
+
+    return (
+      <>
+        {hasAccount ? (
+          <Login
+            errorMessage={errorMessage}
+            renderEmailAndPassword={renderEmailAndPassword}
+            handleLogIn={handleLogIn}
+            handleChangeAuthProcess={handleChangeAuthProcess}
+          />
+        ) : (
+          <Signup
+            errorMessage={errorMessage}
+            renderEmailAndPassword={renderEmailAndPassword}
+            firsName={firstName}
+            setFirstName={setFirstName}
+            lastName={lastName}
+            setLastName={setLastName}
+            setUserTypeSelected={setUserTypeSelected}
+            userTypeSelected={userTypeSelected}
+            handleSignUp={handleSignUp}
+            handleChangeAuthProcess={handleChangeAuthProcess}
+          />
+        )}
+      </>
+    );
+  };
+
+  return <>{renderAuthentication()}</>;
 };
 
 export default AuthenticationContent;

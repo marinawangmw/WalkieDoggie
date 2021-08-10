@@ -3,8 +3,9 @@ import { Text, View, TextInput, TouchableOpacity } from 'react-native';
 import styles from './styles';
 
 const Signup = ({
-  firsName,
-  setFirsName,
+  errorMessage,
+  firstName,
+  setFirstName,
   lastName,
   setLastName,
   renderEmailAndPassword,
@@ -18,14 +19,14 @@ const Signup = ({
       <TextInput
         style={styles.authentication__input}
         placeholder="Nombre"
-        value={firsName}
-        onChange={(e) => setFirsName(e.target.value)}
+        value={firstName}
+        onChangeText={setFirstName}
       />
       <TextInput
         style={styles.authentication__input}
         placeholder="Apellido"
         value={lastName}
-        onChange={(e) => setLastName(e.target.value)}
+        onChangeText={setLastName}
       />
       {renderEmailAndPassword()}
 
@@ -40,15 +41,13 @@ const Signup = ({
               marginRight: 10,
             },
 
-            userTypeSelected === 'owner' &&
-              styles.authentication__userTypeSelected,
+            userTypeSelected === 'owner' && styles.authentication__userTypeSelected,
           ]}
         >
           <Text
             style={[
               styles.authentication__userTypeText,
-              userTypeSelected === 'owner' &&
-                styles.authentication__userTypeTextSelected,
+              userTypeSelected === 'owner' && styles.authentication__userTypeTextSelected,
             ]}
           >
             Dueño Mascota
@@ -59,15 +58,13 @@ const Signup = ({
           style={[
             styles.authentication__userType,
             { borderTopRightRadius: 25, borderBottomRightRadius: 25 },
-            userTypeSelected === 'walker' &&
-              styles.authentication__userTypeSelected,
+            userTypeSelected === 'walker' && styles.authentication__userTypeSelected,
           ]}
         >
           <Text
             style={[
               styles.authentication__userTypeText,
-              userTypeSelected === 'walker' &&
-                styles.authentication__userTypeTextSelected,
+              userTypeSelected === 'walker' && styles.authentication__userTypeTextSelected,
             ]}
           >
             Paseador
@@ -75,13 +72,11 @@ const Signup = ({
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity
-        style={styles.authentication__btn}
-        type="submit"
-        onClick={handleSignUp}
-      >
+      <TouchableOpacity style={styles.authentication__btn} type="submit" onPress={handleSignUp}>
         <Text style={styles.authentication__btnLabel}>Registrarse</Text>
       </TouchableOpacity>
+
+      {Boolean(errorMessage) && <Text style={styles.authentication__errorMsg}>{errorMessage}</Text>}
 
       <View style={styles.authentication__messageContainer}>
         <Text style={styles.authentication__message}>Ya tiene cuenta?</Text>
