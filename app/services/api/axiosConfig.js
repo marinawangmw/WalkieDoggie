@@ -50,7 +50,7 @@ const handleError = (error) => {
   const responseData = {
     statusCode: 500,
     errorData: error,
-    message: 'Internal Server Error',
+    message: 'Generic Error',
   };
 
   if (!error.response) return responseData;

@@ -1,13 +1,14 @@
 import Fakerator from 'fakerator';
-import { USER_TYPES } from '../../../constants/userType';
+import { USER_TYPES } from '../../../utils/constants';
 const faker = Fakerator('es-ES');
 const { OWNER, WALKER } = USER_TYPES;
 
 export const realEmail = 'uri.lukacher@gmail.com';
-export const makeAppUserCredentials = () => {
+export const makeAppUserCredentials = (overrides) => {
     return {
         email: realEmail,
-        password: '1234'
+        password: '1234',
+        ...overrides
     }
 }
 

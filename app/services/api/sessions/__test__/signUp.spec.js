@@ -1,7 +1,7 @@
 import { makeFakeSignUpParams, realEmail } from "../../helpers/sessions";
 import { signUp } from "../signUp";
 
-describe.only('POST /users', () => {
+describe.skip('POST /users', () => {
     it('Successful Sign Up', async () => {
         const signUpParams = makeFakeSignUpParams();
         const response = await signUp(signUpParams);
