@@ -7,10 +7,7 @@ import styles from './styles';
 const AuthenticationScreen = () => {
   return (
     <View style={styles.authentication}>
-      <Image
-        source={require('../../assets/icon-home.png')}
-        style={styles.authentication__logo}
-      />
+      <Image source={require('../../assets/icon-home.png')} style={styles.authentication__logo} />
       <View style={styles.authentication__container}>
         <AuthenticationContent />
       </View>

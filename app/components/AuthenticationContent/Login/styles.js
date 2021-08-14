@@ -42,6 +42,9 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     color: '#364C63',
   },
+  authentication__errorMsg: {
+    color: 'red',
+  },
 });
 
 export default styles;
