@@ -21,30 +21,18 @@ const axiosInstance = axios.create({
   },
 });
 
-export const publicRequest = async (config) => {
-  try {
-    const response = await axiosInstance.request(config);
-    return response.data;
-  } catch (error) {
-    const metadata = handleError(error);
-    throw new WalkieDoggieAPIError({ metadata });
-  }
-};
+export const publicRequest = async config =>  axiosInstance.request(config);
+
 
 export const privateRequest = async (config) => {
-  try {
-    const accessToken = await getStorageItem('access_token');
 
-    const mergeConfig = {
-      ...config,
-      headers: { ...config.headers, Authorization: accessToken },
-    };
-    const response = await axiosInstance.request(mergeConfig);
-    return response.data;
-  } catch (error) {
-    const metadata = handleError(error);
-    throw new WalkieDoggieAPIError({ metadata });
-  }
+  const accessToken = await getStorageItem('access_token');
+
+  const mergeConfig = {
+    ...config,
+    headers: { ...config.headers, Authorization: accessToken },
+  };
+  return axiosInstance.request(mergeConfig);
 };
 
 const handleError = (error) => {
@@ -66,7 +54,7 @@ const handleError = (error) => {
 
 // Response interceptor for API calls
 axiosInstance.interceptors.response.use((response) => {
-  return response
+  return response.data
 }, async function (error) {
   const originalRequest = error.config;
   const { message, internal_code } = error.response.data;
@@ -77,11 +65,13 @@ axiosInstance.interceptors.response.use((response) => {
 
   if (isTokenExpiredError && !originalRequest._retry) {
     originalRequest._retry = true;
-    const { data: {access_token} } = await refreshToken();
+    const { data: { access_token } } = await refreshToken();
     axios.defaults.headers.common['Authorization'] = access_token;
     originalRequest.headers.Authorization = access_token;
 
     return axiosInstance(originalRequest);
   }
-  return Promise.reject(error);
+  const metadata = handleError(error);
+  const customError = new WalkieDoggieAPIError({ metadata });
+  return Promise.reject(customError);
 });
