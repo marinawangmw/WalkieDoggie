@@ -2,11 +2,14 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   authentication: {
-    width: '80%',
     alignItems: 'center',
+    flex: 1,
+    backgroundColor: '#F3F3EB',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   authentication__container: {
-    width: '100%',
+    width: '80%',
     flexDirection: 'column',
   },
   authentication__logo: {
