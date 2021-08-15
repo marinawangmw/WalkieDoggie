@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f4d7a3',
     borderRadius: 25,
   },
-  authentication__errorMsg: {},
   authentication__pwVisibility: {
     position: 'absolute',
     right: 20,

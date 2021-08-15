@@ -19,7 +19,7 @@ describe('POST /users/onboarding/walker', () => {
 
 
 
-describe('POST /users/onboarding/owner', () => {
+describe.skip('POST /users/onboarding/owner', () => {
     const id = 17;
 
     beforeAll(async () => {
