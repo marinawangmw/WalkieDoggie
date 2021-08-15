@@ -1,38 +1,26 @@
-import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { AuthenticationScreen, OnboardingDetaildScreen } from './app/screens';
-import { StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { AuthenticationScreen, OnboardingDetailsScreen, HomeScreen } from './app/screens';
 import { NavigationContainer } from '@react-navigation/native';
-import 'react-native-gesture-handler';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-const Stack = createStackNavigator();
+const RootStack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <View style={styles.container}>
-        <Stack.Navigator>
-          <Stack.Screen
-            name='Home'
-            component={AuthenticationScreen}
-            options={{ title: 'Authentication' }}
-          />
-          <Stack.Screen
-            name='Onboarding details'
-            component={OnboardingDetaildScreen}
-          />
-        </Stack.Navigator>
-        <StatusBar style='auto' />
-      </View>
+      <RootStack.Navigator>
+        <RootStack.Screen
+          name="Authentication"
+          component={AuthenticationScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen
+          name="Onboarding"
+          component={OnboardingDetailsScreen}
+          options={{ headerShown: false }}
+        />
+        <RootStack.Screen name="Home" component={HomeScreen} options={{ title: 'Walkie Doggie' }} />
+      </RootStack.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F3F3EB',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

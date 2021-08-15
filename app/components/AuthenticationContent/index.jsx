@@ -7,7 +7,7 @@ import { login } from '../../services/api/sessions/login';
 import { signUp } from '../../services/api/sessions/signUp';
 import styles from './styles';
 
-const AuthenticationContent = () => {
+const AuthenticationContent = ({ navigation }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -21,7 +21,6 @@ const AuthenticationContent = () => {
   const [userTypeSelected, setUserTypeSelected] = useState('');
   const [hidePassword, setHidePassword] = useState(true);
   const [pending, setPending] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [submitFailed, setSubmitFailed] = useState(false);
 
   const clearInput = () => {
@@ -57,7 +56,7 @@ const AuthenticationContent = () => {
         setPasswordError('Error en el email o en la clave ingresada');
       } else {
         setPending(false);
-        setSubmitted(true);
+        return navigation.replace('Home');
       }
     } else {
       setErrorMessage('Por favor verifique los datos ingresados');
@@ -85,7 +84,7 @@ const AuthenticationContent = () => {
       });
       if (res.result) {
         setPending(false);
-        setSubmitted(true);
+        return navigation.replace('Onboarding');
       } else {
         setPending(false);
         setSubmitFailed(true);
@@ -198,14 +197,6 @@ const AuthenticationContent = () => {
       return <ActivityIndicator size="large" color="#f8b444" />;
     }
 
-    if (submitted) {
-      return (
-        <Text style={{ height: 100, textAlign: 'center', color: 'green', margin: 20 }}>
-          Ustes esta loggeado {'\n'} ¡Bienvenido a Walkie Doggie!
-        </Text>
-      );
-    }
-
     if (submitFailed) {
       return (
         <Text
@@ -227,7 +218,7 @@ const AuthenticationContent = () => {
           <Login
             errorMessage={errorMessage}
             renderEmailAndPassword={renderEmailAndPassword}
-            handleLogIn={handleLogIn}
+            handleLogIn={() => handleLogIn()}
             handleChangeAuthProcess={handleChangeAuthProcess}
           />
         ) : (
@@ -240,7 +231,7 @@ const AuthenticationContent = () => {
             setLastName={setLastName}
             setUserTypeSelected={setUserTypeSelected}
             userTypeSelected={userTypeSelected}
-            handleSignUp={handleSignUp}
+            handleSignUp={() => handleSignUp()}
             handleChangeAuthProcess={handleChangeAuthProcess}
           />
         )}
