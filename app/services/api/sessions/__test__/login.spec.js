@@ -2,7 +2,7 @@ import { getStorageItem } from "../../../../utils/storage";
 import { makeAppUserCredentials } from "../../helpers/sessions";
 import { login } from "../login"
 
-describe.skip('POST /sessions/login', () => {
+describe('POST /sessions/login', () => {
     it('Successful Login', async () => {
         const user = makeAppUserCredentials();
         const response = await login(user);
