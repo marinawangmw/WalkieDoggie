@@ -2,7 +2,7 @@ import axios from 'axios';
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
 import { WalkieDoggieAPIError } from '../../helpers/errorHandler';
-import { getStorageItem } from '../../utils/storage';
+import { getAccessTokenStorage } from '../../utils/storage';
 import { refreshToken } from './sessions/refreshToken';
 
 const baseURL = API_URL;
@@ -26,7 +26,7 @@ export const publicRequest = async config =>  axiosInstance.request(config);
 
 export const privateRequest = async (config) => {
 
-  const accessToken = await getStorageItem('access_token');
+  const accessToken = await getAccessTokenStorage();
 
   const mergeConfig = {
     ...config,

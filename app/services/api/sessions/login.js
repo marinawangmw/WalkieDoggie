@@ -1,5 +1,6 @@
 import { setStorageItem } from '../../../utils/storage';
 import { HTTP_METHOD, publicRequest } from '../axiosConfig';
+import jwt_decode from 'jwt-decode';
 
 export const login = async (params) => {
   const { email, password } = params;
@@ -13,9 +14,12 @@ export const login = async (params) => {
   };
 
   try {
-    const data = await publicRequest(config);
-    await setStorageItem('access_token', data.access_token);
-    await setStorageItem('refresh_token', data.refresh_token);
+    const { access_token, refresh_token } = await publicRequest(config);
+    var { user_type, sub } = jwt_decode(access_token);
+
+    await setStorageItem('access_token', access_token);
+    await setStorageItem('user_info', JSON.stringify({ user_type, sub }));
+    await setStorageItem('refresh_token', refresh_token);
     return { result: true };
   } catch (error) {
     const { metadata } = error;

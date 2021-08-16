@@ -30,6 +30,9 @@
     "node": {
       "extensions": [".js", ".jsx", ".native.js"]
     }
+  },
+  "react": {
+    "version": "detect"
   }
   },
   "env": {

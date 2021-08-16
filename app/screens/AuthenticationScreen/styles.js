@@ -5,7 +5,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     backgroundColor: '#F3F3EB',
-    alignItems: 'center',
     justifyContent: 'center',
   },
   authentication__container: {
