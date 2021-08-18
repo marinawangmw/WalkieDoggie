@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Login from './Login';
 import Signup from './Signup';
 import SvgUri from 'react-native-svg-uri';
-import { Text, View, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { login } from '../../services/api/sessions/login';
-import { signUp } from '../../services/api/sessions/signUp';
+import { Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { AuthContext } from '../../utils/authContext';
 import styles from './styles';
 
-const AuthenticationContent = ({ navigation }) => {
+const AuthenticationContent = ({ error }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -20,8 +19,8 @@ const AuthenticationContent = ({ navigation }) => {
   const [hasAccount, setHasAccount] = useState(true);
   const [userTypeSelected, setUserTypeSelected] = useState('');
   const [hidePassword, setHidePassword] = useState(true);
-  const [pending, setPending] = useState(false);
-  const [submitFailed, setSubmitFailed] = useState(false);
+
+  const { signIn, signUp } = React.useContext(AuthContext);
 
   const clearInput = () => {
     setFirstName('');
@@ -46,18 +45,7 @@ const AuthenticationContent = ({ navigation }) => {
 
   const handleLogIn = async () => {
     if (Boolean(email) && Boolean(password)) {
-      setPending(true);
-
-      const res = await login({ email, password });
-
-      if (!res.result) {
-        setPending(false);
-        setSubmitFailed(true);
-        setPasswordError('Error en el email o en la clave ingresada');
-      } else {
-        setPending(false);
-        return navigation.replace('Home');
-      }
+      signIn({ email, password });
     } else {
       setErrorMessage('Por favor verifique los datos ingresados');
     }
@@ -74,21 +62,13 @@ const AuthenticationContent = ({ navigation }) => {
       Boolean(!emailError) &&
       Boolean(userTypeSelected)
     ) {
-      setPending(true);
-      const res = await signUp({
+      signUp({
         type: userTypeSelected,
         first_name: firstName,
         last_name: lastName,
         email,
         password,
       });
-      if (res.result) {
-        setPending(false);
-        return navigation.replace('Onboarding');
-      } else {
-        setPending(false);
-        setSubmitFailed(true);
-      }
     } else {
       setErrorMessage('Algo esta mal');
     }
@@ -193,37 +173,18 @@ const AuthenticationContent = ({ navigation }) => {
   );
 
   const renderAuthentication = () => {
-    if (pending) {
-      return <ActivityIndicator size="large" color="#f8b444" />;
-    }
-
-    if (submitFailed) {
-      return (
-        <Text
-          style={{
-            height: 100,
-            textAlign: 'center',
-            color: 'red',
-            margin: 20,
-          }}
-        >
-          Oops ocurrio un error
-        </Text>
-      );
-    }
-
     return (
       <>
         {hasAccount ? (
           <Login
-            errorMessage={errorMessage}
+            errorMessage={errorMessage || error}
             renderEmailAndPassword={renderEmailAndPassword}
             handleLogIn={() => handleLogIn()}
             handleChangeAuthProcess={handleChangeAuthProcess}
           />
         ) : (
           <Signup
-            errorMessage={errorMessage}
+            errorMessage={errorMessage || error}
             renderEmailAndPassword={renderEmailAndPassword}
             firsName={firstName}
             setFirstName={setFirstName}
