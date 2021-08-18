@@ -20,7 +20,7 @@ export const login = async (params) => {
     await setStorageItem('access_token', access_token);
     await setStorageItem('user_info', JSON.stringify({ user_type, sub }));
     await setStorageItem('refresh_token', refresh_token);
-    return { result: true };
+    return { result: true, data: access_token };
   } catch (error) {
     const { metadata } = error;
     return { result: false, data: metadata };

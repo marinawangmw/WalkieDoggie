@@ -1,20 +1,13 @@
 import React from 'react';
-import { View, Text, Button } from 'react-native';
-import { clearUserData } from '../../utils/storage';
+import { View, Text } from 'react-native';
 import styles from './styles';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Text>This is Home!</Text>
-      <Button title="Sign out" onPress={() => doSignOut(navigation)} />
     </View>
   );
 };
 
 export default HomeScreen;
-
-const doSignOut = async (navigation) => {
-  await clearUserData();
-  navigation.navigate('Authentication');
-};
