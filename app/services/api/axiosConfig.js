@@ -21,11 +21,11 @@ const axiosInstance = axios.create({
   },
 });
 
-export const publicRequest = async config =>  axiosInstance.request(config);
-
+export const publicRequest = async (config) => {
+  return axiosInstance.request(config);
+};
 
 export const privateRequest = async (config) => {
-
   const accessToken = await getAccessTokenStorage();
 
   const mergeConfig = {
@@ -53,25 +53,31 @@ const handleError = (error) => {
 };
 
 // Response interceptor for API calls
-axiosInstance.interceptors.response.use((response) => {
-  return response.data
-}, async function (error) {
-  const originalRequest = error.config;
-  const { message, internal_code } = error.response.data;
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response.data;
+  },
+  async function (error) {
+    const originalRequest = error.config;
+    const { message, internal_code } = error.response.data;
 
-  const isTokenExpiredError = error.response.status === 401 &&
-    internal_code === 'invalid_token' &&
-    message === 'jwt expired';
+    const isTokenExpiredError =
+      error.response.status === 401 &&
+      internal_code === 'invalid_token' &&
+      message === 'jwt expired';
 
-  if (isTokenExpiredError && !originalRequest._retry) {
-    originalRequest._retry = true;
-    const { data: { access_token } } = await refreshToken();
-    axios.defaults.headers.common['Authorization'] = access_token;
-    originalRequest.headers.Authorization = access_token;
+    if (isTokenExpiredError && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const {
+        data: { access_token },
+      } = await refreshToken();
+      axios.defaults.headers.common['Authorization'] = access_token;
+      originalRequest.headers.Authorization = access_token;
 
-    return axiosInstance(originalRequest);
-  }
-  const metadata = handleError(error);
-  const customError = new WalkieDoggieAPIError({ metadata });
-  return Promise.reject(customError);
-});
+      return axiosInstance(originalRequest);
+    }
+    const metadata = handleError(error);
+    const customError = new WalkieDoggieAPIError({ metadata });
+    return Promise.reject(customError);
+  },
+);
