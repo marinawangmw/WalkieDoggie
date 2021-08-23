@@ -98,7 +98,11 @@ axiosInstance.interceptors.response.use(
       const {
         data: { access_token },
       } = await refreshToken();
+<<<<<<< HEAD
       axios.defaults.headers.common.Authorization = access_token;
+=======
+      axios.defaults.headers.common['Authorization'] = access_token;
+>>>>>>> debdf83197e92be08cf46f7fc083dfd101cc3019
       originalRequest.headers.Authorization = access_token;
 
       return axiosInstance(originalRequest);
