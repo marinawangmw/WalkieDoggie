@@ -11,10 +11,6 @@ const styles = StyleSheet.create({
     width: '80%',
     flexDirection: 'column',
   },
-  authentication__logo: {
-    height: 125,
-    width: 250,
-  },
 });
 
 export default styles;

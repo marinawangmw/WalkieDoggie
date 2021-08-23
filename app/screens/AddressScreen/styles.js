@@ -2,9 +2,13 @@ import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    padding: 10,
+    paddingTop: 100,
+  },
+  placeInput: {
+    paddingHorizontal: 20,
     width: '100%',
-    backgroundColor: '#F3F3EB',
+    alignSelf: 'center',
   },
 });
 

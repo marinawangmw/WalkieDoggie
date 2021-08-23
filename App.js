@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   AuthenticationScreen,
   OnboardingDetailsScreen,
   HomeScreen,
   ChatScreen,
   ProfileScreen,
+  AddressScreen,
 } from './app/screens';
+import { OwnerOnboarding } from './app/components';
 import { getAccessTokenStorage } from './app/utils/storage';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoadingScreen from './app/screens/LoadingScreen';
 import { AuthContext } from './app/utils/authContext';
 import { login } from './app/services/api/sessions/login';
-import { signUp } from './app/services/api/sessions/signUp';
 import { clearUserData } from './app/utils/storage';
 
 const Tabs = createBottomTabNavigator();
@@ -30,19 +31,25 @@ const HomeTabsScreen = () => (
 const RootStackScreen = ({ userToken, error }) => {
   return (
     <RootStack.Navigator>
-      {Boolean(userToken) ? (
+      {userToken ? (
         <RootStack.Screen name="Home" component={HomeTabsScreen} options={{ headerShown: false }} />
       ) : (
         <>
+          <RootStack.Screen
+            name="Onboarding"
+            component={OnboardingDetailsScreen}
+            options={{ headerShown: false }}
+          />
           <RootStack.Screen
             name="Authentication"
             component={AuthenticationScreen}
             options={{ headerShown: false }}
             initialParams={{ error }}
           />
+          <RootStack.Screen name="OwnerOnboarding" component={OwnerOnboarding} />
           <RootStack.Screen
-            name="Onboarding"
-            component={OnboardingDetailsScreen}
+            name="AddressScreen"
+            component={AddressScreen}
             options={{ headerShown: false }}
           />
         </>
@@ -72,20 +79,15 @@ export default function App() {
           setError(e);
         }
       },
-      signUp: async (data) => {
+      onBoarding: async (signupData, onboardingData) => {
         setIsLoading(true);
         try {
-          const resSignup = await signUp(data);
+          //await onboarding(onboardingData);
+          const resSignin = await login(signupData);
           setIsLoading(false);
-
-          if (resSignup.result) {
-            const resSignin = await login({ email: data.email, password: data.password });
-            setUserToken(resSignin.data);
-          } else {
-            setError('Error registrando usuario, verifique los datos ingresados');
-          }
+          setUserToken(resSignin.data);
         } catch (e) {
-          setError(e);
+          console.log(e);
         }
       },
       signOut: async () => {
