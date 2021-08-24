@@ -1,9 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  wrapper: {
-    paddingBottom: 100,
-  },
+  wrapper: {},
   scrollContainer: {
     paddingTop: 100,
     width: '100%',
@@ -36,7 +34,7 @@ const styles = StyleSheet.create({
   },
   button: {
     fontSize: 16,
-    marginVertical: 10,
+    marginVertical: 100,
     paddingHorizontal: 20,
     paddingVertical: 10,
     backgroundColor: '#f4d7a3',
@@ -55,6 +53,10 @@ const styles = StyleSheet.create({
   },
   bottomSpace: {
     height: 400,
+  },
+  saveButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

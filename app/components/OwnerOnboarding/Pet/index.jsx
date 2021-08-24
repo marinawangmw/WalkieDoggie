@@ -1,24 +1,22 @@
-import React, { useState } from 'react';
+import React, { useRef, forwardRef, useImperativeHandle } from 'react';
 import PetInfo from '../PetInfo';
 
-const Pet = ({ pets, setPets }) => {
-  const editPet = (id, pet) => {
-    console.log('Edit pet 🌶🌶', pets, id, pet);
-    if (id > pets.length - 1) {
-      pets.setPets([pet]);
-    } else {
-      const previous = id - 1 <= 0 ? 1 : id - 1;
-      const next = id + 2 < pets.length - 1 ? id + 2 : pets.length - 1;
-      const last = pets.length - 1;
+const Pet = forwardRef((props, ref) => {
+  const { pets, setPets } = props;
+  const petInfoRef = useRef();
 
-      if (next === last) {
-        setPets([...pets.slice(0, previous), pet]);
-      } else {
-        setPets([...pets.slice(0, previous), pet, ...pets.slice(next, last)]);
-      }
-    }
+  useImperativeHandle(ref, () => ({
+    getPets() {
+      petInfoRef.current.getPets();
+    },
+  }));
+
+  const editPet = (id, pet) => {
+    setPets(pets.filter((p, idx) => idx !== id).concat(pet));
   };
+
   console.log('Pets 🥑🥑', pets);
+
   const addPet = () => {
     setPets([
       ...pets,
@@ -41,10 +39,19 @@ const Pet = ({ pets, setPets }) => {
   return (
     <>
       {pets.map((pet, idx) => (
-        <PetInfo key={idx} id={idx} editPet={editPet} addPet={addPet} removePet={removePet} />
+        <PetInfo
+          key={idx}
+          id={idx}
+          editPet={editPet}
+          addPet={addPet}
+          removePet={removePet}
+          ref={petInfoRef}
+        />
       ))}
     </>
   );
-};
+});
+
+Pet.displayName = 'Pet';
 
 export default Pet;

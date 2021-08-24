@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { View, TextInput, ScrollView, FlatList, Button } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, TextInput, ScrollView } from 'react-native';
 
-import Swiper from 'react-native-swiper';
-import Logo from '../../components/Logo';
+import FilePicker from '../../components/FileUploader';
+import CustomButton from '../CustomButton';
 import { numericValidation } from '../../utils/helperFuncions';
 import Pet from './Pet';
 
@@ -10,6 +10,7 @@ import styles from './styles';
 
 const OwnerOnboarding = () => {
   const [phone, setPhone] = useState(null);
+  const [profileUrl, setProfileUrl] = useState('');
   const [pets, setPets] = useState([
     {
       name: '',
@@ -22,12 +23,17 @@ const OwnerOnboarding = () => {
     },
   ]);
 
+  const petRef = useRef();
+  const filePickerRef = useRef();
+
   const handleOnclick = () => {
-    console.log('Pets 🐽', pets);
+    filePickerRef.current.uploadFile();
+    petRef.current.getPets();
   };
 
   return (
     <ScrollView style={styles.scrollContainer} showsButtons={false}>
+      <FilePicker label="Elegir foto de perfil" ref={filePickerRef} setUrl={setProfileUrl} />
       <TextInput
         placeholder="Número de teléfono (solo números)"
         style={styles.input}
@@ -35,10 +41,11 @@ const OwnerOnboarding = () => {
         onChangeText={(text) => numericValidation(text, setPhone)}
       />
 
-      <Pet pets={pets} setPets={setPets} />
+      <Pet pets={pets} setPets={setPets} ref={petRef} />
 
-      {/* subir foto */}
-
+      <View style={styles.saveButton}>
+        <CustomButton handleOnclick={handleOnclick} buttonLabel="Guardar" />
+      </View>
       <View style={styles.bottomSpace} />
     </ScrollView>
   );

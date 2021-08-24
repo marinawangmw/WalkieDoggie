@@ -10,7 +10,7 @@ const WalkerOnboarding = () => {
   return (
     <View>
       <Logo />
-      {/* file upload cover letter */}
+      {/* descripcion cover letter */}
       {/* walker working schedule */}
       {/* Address */}
       {/* file upload profile photo */}

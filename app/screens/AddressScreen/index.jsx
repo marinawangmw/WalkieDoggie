@@ -10,7 +10,9 @@ const AdressScreen = ({ navigation }) => {
   const [address, setAddress] = useState('');
 
   const handleOnclick = () => {
+    // evaluar type user
     navigation.navigate('OwnerOnboarding');
+    // pasar datos { lat, long, address }
   };
 
   return (

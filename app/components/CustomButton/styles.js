@@ -10,6 +10,9 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     width: '50%',
   },
+  label: {
+    textAlign: 'center',
+  },
 });
 
 export default styles;
