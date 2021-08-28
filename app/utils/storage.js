@@ -9,7 +9,7 @@ export const removeStorageItem = (key) => AsyncStorage.removeItem(key);
 export const multiRemoveStorageItems = (keys) => AsyncStorage.multiRemove(keys);
 
 export const clearUserData = () =>
-  multiRemoveStorageItems(['access_token', 'refresh_token', 'user_info']);
+  multiRemoveStorageItems(['access_token', 'refresh_token', 'user_info', 'push_token']);
 
 export const getAccessTokenStorage = () => getStorageItem('access_token');
 
