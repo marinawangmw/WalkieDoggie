@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Image } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { getArrayBufferContent, getMimeType } from '../../utils/files';
@@ -70,11 +70,14 @@ const FilePicker = ({ label, setPhotoUri, fileType }) => {
   return (
     <View style={styles.container}>
       {file && (
-        <Text style={styles.info}>
-          Imagen a ser subido:{'\n'}
-          Nombre: {file.name} {'\n'}
-          Tamaño: {(file.size / 1024 / 1024).toFixed(3)} MB {'\n'}
-        </Text>
+        <View>
+          <Image
+            source={{
+              uri: FileSystem.documentDirectory + file.name,
+            }}
+            style={styles.previewImg}
+          />
+        </View>
       )}
       <CustomButton buttonLabel={label || 'Pick a document...'} handleOnclick={pickDocument} />
     </View>

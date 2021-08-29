@@ -7,12 +7,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 10,
   },
-  info: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderColor: '#f4d7a3',
-    borderWidth: 1,
-    borderRadius: 10,
+  previewImg: {
+    width: 100,
+    height: 100,
   },
 });
 

@@ -29,11 +29,7 @@ const OwnerOnboarding = ({ route }) => {
   console.log('owner onboarding ', pets);
   const handleOnclick = async () => {
     try {
-      if (address && lat && long && phone && Boolean(pets[0].name)) {
-        if (profileUrl || pets[0].photo_uri) {
-          // wait until the url is generated
-        }
-
+      if (address && lat && long && phone && profileUrl && Boolean(pets[0].name)) {
         const onboardingData = {
           phone,
           address: {
