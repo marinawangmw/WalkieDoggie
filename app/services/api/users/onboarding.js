@@ -27,8 +27,9 @@ export const onBoardingWalker = (paramsOnBoardingWalker, id) => {
     .catch((error) => ({ result: false, data: error.metadata }));
 };
 
-export const onBoardingOwner = (paramsOnBoardingWalker, id) => {
-  const { address, profile_photo_uri, phone, pets } = paramsOnBoardingWalker;
+export const onBoardingOwner = (ParamsOnBoardingOwner, id) => {
+  const { address, profile_photo_uri, phone, pets } = ParamsOnBoardingOwner;
+  console.log('service', address, profile_photo_uri, phone, pets);
   const config = {
     method: HTTP_METHOD.PUT,
     url: `users/onboarding/owner/${id}`,

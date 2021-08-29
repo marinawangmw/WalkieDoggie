@@ -1,39 +1,63 @@
-import React, { useState, useRef } from 'react';
-import { View, TextInput, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, ScrollView } from 'react-native';
 
-import FilePicker from '../../components/FileUploader';
-import CustomButton from '../CustomButton';
+import { AuthContext } from '../../utils/authContext';
+import { FilePicker, CustomButton } from '../../components';
 import { numericValidation } from '../../utils/helperFuncions';
 import Pet from './Pet';
 
 import styles from './styles';
 
-const OwnerOnboarding = () => {
+const OwnerOnboarding = ({ route }) => {
+  const { address, lat, long, signupData } = route.params;
+  const { ownerOnboarding } = React.useContext(AuthContext);
+
   const [phone, setPhone] = useState(null);
   const [profileUrl, setProfileUrl] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [pets, setPets] = useState([
     {
       name: '',
       breed: '',
       birth_year: null,
-      gender: '',
+      gender: 'HEMBRA',
       weight: null,
       photo_uri: '',
       description: '',
     },
   ]);
+  console.log('owner onboarding ', pets);
+  const handleOnclick = async () => {
+    try {
+      if (address && lat && long && phone && Boolean(pets[0].name)) {
+        if (profileUrl || pets[0].photo_uri) {
+          // wait until the url is generated
+        }
 
-  const petRef = useRef();
-  const filePickerRef = useRef();
+        const onboardingData = {
+          phone,
+          address: {
+            description: address,
+            latitude: lat,
+            longitude: long,
+          },
+          profile_photo_uri: profileUrl,
+          pets,
+        };
 
-  const handleOnclick = () => {
-    filePickerRef.current.uploadFile();
-    petRef.current.getPets();
+        await ownerOnboarding(signupData, onboardingData);
+      } else {
+        setErrorMessage('Por favor complete todos los datos');
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
     <ScrollView style={styles.scrollContainer} showsButtons={false}>
-      <FilePicker label="Elegir foto de perfil" ref={filePickerRef} setUrl={setProfileUrl} />
+      <Text style={[styles.sectionTitle]}>Información Personal</Text>
+      <FilePicker label="Elegir tu foto de perfil" setPhotoUri={setProfileUrl} />
       <TextInput
         placeholder="Número de teléfono (solo números)"
         style={styles.input}
@@ -41,11 +65,13 @@ const OwnerOnboarding = () => {
         onChangeText={(text) => numericValidation(text, setPhone)}
       />
 
-      <Pet pets={pets} setPets={setPets} ref={petRef} />
+      <Text style={[styles.sectionTitle]}>Información sobre tus mascotas</Text>
+      <Pet pets={pets} setPets={setPets} setErrorMessage={setErrorMessage} />
 
       <View style={styles.saveButton}>
         <CustomButton handleOnclick={handleOnclick} buttonLabel="Guardar" />
       </View>
+      {Boolean(errorMessage) && <Text style={styles.error}>{errorMessage}</Text>}
       <View style={styles.bottomSpace} />
     </ScrollView>
   );

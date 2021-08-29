@@ -3,4 +3,5 @@ export { default as GooglePlacesInput } from './GooglePlacesInput';
 export { default as OwnerOnboarding } from './OwnerOnboarding';
 export { default as WalkerOnboarding } from './WalkerOnboarding';
 export { default as Logo } from './Logo';
-export { default as CustomButtom } from './CustomButton';
+export { default as CustomButton } from './CustomButton';
+export { default as FilePicker } from './FilePicker';

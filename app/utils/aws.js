@@ -23,8 +23,11 @@ export const uploadFileAws = async (fileData) => {
         ContentType: contentType,
       };
       s3bucket.upload(params, (err, data) => {
-        if (err) reject(err);
-        else resolve(data.Location);
+        if (err) {
+          reject(err);
+        } else {
+          resolve(data.Location);
+        }
       });
     });
   });

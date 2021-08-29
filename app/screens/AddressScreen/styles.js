@@ -4,6 +4,9 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     paddingTop: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
   },
   placeInput: {
     paddingHorizontal: 20,

@@ -76,12 +76,15 @@ const AuthenticationContent = ({ error, navigation }) => {
         email,
         password,
       };
+
       setLoading(true);
       const res = await signUp(signupData);
       setLoading(false);
 
       if (res.result) {
-        return navigation.navigate('Onboarding', signupData);
+        signupData.id = res.data.id;
+        console.log('SIGNUP DATA', signupData);
+        return navigation.navigate('Onboarding', { signupData });
       } else {
         setErrorMessage('El mail ya se encuentra registrado');
       }

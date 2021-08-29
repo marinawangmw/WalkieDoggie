@@ -1,56 +1,71 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import { Button, View, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
-import { uploadFileAws } from '../../utils/aws';
 import { getArrayBufferContent, getMimeType } from '../../utils/files';
 import { v4 as uuidv4 } from 'uuid';
 import CustomButton from '../CustomButton';
+import { uploadFileAws } from '../../utils/aws';
 import styles from './styles';
 
-const FilePicker = forwardRef((props, ref) => {
-  const { label, setUrl } = props;
+// file types : img, file, video, undefined
 
+const FilePicker = ({ label, setPhotoUri, fileType }) => {
   const [file, setFile] = useState(null);
-  const [fileData, setFileData] = useState(null);
+  const [type, setType] = useState('');
+
+  useEffect(() => {
+    switch (fileType) {
+      case 'img':
+        setType('image/*');
+        break;
+
+      case 'video':
+        setType('video/*');
+        break;
+
+      case 'file':
+        setType('application/*');
+        break;
+
+      default:
+        setType('*/*');
+    }
+  }, [fileType]);
 
   const pickDocument = async () => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: '*/*',
-      copyToCacheDirectory: false,
-    });
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type,
+        copyToCacheDirectory: false,
+      });
 
-    if (result) {
-      const uri = FileSystem.documentDirectory + result.name;
+      if (result.type === 'success') {
+        const uri = FileSystem.documentDirectory + result.name;
 
-      try {
         await FileSystem.copyAsync({
           from: result.uri,
           to: uri,
         });
-
         setFile(result);
-        setFileData({
+
+        const fileData = {
           uri,
           type: getMimeType(uri),
           name: `${uuidv4()}_${result.name}`,
           arrayBuffer: await getArrayBufferContent(uri),
-        });
-      } catch (e) {
-        console.log(e);
+        };
+
+        uploadFileAws(fileData)
+          .then((response) => {
+            setPhotoUri(response);
+          })
+          .catch((e) => console.error(e));
       }
+    } catch (e) {
+      console.log(e);
     }
   };
-
-  useImperativeHandle(ref, () => ({
-    uploadFile() {
-      uploadFileAws(fileData)
-        .then((response) => {
-          setUrl(response);
-        })
-        .catch((e) => console.error(e));
-    },
-  }));
 
   return (
     <View style={styles.container}>
@@ -64,8 +79,6 @@ const FilePicker = forwardRef((props, ref) => {
       <CustomButton buttonLabel={label || 'Pick a document...'} handleOnclick={pickDocument} />
     </View>
   );
-});
-
-FilePicker.displayName = 'FilePicker';
+};
 
 export default FilePicker;

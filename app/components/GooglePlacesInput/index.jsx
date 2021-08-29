@@ -4,20 +4,23 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 // eslint-disable-next-line import/no-unresolved
 import { GOOGLE_MAPS_PLACES_API_KEY } from '@env';
 
-const GooglePlacesInput = ({ setLat, setLong, setAddress }) => {
+const GooglePlacesInput = ({ setLat, setLong, setAddress, signupData, navigation }) => {
   const savePlaceData = (data, details) => {
-    // setLat();
-    // setLong();
-    // setAddress();
-    console.log('address 🥑', data.description);
-    console.log('Info 🌶', details.geometry.location.lat, details.geometry.location.lng);
+    const lat = details.geometry.location.lat.toString();
+    const long = details.geometry.location.lng.toString();
+    const address = data.description;
+
+    setLat(lat);
+    setLong(long);
+    setAddress(address);
+    navigation.navigate('OwnerOnboarding', { address, long, lat, signupData });
   };
 
   return (
     <View style={styles.container}>
       <GooglePlacesAutocomplete
-        placeholder="Dirección"
-        fetchDetails={true}
+        placeholder="Ingrese su dirección"
+        fetchDetails
         query={{
           key: GOOGLE_MAPS_PLACES_API_KEY,
           language: 'es',
@@ -32,10 +35,10 @@ const GooglePlacesInput = ({ setLat, setLong, setAddress }) => {
 
 const styles = StyleSheet.create({
   container: {
+    marginVertical: 20,
     padding: 10,
-    backgroundColor: '#ecf0f1',
     width: '100%',
-    height: 500,
+    height: 300,
     zIndex: 10,
   },
 });

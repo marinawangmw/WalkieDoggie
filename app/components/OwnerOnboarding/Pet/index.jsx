@@ -1,21 +1,11 @@
-import React, { useRef, forwardRef, useImperativeHandle } from 'react';
+import React from 'react';
 import PetInfo from '../PetInfo';
 
-const Pet = forwardRef((props, ref) => {
-  const { pets, setPets } = props;
-  const petInfoRef = useRef();
-
-  useImperativeHandle(ref, () => ({
-    getPets() {
-      petInfoRef.current.getPets();
-    },
-  }));
-
-  const editPet = (id, pet) => {
-    setPets(pets.filter((p, idx) => idx !== id).concat(pet));
+const Pet = ({ pets, setPets, setErrorMessage }) => {
+  const handleChange = (id, name, value) => {
+    const newPets = pets.slice();
+    newPets[id][name] = value;
   };
-
-  console.log('Pets 🥑🥑', pets);
 
   const addPet = () => {
     setPets([
@@ -24,7 +14,7 @@ const Pet = forwardRef((props, ref) => {
         name: '',
         breed: '',
         birth_year: null,
-        gender: '',
+        gender: 'HEMBRA',
         weight: null,
         photo_uri: '',
         description: '',
@@ -33,25 +23,23 @@ const Pet = forwardRef((props, ref) => {
   };
 
   const removePet = (id) => {
-    setPets(pets.filter((pet, idx) => idx !== id));
+    setPets(pets.filter((_pet, idx) => idx !== id));
   };
 
   return (
     <>
-      {pets.map((pet, idx) => (
+      {pets.map((_pet, idx) => (
         <PetInfo
           key={idx}
           id={idx}
-          editPet={editPet}
           addPet={addPet}
           removePet={removePet}
-          ref={petInfoRef}
+          setErrorMessage={setErrorMessage}
+          handleChange={handleChange}
         />
       ))}
     </>
   );
-});
-
-Pet.displayName = 'Pet';
+};
 
 export default Pet;

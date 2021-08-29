@@ -10,11 +10,12 @@ import {
   ProfileScreen,
   AddressScreen,
 } from './app/screens';
-import { OwnerOnboarding } from './app/components';
+import { OwnerOnboarding, WalkerOnboarding } from './app/components';
 import { getAccessTokenStorage } from './app/utils/storage';
 import LoadingScreen from './app/screens/LoadingScreen';
 import { AuthContext } from './app/utils/authContext';
 import { login } from './app/services/api/sessions/login';
+import { onBoardingOwner, onBoardingWalker } from './app/services/api/users/onboarding';
 import { clearUserData } from './app/utils/storage';
 
 const Tabs = createBottomTabNavigator();
@@ -36,17 +37,26 @@ const RootStackScreen = ({ userToken, error }) => {
       ) : (
         <>
           <RootStack.Screen
-            name="Onboarding"
-            component={OnboardingDetailsScreen}
-            options={{ headerShown: false }}
-          />
-          <RootStack.Screen
             name="Authentication"
             component={AuthenticationScreen}
             options={{ headerShown: false }}
             initialParams={{ error }}
           />
-          <RootStack.Screen name="OwnerOnboarding" component={OwnerOnboarding} />
+          <RootStack.Screen
+            name="Onboarding"
+            component={OnboardingDetailsScreen}
+            options={{ headerShown: false }}
+          />
+          <RootStack.Screen
+            name="OwnerOnboarding"
+            component={OwnerOnboarding}
+            options={{ title: '', headerBackTitle: '' }}
+          />
+          <RootStack.Screen
+            name="WalkerOnboarding"
+            component={WalkerOnboarding}
+            options={{ title: '', headerBackTitle: '' }}
+          />
           <RootStack.Screen
             name="AddressScreen"
             component={AddressScreen}
@@ -79,13 +89,17 @@ export default function App() {
           setError(e);
         }
       },
-      onBoarding: async (signupData, onboardingData) => {
+      ownerOnboarding: async (signupData, onboardingData) => {
         setIsLoading(true);
+
         try {
-          //await onboarding(onboardingData);
-          const resSignin = await login(signupData);
+          const resSignIn = await login({ email: signupData.email, password: signupData.password });
+          const resOB = await onBoardingOwner(onboardingData, signupData.id);
+          console.log(resSignIn, resOB);
+          if (resSignIn && resOB) {
+            setUserToken(resSignIn.data);
+          }
           setIsLoading(false);
-          setUserToken(resSignin.data);
         } catch (e) {
           console.log(e);
         }

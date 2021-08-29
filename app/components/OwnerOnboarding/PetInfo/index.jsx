@@ -1,62 +1,92 @@
-import React, { useRef, forwardRef, useImperativeHandle } from 'react';
-import { Text, TextInput, View, Switch, TouchableOpacity, Button } from 'react-native';
-import { useEffect, useState } from 'react/cjs/react.development';
-import { useFormInput } from '../../../hooks/useFormInput';
+import React, { useState } from 'react';
+import { TextInput, View } from 'react-native';
 import { numericValidation } from '../../../utils/helperFuncions';
-import CustomButton from '../../CustomButton';
 import SwitchSelector from 'react-native-switch-selector';
-import FilePicker from '../../FileUploader';
+import { FilePicker, CustomButton } from '../../../components';
 
 import styles from '../styles';
 
-const PetInfo = forwardRef((props, ref) => {
-  const { id, addPet, editPet, removePet } = props;
+const PetInfo = ({ id, addPet, removePet, setErrorMessage, handleChange }) => {
   const [gender, setGender] = useState('HEMBRA');
   const [weight, setWeight] = useState(null);
-  const petName = useFormInput('');
-  const breed = useFormInput('');
-  const birthYear = useFormInput(null);
-  const photo_uri = useFormInput('');
-  const description = useFormInput('');
+  const [photo_uri, setPhoto_uri] = useState(null);
+  const [petName, setPetName] = useState('');
+  const [birthYear, setBirthYear] = useState(null);
+  const [description, setDescription] = useState('');
+  const [breed, setBreed] = useState('');
 
-  const filePickerRef = useRef();
+  const handleInput = (name, value) => {
+    switch (name) {
+      case 'gender':
+        setGender(value);
+        break;
 
-  useImperativeHandle(ref, () => ({
-    getPets() {
-      filePickerRef.current.uploadFile();
-      editPet(id, {
-        name: petName.value,
-        breed: breed.value,
-        birth_year: birthYear.value,
-        gender,
-        weight,
-        photo_uri: photo_uri.value,
-        description: description.value,
-      });
-    },
-  }));
+      case 'weight':
+        numericValidation(value, setWeight);
+        break;
+
+      case 'name':
+        setPetName(value);
+        break;
+
+      case 'birth_year':
+        numericValidation(value, setBirthYear);
+        break;
+
+      case 'description':
+        setDescription(value);
+        break;
+
+      case 'breed':
+        setBreed(value);
+        break;
+
+      case 'photo_uri':
+        setPhoto_uri(value);
+        break;
+
+      default:
+        break;
+    }
+
+    handleChange(id, name, value);
+  };
 
   const showFullMenu = () => (
     <View style={styles.menuContainer}>
       <FilePicker
         label="Elegir una foto para tu mascota"
-        setUrl={photo_uri.setValue}
-        ref={filePickerRef}
+        setPhotoUri={(value) => handleInput('photo_uri', value)}
       />
-      <TextInput placeholder="Nombre de mascota" style={styles.input} {...petName} />
-      <TextInput placeholder="Raza" style={styles.input} {...breed} />
-      <TextInput placeholder="Año de nacimiento aproximado" style={styles.input} {...birthYear} />
+      <TextInput
+        placeholder="Nombre de mascota"
+        style={styles.input}
+        value={petName}
+        onChangeText={(value) => handleInput('name', value)}
+      />
+      <TextInput
+        placeholder="Raza"
+        style={styles.input}
+        value={breed}
+        onChangeText={(value) => handleInput('breed', value)}
+      />
+      <TextInput
+        placeholder="Año de nacimiento aproximado"
+        style={styles.input}
+        value={birthYear}
+        onChangeText={(value) => handleInput('birth_year', value)}
+      />
       <TextInput
         placeholder="Peso (kg)"
         style={styles.input}
         value={weight}
-        onChangeText={(input) => numericValidation(input, setWeight)}
+        onChangeText={(value) => handleInput('weight', value)}
       />
 
       <View style={styles.switchWrapper}>
         <SwitchSelector
           initial={0}
-          onPress={(value) => setGender(value)}
+          onPress={(value) => handleInput('gender', value)}
           textColor="#364C63"
           selectedColor="#364C63"
           buttonColor="#f4d7a3"
@@ -75,7 +105,8 @@ const PetInfo = forwardRef((props, ref) => {
         placeholder="Alguna nota o comentario a tener en cuenta"
         style={[styles.input, styles.description]}
         multiline
-        {...description}
+        value={description}
+        onChangeText={(value) => handleInput('description', value)}
       />
       <CustomButton handleOnclick={addPet} buttonLabel="+ Agregar otra mascota" />
       {id !== 0 && (
@@ -85,8 +116,6 @@ const PetInfo = forwardRef((props, ref) => {
   );
 
   return <View style={styles.petInfoContainer}>{showFullMenu()}</View>;
-});
-
-PetInfo.displayName = 'PetInfo';
+};
 
 export default PetInfo;

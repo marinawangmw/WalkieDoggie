@@ -1,12 +1,19 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  wrapper: {},
+  sectionTitle: {
+    padding: 5,
+    marginVertical: 20,
+    color: '#364C63',
+    textAlign: 'center',
+    fontSize: 18,
+    backgroundColor: '#f4b445B3',
+  },
   scrollContainer: {
-    paddingTop: 100,
     width: '100%',
     paddingHorizontal: 20,
     height: '100%',
+    backgroundColor: '#F3F3EB',
   },
   container: {
     alignItems: 'center',
@@ -52,11 +59,15 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   bottomSpace: {
-    height: 400,
+    height: 100,
   },
   saveButton: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  error: {
+    color: '#D32F2F',
+    textAlign: 'center',
   },
 });
 
