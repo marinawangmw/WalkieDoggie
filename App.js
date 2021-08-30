@@ -122,7 +122,7 @@ export default function App() {
           const resSignIn = await login({ email: signupData.email, password: signupData.password });
           const resOB = await onBoardingOwner(onboardingData, signupData.id);
           console.log(resSignIn, resOB);
-          if (resSignIn && resOB) {
+          if (resSignIn.result && resOB.result) {
             setUserToken(resSignIn.data);
           }
           setIsLoading(false);

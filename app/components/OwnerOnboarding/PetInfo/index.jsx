@@ -9,7 +9,7 @@ import styles from '../styles';
 const PetInfo = ({ id, addPet, removePet, setErrorMessage, handleChange }) => {
   const [gender, setGender] = useState('HEMBRA');
   const [weight, setWeight] = useState(null);
-  const [photo_uri, setPhoto_uri] = useState(null);
+  const [photoData, setPhotoData] = useState(null);
   const [petName, setPetName] = useState('');
   const [birthYear, setBirthYear] = useState(null);
   const [description, setDescription] = useState('');
@@ -42,7 +42,7 @@ const PetInfo = ({ id, addPet, removePet, setErrorMessage, handleChange }) => {
         break;
 
       case 'photo_uri':
-        setPhoto_uri(value);
+        setPhotoData(value);
         break;
 
       default:
@@ -56,7 +56,7 @@ const PetInfo = ({ id, addPet, removePet, setErrorMessage, handleChange }) => {
     <View style={styles.menuContainer}>
       <FilePicker
         label="Elegir una foto para tu mascota"
-        setPhotoUri={(value) => handleInput('photo_uri', value)}
+        setFileData={(value) => handleInput('photo_uri', value)}
       />
       <TextInput
         placeholder="Nombre de mascota"

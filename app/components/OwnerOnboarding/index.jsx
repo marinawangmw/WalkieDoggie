@@ -7,13 +7,15 @@ import { numericValidation } from '../../utils/helperFuncions';
 import Pet from './Pet';
 
 import styles from './styles';
+import { uploadFileAws } from '../../utils/aws';
+import { isEmptyField } from '../../helpers/validatorHelper';
 
 const OwnerOnboarding = ({ route }) => {
   const { address, lat, long, signupData } = route.params;
   const { ownerOnboarding } = React.useContext(AuthContext);
 
   const [phone, setPhone] = useState(null);
-  const [profileUrl, setProfileUrl] = useState('');
+  const [profilePhotoData, setProfilePhotoData] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [pets, setPets] = useState([
     {
@@ -26,10 +28,13 @@ const OwnerOnboarding = ({ route }) => {
       description: '',
     },
   ]);
-  console.log('owner onboarding ', pets);
   const handleOnclick = async () => {
     try {
-      if (address && lat && long && phone && profileUrl && Boolean(pets[0].name)) {
+      if (address && lat && long && phone && profilePhotoData) {
+        //Bulk upload to AWS
+        const profilePhotoUri = await uploadProfilePhoto(profilePhotoData);
+        const petsAfterAws = await uploadPetsPhotos(pets);
+
         const onboardingData = {
           phone,
           address: {
@@ -37,8 +42,8 @@ const OwnerOnboarding = ({ route }) => {
             latitude: lat,
             longitude: long,
           },
-          profile_photo_uri: profileUrl,
-          pets,
+          profile_photo_uri: profilePhotoUri,
+          pets: petsAfterAws,
         };
 
         await ownerOnboarding(signupData, onboardingData);
@@ -50,10 +55,29 @@ const OwnerOnboarding = ({ route }) => {
     }
   };
 
+  // const validateFieldsPets = () => {
+  //   pets.forEach((pet) => {
+  //     console.log(pet);
+  //     const { birth_year, breed, gender, photo_uri, weight, name } = pet;
+  //     if (
+  //       isEmptyField(birth_year) ||
+  //       isEmptyField(breed) ||
+  //       isEmptyField(gender) ||
+  //       isEmptyField(photo_uri) ||
+  //       isEmptyField(weight) ||
+  //       isEmptyField(name)
+  //     ) {
+  //       return false;
+  //     }
+  //   });
+  //   console.log('all fields valid');
+  //   return true;
+  // };
+
   return (
     <ScrollView style={styles.scrollContainer} showsButtons={false}>
       <Text style={[styles.sectionTitle]}>Información Personal</Text>
-      <FilePicker label="Elegir tu foto de perfil" setPhotoUri={setProfileUrl} />
+      <FilePicker label="Elegir tu foto de perfil" setFileData={setProfilePhotoData} />
       <TextInput
         placeholder="Número de teléfono (solo números)"
         style={styles.input}
@@ -74,3 +98,21 @@ const OwnerOnboarding = ({ route }) => {
 };
 
 export default OwnerOnboarding;
+
+const uploadProfilePhoto = (profilePhotoData) => {
+  return uploadFileAws(profilePhotoData)
+    .then((url) => url)
+    .catch((e) => console.error(e));
+};
+
+const uploadPetsPhotos = (pets) => {
+  return Promise.all(
+    pets.map(async (pet) => {
+      const petPhotoData = pet.photo_uri;
+      pet.photo_uri = await uploadFileAws(petPhotoData)
+        .then((url) => url)
+        .catch((e) => console.error(e));
+      return pet;
+    }),
+  );
+};

@@ -10,7 +10,7 @@ import styles from './styles';
 
 // file types : img, file, video, undefined
 
-const FilePicker = ({ label, setPhotoUri, fileType }) => {
+const FilePicker = ({ label, setFileData, fileType }) => {
   const [file, setFile] = useState(null);
   const [type, setType] = useState('');
 
@@ -56,11 +56,7 @@ const FilePicker = ({ label, setPhotoUri, fileType }) => {
           arrayBuffer: await getArrayBufferContent(uri),
         };
 
-        uploadFileAws(fileData)
-          .then((response) => {
-            setPhotoUri(response);
-          })
-          .catch((e) => console.error(e));
+        setFileData(fileData);
       }
     } catch (e) {
       console.log(e);
