@@ -71,7 +71,11 @@ const OwnerOnboarding = ({ route }) => {
   return (
     <ScrollView style={styles.scrollContainer} showsButtons={false}>
       <Text style={[styles.sectionTitle]}>Información Personal</Text>
-      <FilePicker label="Elegir tu foto de perfil" setFileData={setProfilePhotoData} />
+      <FilePicker
+        label="Elegir tu foto de perfil"
+        setFileData={setProfilePhotoData}
+        fileType="img"
+      />
       <TextInput
         placeholder="Número de teléfono (solo números)"
         style={styles.input}

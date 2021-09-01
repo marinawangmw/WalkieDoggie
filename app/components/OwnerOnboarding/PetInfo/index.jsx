@@ -57,6 +57,7 @@ const PetInfo = ({ id, addPet, removePet, setErrorMessage, handleChange }) => {
       <FilePicker
         label="Elegir una foto para tu mascota"
         setFileData={(value) => handleInput('photo_uri', value)}
+        fileType="img"
       />
       <TextInput
         placeholder="Nombre de mascota"
