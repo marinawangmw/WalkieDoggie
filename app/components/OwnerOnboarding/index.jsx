@@ -29,8 +29,8 @@ const OwnerOnboarding = ({ route }) => {
     },
   ]);
   const handleOnclick = async () => {
-    try {
-      if (address && lat && long && phone && profilePhotoData) {
+    if (address && lat && long && phone && profilePhotoData && validateFieldsPets()) {
+      try {
         //Bulk upload to AWS
         const profilePhotoUri = await uploadProfilePhoto(profilePhotoData);
         const petsAfterAws = await uploadPetsPhotos(pets);
@@ -47,32 +47,26 @@ const OwnerOnboarding = ({ route }) => {
         };
 
         await ownerOnboarding(signupData, onboardingData);
-      } else {
-        setErrorMessage('Por favor complete todos los datos');
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
+    } else {
+      setErrorMessage('Por favor complete todos los datos');
     }
   };
 
-  // const validateFieldsPets = () => {
-  //   pets.forEach((pet) => {
-  //     console.log(pet);
-  //     const { birth_year, breed, gender, photo_uri, weight, name } = pet;
-  //     if (
-  //       isEmptyField(birth_year) ||
-  //       isEmptyField(breed) ||
-  //       isEmptyField(gender) ||
-  //       isEmptyField(photo_uri) ||
-  //       isEmptyField(weight) ||
-  //       isEmptyField(name)
-  //     ) {
-  //       return false;
-  //     }
-  //   });
-  //   console.log('all fields valid');
-  //   return true;
-  // };
+  const validateFieldsPets = () => {
+    let res = true;
+    for (const pet of pets) {
+      const { description, ...restParams } = pet;
+      const anyEmpty = Object.values(restParams).some((param) => isEmptyField(param));
+      if (anyEmpty) {
+        res = false;
+        break;
+      }
+    }
+    return res;
+  };
 
   return (
     <ScrollView style={styles.scrollContainer} showsButtons={false}>

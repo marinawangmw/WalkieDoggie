@@ -1,3 +1,1 @@
-export const isEmptyField = (field) => {
-  return field === '' || field === null || field === undefined;
-};
+export const isEmptyField = (field) => field === '' || field === null || field === undefined;
