@@ -60,30 +60,49 @@ const AuthenticationContent = ({ error, navigation }) => {
 
   const handleSignUp = async () => {
     if (
-      Boolean(firstName) &&
-      Boolean(lastName) &&
-      Boolean(email) &&
-      Boolean(password) &&
-      Boolean(confirmPassword) &&
-      Boolean(!confirmPasswordError) &&
-      Boolean(!emailError) &&
-      Boolean(userTypeSelected)
+      // Boolean(firstName) &&
+      // Boolean(lastName) &&
+      // Boolean(email) &&
+      // Boolean(password) &&
+      // Boolean(confirmPassword) &&
+      // Boolean(!confirmPasswordError) &&
+      // Boolean(!emailError) &&
+      // Boolean(userTypeSelected)
+      true
     ) {
+      // const signupData = {
+      //   type: userTypeSelected,
+      //   first_name: firstName,
+      //   last_name: lastName,
+      //   email,
+      //   password,
+      // };
+
       const signupData = {
-        type: userTypeSelected,
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        password,
+        type: 'WALKER',
+        first_name: 'Marina',
+        last_name: 'Wang',
+        email: 'marinawang@gmail.com',
+        password: '123',
       };
 
       setLoading(true);
-      const res = await signUp(signupData);
+      //const res = await signUp(signupData);
+      const res = {
+        data: {
+          id: 35,
+          type: 'WALKER',
+          first_name: 'Marina',
+          last_name: 'Wang',
+          email: 'marinawang@gmail.com',
+          password: '123',
+        },
+        result: true,
+      };
       setLoading(false);
 
       if (res.result) {
         signupData.id = res.data.id;
-        console.log('SIGNUP DATA', signupData);
         return navigation.navigate('Onboarding', { signupData });
       } else {
         setErrorMessage('El mail ya se encuentra registrado');

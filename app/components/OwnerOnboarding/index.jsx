@@ -10,7 +10,7 @@ import styles from './styles';
 
 const OwnerOnboarding = ({ route }) => {
   const { address, lat, long, signupData } = route.params;
-  const { ownerOnboarding } = React.useContext(AuthContext);
+  const { onboarding } = React.useContext(AuthContext);
 
   const [phone, setPhone] = useState(null);
   const [profileUrl, setProfileUrl] = useState('');
@@ -26,7 +26,7 @@ const OwnerOnboarding = ({ route }) => {
       description: '',
     },
   ]);
-  console.log('owner onboarding ', pets);
+
   const handleOnclick = async () => {
     try {
       if (address && lat && long && phone && profileUrl && Boolean(pets[0].name)) {
@@ -41,7 +41,7 @@ const OwnerOnboarding = ({ route }) => {
           pets,
         };
 
-        await ownerOnboarding(signupData, onboardingData);
+        await onboarding(signupData, onboardingData);
       } else {
         setErrorMessage('Por favor complete todos los datos');
       }

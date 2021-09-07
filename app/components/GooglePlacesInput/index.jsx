@@ -13,7 +13,12 @@ const GooglePlacesInput = ({ setLat, setLong, setAddress, signupData, navigation
     setLat(lat);
     setLong(long);
     setAddress(address);
-    navigation.navigate('OwnerOnboarding', { address, long, lat, signupData });
+
+    if (signupData.type === 'OWNER') {
+      navigation.navigate('OwnerOnboarding', { address, long, lat, signupData });
+    } else {
+      navigation.navigate('WalkerOnboarding', { address, long, lat, signupData });
+    }
   };
 
   return (

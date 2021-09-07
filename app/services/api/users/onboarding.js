@@ -29,7 +29,7 @@ export const onBoardingWalker = (paramsOnBoardingWalker, id) => {
 
 export const onBoardingOwner = (ParamsOnBoardingOwner, id) => {
   const { address, profile_photo_uri, phone, pets } = ParamsOnBoardingOwner;
-  console.log('service', address, profile_photo_uri, phone, pets);
+
   const config = {
     method: HTTP_METHOD.PUT,
     url: `users/onboarding/owner/${id}`,

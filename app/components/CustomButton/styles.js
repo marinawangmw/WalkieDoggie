@@ -15,11 +15,11 @@ const styles = StyleSheet.create({
     color: '#666666',
   },
   enabled: {
-    backgroundColor: '#f4d7a3',
+    backgroundColor: '#364C63',
   },
   label: {
     textAlign: 'center',
-    color: '#364C63',
+    color: '#fff',
   },
 });
 

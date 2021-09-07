@@ -115,13 +115,19 @@ export default function App() {
           setError(e);
         }
       },
-      ownerOnboarding: async (signupData, onboardingData) => {
+      onboarding: async (signupData, onboardingData) => {
         setIsLoading(true);
 
         try {
           const resSignIn = await login({ email: signupData.email, password: signupData.password });
-          const resOB = await onBoardingOwner(onboardingData, signupData.id);
-          console.log(resSignIn, resOB);
+
+          let resOB;
+          if (signupData.type === 'OWNER') {
+            resOB = await onBoardingOwner(onboardingData, signupData.id);
+          } else {
+            resOB = await onBoardingWalker(onboardingData, signupData.id);
+          }
+
           if (resSignIn && resOB) {
             setUserToken(resSignIn.data);
           }
