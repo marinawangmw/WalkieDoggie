@@ -2,7 +2,6 @@
 import { AWS_S3_BUCKET, AWS_S3_BUCKET_REGION, AWS_S3_ACCESS_KEY, AWS_S3_SECRET_KEY } from '@env';
 import AWS from 'aws-sdk';
 
-
 const s3bucket = new AWS.S3({
   accessKeyId: AWS_S3_ACCESS_KEY,
   secretAccessKey: AWS_S3_SECRET_KEY,
