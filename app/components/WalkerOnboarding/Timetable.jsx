@@ -3,60 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-nativ
 import { useEffect } from 'react/cjs/react.development';
 import Table from './Table';
 
-const Timetable = () => {
-  const [ranges, setRanges] = useState([
-    null, //0
-    'Inicio', // 1
-    'Fin', // 2
-    'Lunes', // 3
-    null,
-    null,
-    'Martes', // 6
-    null,
-    null,
-    'Miércoles', // 9
-    null,
-    null,
-    'Jueves', // 12
-    null,
-    null,
-    'Viernes', // 15
-    null,
-    null,
-    'Sábado', // 18
-    null,
-    null,
-    'Domingo', // 21
-    null,
-    null,
-    //'09:00',
-    //'18:00',
-  ]);
-
-  const formatTimeTableObject = () => {
-    let aux = [];
-
-    for (var i = 0; i < ranges.length; ++i) {
-      if (i % 3 === 0 && i > 2) {
-        aux[aux.length] = { day: ranges[i] };
-      }
-
-      if (i % 3 === 1 && i > 2) {
-        aux[aux.length - 1] = { ...aux[aux.length - 1], inicio: ranges[i] };
-      }
-      if (i % 3 === 2 && i > 2) {
-        aux[aux.length - 1] = { ...aux[aux.length - 1], fin: ranges[i] };
-      }
-    }
-
-    //should return false //IF NULL?
-    if (aux.some((day) => day.fin < day.inicio)) {
-      // set Error message
-    } else {
-      // send request
-    }
-  };
-
+const Timetable = ({ ranges, setRanges }) => {
   const handleTimeCell = (input, idx) => {
     const aux = ranges.slice();
 
@@ -68,7 +15,15 @@ const Timetable = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.text}>Por favor ingrese las franjas horarias que estima trabajar.</Text>
       <Table squares={ranges} handleChangeText={handleTimeCell} />
+      <Text style={styles.text}>
+        Esto horarios serán los cuales que se les ofrecerá a los dueños de perros para que estos
+        puedan hacer una propuesta de paseo, lo cual luego puede decidir aceptar o rechazar según su
+        conveniencia.{'\n'}
+        {'\n'}
+        Los horarios ingresados podrán ser modificados más adelante
+      </Text>
     </View>
   );
 };
@@ -76,6 +31,12 @@ const Timetable = () => {
 const styles = StyleSheet.create({
   container: {
     marginVertical: 15,
+  },
+  text: {
+    paddingVertical: 5,
+    fontSize: 12,
+    textAlign: 'center',
+    color: '#364C63',
   },
 });
 

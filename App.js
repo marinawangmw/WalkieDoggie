@@ -125,7 +125,8 @@ export default function App() {
           if (signupData.type === 'OWNER') {
             resOB = await onBoardingOwner(onboardingData, signupData.id);
           } else {
-            resOB = await onBoardingWalker(onboardingData, signupData.id);
+            //resOB = await onBoardingWalker(onboardingData, signupData.id);
+            console.log(onboardingData, signupData.id);
           }
 
           if (resSignIn && resOB) {

@@ -8,7 +8,7 @@ import styles from './styles';
 const OnboardingDetailsScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
-      <WalkerOnboarding navigation={navigation} />
+      <AddressScreen navigation={navigation} signupData={route.params.signupData} />
     </View>
   );
 };

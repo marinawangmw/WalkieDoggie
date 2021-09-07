@@ -28,6 +28,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  error: {
+    color: '#D32F2F',
+    textAlign: 'center',
+  },
 });
 
 export default styles;

@@ -15,7 +15,7 @@ const OwnerOnboarding = ({ route }) => {
   const { onboarding } = React.useContext(AuthContext);
 
   const [phone, setPhone] = useState(null);
-  const [profilePhotoData, setProfilePhotoData] = useState('');
+  const [profilePhotoData, setProfilePhotoData] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [pets, setPets] = useState([
     {
