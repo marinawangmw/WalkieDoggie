@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, ScrollView, Text } from 'react-native';
+import { View, TextInput, ScrollView, Text, ActivityIndicator } from 'react-native';
 import Timetable from './Timetable';
 import FilePicker from '../FilePicker';
 import CustomButton from '../CustomButton';
@@ -11,6 +11,7 @@ const WalkerOnboarding = ({ route }) => {
   const { address, lat, long, signupData } = route.params;
   const { onboarding } = React.useContext(AuthContext);
 
+  const [isLoading, setIsLoading] = useState(false);
   const [price_per_hour, setPrice_per_hour] = useState(null);
   const [phone, setPhone] = useState(null);
   const [cover_letter, setCover_letter] = useState('');
@@ -41,8 +42,6 @@ const WalkerOnboarding = ({ route }) => {
     'Domingo', // 21
     null,
     null,
-    //'09:00',
-    //'18:00',
   ]);
 
   const formatTimeTableObject = () => {
@@ -61,11 +60,13 @@ const WalkerOnboarding = ({ route }) => {
       }
     }
     aux = aux.slice(24, aux.length);
-    console.log(aux[0]);
-    //should return false //IF NULL?
+
+    //IF NULL?
     if (aux.some((day) => day.end_at < day.start_at)) {
+      setIsLoading(false);
       setErrorMessage('Los horarios ingresados no son validos');
     } else {
+      setIsLoading(false);
       console.log('about to send timetable');
       return aux;
     }
@@ -77,17 +78,19 @@ const WalkerOnboarding = ({ route }) => {
         .then((url) => url)
         .catch((e) => console.error(e));
     } else {
+      setIsLoading(false);
       setErrorMessage('Por favor suba una foto de perfil');
       return null;
     }
   };
 
   const handleOnclick = async () => {
+    setIsLoading(true);
     if (!!price_per_hour && !!phone && !!cover_letter && !!profilePhotoData) {
       try {
         const profilePhotoUri = await uploadProfilePhoto(profilePhotoData);
         const timeTable = formatTimeTableObject();
-        console.log('after timetable');
+        console.log(timeTable);
         //ranges null?
 
         if (profilePhotoUri) {
@@ -110,49 +113,57 @@ const WalkerOnboarding = ({ route }) => {
         console.log(e);
       }
     } else {
+      setIsLoading(false);
       setErrorMessage('Por favor complete todos los datos');
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <FilePicker
-        label="Elegir tu foto de perfil"
-        fileType="img"
-        setFileData={setProfilePhotoData}
-      />
+    <>
+      <ScrollView style={styles.container}>
+        <FilePicker
+          label="Elegir tu foto de perfil"
+          fileType="img"
+          setFileData={setProfilePhotoData}
+        />
 
-      <TextInput
-        placeholder="Número de teléfono"
-        style={styles.input}
-        value={phone}
-        onChangeText={setPhone}
-      />
+        <TextInput
+          placeholder="Número de teléfono"
+          style={styles.input}
+          value={phone}
+          onChangeText={setPhone}
+        />
 
-      <TextInput
-        placeholder="Tarifa por hora"
-        style={styles.input}
-        value={price_per_hour}
-        onChangeText={setPrice_per_hour}
-      />
+        <TextInput
+          placeholder="Tarifa por hora"
+          style={styles.input}
+          value={price_per_hour}
+          onChangeText={setPrice_per_hour}
+        />
 
-      <Timetable ranges={ranges} setRanges={setRanges} />
+        <Timetable ranges={ranges} setRanges={setRanges} />
 
-      <TextInput
-        placeholder="Cover letter"
-        style={[styles.input, styles.description]}
-        multiline
-        value={cover_letter}
-        onChangeText={setCover_letter}
-      />
+        <TextInput
+          placeholder="Carta de presentación"
+          style={[styles.input, styles.description]}
+          multiline
+          value={cover_letter}
+          onChangeText={setCover_letter}
+        />
 
-      <View style={styles.saveButton}>
-        <CustomButton handleOnclick={handleOnclick} buttonLabel="Guardar" />
-      </View>
-      {Boolean(errorMessage) && <Text style={styles.error}>{errorMessage}</Text>}
+        <View style={styles.saveButton}>
+          <CustomButton handleOnclick={handleOnclick} buttonLabel="Guardar" />
+        </View>
+        {Boolean(errorMessage) && <Text style={styles.error}>{errorMessage}</Text>}
 
-      <View style={styles.space} />
-    </ScrollView>
+        <View style={styles.space} />
+      </ScrollView>
+      {!isLoading && (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color="#f8b444" />
+        </View>
+      )}
+    </>
   );
 };
 
