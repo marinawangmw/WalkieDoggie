@@ -158,7 +158,7 @@ const WalkerOnboarding = ({ route }) => {
 
         <View style={styles.space} />
       </ScrollView>
-      {!isLoading && (
+      {isLoading && (
         <View style={styles.loader}>
           <ActivityIndicator size="large" color="#f8b444" />
         </View>

@@ -25,7 +25,7 @@ const Square = ({ idx, value, handleChangeText }) => {
         defaultValue="00:00"
         value={value}
         onChangeText={(input) => handleChangeText(input, idx)}
-        style={[styles.cell, styles.dataCell, Boolean(!value) && { color: 'gray' }]}
+        style={[styles.cell, styles.dataCell, !value ? { color: 'gray' } : { color: '#364C63' }]}
       />
     );
   };
