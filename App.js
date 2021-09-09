@@ -49,7 +49,7 @@ const HomeTabsScreen = () => (
 const RootStackScreen = ({ userToken, error }) => {
   return (
     <RootStack.Navigator>
-      {Boolean(userToken) ? (
+      {userToken ? (
         <RootStack.Screen name="Home" component={HomeTabsScreen} options={{ headerShown: false }} />
       ) : (
         <>
