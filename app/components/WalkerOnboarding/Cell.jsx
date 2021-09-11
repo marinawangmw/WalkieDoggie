@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, Platform, TextInput, StyleSheet } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -6,7 +6,6 @@ const Square = ({ idx, value, handleChangeText }) => {
   var today = new Date();
   const initialDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
 
-  const [time, setTime] = useState(null);
   const [date, setDate] = useState(initialDate);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);

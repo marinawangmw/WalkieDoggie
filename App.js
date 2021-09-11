@@ -126,7 +126,6 @@ export default function App() {
           if (signupData.type === USER_TYPES.OWNER) {
             resOB = await onBoardingOwner(onboardingData, signupData.id);
           } else {
-            console.log('Proceed walker onboarding');
             resOB = await onBoardingWalker(onboardingData, signupData.id);
           }
 

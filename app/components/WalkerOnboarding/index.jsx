@@ -62,8 +62,8 @@ const WalkerOnboarding = ({ route }) => {
     }
     aux = aux.slice(24, aux.length);
 
-    aux = aux.filter((d) => d.start_at !== null && d.end_at !== null);
     //Filtro los días para los cuales NO se ingresa ningún horario
+    aux = aux.filter((d) => d.start_at !== null && d.end_at !== null);
 
     if (aux.length === 0) {
       setIsLoading(false);
@@ -99,8 +99,6 @@ const WalkerOnboarding = ({ route }) => {
       try {
         const profilePhotoUri = await uploadProfilePhoto();
         const timeTable = formatTimeTableObject();
-        console.log('timetable', timeTable);
-
         if (profilePhotoUri && timeTable && timeTable.length > 0) {
           const onboardingData = {
             phone,
