@@ -6,6 +6,7 @@ import CustomButton from '../CustomButton';
 import { uploadFileAws } from '../../utils/aws';
 import { AuthContext } from '../../utils/authContext';
 import styles from './styles';
+import { removeAccents } from '../../helpers/stringHelper';
 
 const WalkerOnboarding = ({ route }) => {
   const { address, lat, long, signupData } = route.params;
@@ -49,7 +50,7 @@ const WalkerOnboarding = ({ route }) => {
 
     for (var i = 0; i < ranges.length; ++i) {
       if (i % 3 === 0 && i > 2) {
-        aux[aux.length] = { day_of_week: ranges[i] };
+        aux[aux.length] = { day_of_week: removeAccents(ranges[i].toUpperCase()) };
       }
 
       if (i % 3 === 1 && i > 2) {
@@ -61,13 +62,21 @@ const WalkerOnboarding = ({ route }) => {
     }
     aux = aux.slice(24, aux.length);
 
-    //IF NULL?
-    if (aux.some((day) => day.end_at < day.start_at)) {
+    aux = aux.filter((d) => d.start_at !== null && d.end_at !== null);
+    //Filtro los días para los cuales NO se ingresa ningún horario
+
+    if (aux.length === 0) {
       setIsLoading(false);
-      setErrorMessage('Los horarios ingresados no son validos');
+      const err = 'Se debe ingresar al menos un horario.';
+      setErrorMessage(err);
+      throw new Error(err);
+    } else if (aux.some((day) => day.end_at < day.start_at)) {
+      setIsLoading(false);
+      const err = 'Los horarios ingresados no son válidos.';
+      setErrorMessage(err);
+      throw new Error(err);
     } else {
       setIsLoading(false);
-      console.log('about to send timetable');
       return aux;
     }
   };
@@ -88,12 +97,11 @@ const WalkerOnboarding = ({ route }) => {
     setIsLoading(true);
     if (!!price_per_hour && !!phone && !!cover_letter && !!profilePhotoData) {
       try {
-        const profilePhotoUri = await uploadProfilePhoto(profilePhotoData);
+        const profilePhotoUri = await uploadProfilePhoto();
         const timeTable = formatTimeTableObject();
-        console.log(timeTable);
-        //ranges null?
+        console.log('timetable', timeTable);
 
-        if (profilePhotoUri) {
+        if (profilePhotoUri && timeTable && timeTable.length > 0) {
           const onboardingData = {
             phone,
             address: {
@@ -107,7 +115,7 @@ const WalkerOnboarding = ({ route }) => {
             price_per_hour,
           };
 
-          //await onboarding(signupData, onboardingData);
+          await onboarding(signupData, onboardingData);
         }
       } catch (e) {
         console.log(e);

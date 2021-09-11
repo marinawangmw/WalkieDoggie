@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
-import { useEffect } from 'react/cjs/react.development';
+import React from 'react';
+import { StyleSheet, View, Text } from 'react-native';
 import Table from './Table';
 
 const Timetable = ({ ranges, setRanges }) => {
@@ -15,10 +14,13 @@ const Timetable = ({ ranges, setRanges }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Por favor ingrese las franjas horarias que estima trabajar.</Text>
+      <Text style={styles.text}>
+        Por favor ingrese las franjas horarias que estima trabajar {'\n'} (si no desea ingresar
+        horarios para cierto día, déjelo en blanco).
+      </Text>
       <Table squares={ranges} handleChangeText={handleTimeCell} />
       <Text style={styles.text}>
-        Esto horarios serán los cuales que se les ofrecerá a los dueños de perros para que estos
+        Estos horarios serán los cuales que se les ofrecerá a los dueños de perros para que estos
         puedan hacer una propuesta de paseo, lo cual luego puede decidir aceptar o rechazar según su
         conveniencia.{'\n'}
         {'\n'}

@@ -1,8 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, Platform, TextInput, StyleSheet } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const Square = ({ idx, value, handleChangeText }) => {
+  var today = new Date();
+  const initialDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+
   const [time, setTime] = useState(null);
+  const [date, setDate] = useState(initialDate);
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+  const [hourSelectedInput, setHourSelectedInput] = useState(value);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+
+    if (currentDate) {
+      let currentHours = currentDate.getHours();
+      currentHours = ('0' + currentHours).slice(-2);
+      let currentMinutes = currentDate.getMinutes();
+      currentMinutes = ('0' + currentMinutes).slice(-2);
+      const formatHour = currentHours + ':' + currentMinutes;
+      setHourSelectedInput(formatHour);
+
+      handleChangeText(formatHour, idx);
+    }
+  };
+
+  const showMode = (currentMode) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showTimepicker = () => {
+    showMode('time');
+  };
 
   const cellStyling = () => {
     if (idx % 3 === 0 || idx === 0) {
@@ -21,12 +55,19 @@ const Square = ({ idx, value, handleChangeText }) => {
     }
 
     return (
-      <TextInput
-        defaultValue="00:00"
-        value={value}
-        onChangeText={(input) => handleChangeText(input, idx)}
-        style={[styles.cell, styles.dataCell, !value ? { color: 'gray' } : { color: '#364C63' }]}
-      />
+      <View style={[styles.cell, styles.dataCell]}>
+        <TextInput value={hourSelectedInput} onFocus={showTimepicker} />
+        {show && (
+          <DateTimePicker
+            value={initialDate}
+            mode={mode}
+            is24Hour={true}
+            display="default"
+            onChange={onChange}
+            locale="es-AR"
+          />
+        )}
+      </View>
     );
   };
 

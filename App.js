@@ -28,6 +28,7 @@ import {
   addPushTokenToUser,
   deletePushTokenToUser,
 } from './app/services/api/users/pushNotifications';
+import { USER_TYPES } from './app/utils/constants';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -122,14 +123,14 @@ export default function App() {
           const resSignIn = await login({ email: signupData.email, password: signupData.password });
 
           let resOB;
-          if (signupData.type === 'OWNER') {
+          if (signupData.type === USER_TYPES.OWNER) {
             resOB = await onBoardingOwner(onboardingData, signupData.id);
           } else {
-            //resOB = await onBoardingWalker(onboardingData, signupData.id);
-            console.log(onboardingData, signupData.id);
+            console.log('Proceed walker onboarding');
+            resOB = await onBoardingWalker(onboardingData, signupData.id);
           }
 
-          if (resSignIn && resOB) {
+          if (resSignIn.result && resOB.result) {
             setUserToken(resSignIn.data);
           }
           setIsLoading(false);
