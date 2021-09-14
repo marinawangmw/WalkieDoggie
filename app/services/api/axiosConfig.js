@@ -2,8 +2,12 @@ import axios from 'axios';
 // eslint-disable-next-line import/no-unresolved
 import { API_URL } from '@env';
 import { WalkieDoggieAPIError } from '../../helpers/errorHandler';
-import { getAccessTokenStorage } from '../../utils/storage';
-import { refreshToken } from './sessions/refreshToken';
+import {
+  getAccessTokenStorage,
+  getRefreshTokenStorage,
+  multiRemoveStorageItems,
+  setStorageItem,
+} from '../../utils/storage';
 
 const baseURL = API_URL;
 
@@ -21,8 +25,29 @@ const axiosInstance = axios.create({
   },
 });
 
-export const publicRequest = async (config) => {
-  return axiosInstance.request(config);
+export const publicRequest = async (config) => axiosInstance.request(config);
+
+export const refreshToken = async () => {
+  const currentRefreshToken = await getRefreshTokenStorage();
+  const config = {
+    method: HTTP_METHOD.POST,
+    url: 'sessions/refresh',
+    data: {
+      refresh_token: currentRefreshToken,
+    },
+  };
+
+  try {
+    const data = await publicRequest(config);
+    await multiRemoveStorageItems(['access_token', 'refresh_token']);
+    const { access_token, refresh_token } = data;
+    await setStorageItem('access_token', access_token);
+    await setStorageItem('refresh_token', refresh_token);
+    return { result: true, data: { access_token } };
+  } catch (error) {
+    const { metadata } = error;
+    return { result: false, data: metadata };
+  }
 };
 
 export const privateRequest = async (config) => {
@@ -42,7 +67,9 @@ const handleError = (error) => {
     message: 'Generic Error',
   };
 
-  if (!error.response) return responseData;
+  if (!error.response) {
+    return responseData;
+  }
 
   const statusCode = error.response.status;
 
@@ -71,7 +98,7 @@ axiosInstance.interceptors.response.use(
       const {
         data: { access_token },
       } = await refreshToken();
-      axios.defaults.headers.common['Authorization'] = access_token;
+      axios.defaults.headers.common.Authorization = access_token;
       originalRequest.headers.Authorization = access_token;
 
       return axiosInstance(originalRequest);

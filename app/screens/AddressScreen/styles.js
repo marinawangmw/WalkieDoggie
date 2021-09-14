@@ -1,15 +1,17 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  authentication: {
+  container: {
+    padding: 10,
+    paddingTop: 100,
     alignItems: 'center',
-    flex: 1,
-    backgroundColor: '#F3F3EB',
     justifyContent: 'center',
+    flex: 1,
   },
-  authentication__container: {
-    width: '80%',
-    flexDirection: 'column',
+  placeInput: {
+    paddingHorizontal: 20,
+    width: '100%',
+    alignSelf: 'center',
   },
 });
 
