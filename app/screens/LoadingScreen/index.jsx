@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Image, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
+import Logo from '../../components/Logo';
 import styles from './styles';
 
 const LoadingScreen = () => {
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/icon-home.png')} style={styles.logo} />
+      <Logo />
+      <View style={styles.space} />
       <ActivityIndicator size="large" color="#f8b444" />
     </View>
   );

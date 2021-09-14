@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from 'react';
+import { Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import SvgUri from 'react-native-svg-uri';
+
 import Login from './Login';
 import Signup from './Signup';
-import SvgUri from 'react-native-svg-uri';
-import { Text, View, TextInput, TouchableOpacity } from 'react-native';
+import Logo from '../Logo';
+
 import { AuthContext } from '../../utils/authContext';
+import LoadingScreen from '../../screens/LoadingScreen';
+import { signUp } from '../../services/api/sessions/signUp';
+
 import styles from './styles';
 
-const AuthenticationContent = ({ error }) => {
+const AuthenticationContent = ({ error, navigation }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -19,8 +25,9 @@ const AuthenticationContent = ({ error }) => {
   const [hasAccount, setHasAccount] = useState(true);
   const [userTypeSelected, setUserTypeSelected] = useState('');
   const [hidePassword, setHidePassword] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const { signIn, signUp } = React.useContext(AuthContext);
+  const { signIn } = React.useContext(AuthContext);
 
   const clearInput = () => {
     setFirstName('');
@@ -61,16 +68,47 @@ const AuthenticationContent = ({ error }) => {
       Boolean(!confirmPasswordError) &&
       Boolean(!emailError) &&
       Boolean(userTypeSelected)
+      // true
     ) {
-      signUp({
+      const signupData = {
         type: userTypeSelected,
         first_name: firstName,
         last_name: lastName,
         email,
         password,
-      });
+      };
+
+      // const signupData = {
+      //   type: 'WALKER',
+      //   first_name: 'Marina',
+      //   last_name: 'Wang',
+      //   email: 'marinawang@gmail.com',
+      //   password: '123',
+      // };
+
+      setLoading(true);
+      const res = await signUp(signupData);
+      // const res = {
+      //   data: {
+      //     id: 35,
+      //     type: 'WALKER',
+      //     first_name: 'Marina',
+      //     last_name: 'Wang',
+      //     email: 'marinawang@gmail.com',
+      //     password: '123',
+      //   },
+      //   result: true,
+      // };
+      setLoading(false);
+
+      if (res.result) {
+        signupData.id = res.data.id;
+        return navigation.navigate('Onboarding', { signupData });
+      } else {
+        setErrorMessage('El mail ya se encuentra registrado');
+      }
     } else {
-      setErrorMessage('Algo esta mal');
+      setErrorMessage('Por favor complete todos los campos y verifique los datos ingresados.');
     }
   };
 
@@ -79,7 +117,7 @@ const AuthenticationContent = ({ error }) => {
   };
 
   const validateEmail = (text) => {
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    let reg = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w\w+)+$/;
 
     setEmail(text);
 
@@ -97,7 +135,7 @@ const AuthenticationContent = ({ error }) => {
   const handleConfirmPassword = (text) => {
     setConfirmPassword(text);
 
-    if (confirmPassword.length > 0 && password != text) {
+    if (confirmPassword.length > 0 && password !== text) {
       setConfirmPasswordError('Las claves ingresadas no coinciden');
     } else {
       clearErrors();
@@ -108,7 +146,6 @@ const AuthenticationContent = ({ error }) => {
     <>
       <TextInput
         placeholder="Email"
-        required
         style={styles.authentication__input}
         value={email}
         textContentType="emailAddress"
@@ -122,7 +159,6 @@ const AuthenticationContent = ({ error }) => {
           secureTextEntry={hidePassword}
           style={styles.authentication__input}
           placeholder="Clave"
-          required
           value={password}
           onChangeText={setPassword}
           autoCapitalize="none"
@@ -158,7 +194,6 @@ const AuthenticationContent = ({ error }) => {
             secureTextEntry
             style={styles.authentication__input}
             placeholder="Confirmar clave"
-            required
             value={confirmPassword}
             onChangeText={handleConfirmPassword}
             autoCapitalize="none"
@@ -173,8 +208,13 @@ const AuthenticationContent = ({ error }) => {
   );
 
   const renderAuthentication = () => {
+    if (loading) {
+      return <LoadingScreen />;
+    }
+
     return (
       <>
+        <Logo />
         {hasAccount ? (
           <Login
             errorMessage={errorMessage || error}

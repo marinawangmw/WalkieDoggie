@@ -1,45 +1,35 @@
 import React, { useEffect, useState, useRef } from 'react';
-<<<<<<< Updated upstream
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   AuthenticationScreen,
   OnboardingDetailsScreen,
   HomeScreen,
   ChatScreen,
   ProfileScreen,
+  AddressScreen,
 } from './app/screens';
-=======
 import { Platform, useColorScheme } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
 import { RootStackNavigator } from './app/services/navigation';
->>>>>>> Stashed changes
 import {
   getAccessTokenStorage,
   clearUserData,
   setStorageItem,
   getStorageItem,
 } from './app/utils/storage';
-<<<<<<< Updated upstream
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-=======
 import { onBoardingOwner, onBoardingWalker } from './app/services/api/users/onboarding';
->>>>>>> Stashed changes
 import LoadingScreen from './app/screens/LoadingScreen';
 import { AuthContext } from './app/utils/authContext';
 import { login } from './app/services/api/sessions/login';
-import { signUp } from './app/services/api/sessions/signUp';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import {
   addPushTokenToUser,
   deletePushTokenToUser,
 } from './app/services/api/users/pushNotifications';
-<<<<<<< Updated upstream
-=======
 import { USER_TYPES } from './app/utils/constants';
 import { theme } from './app/theme';
->>>>>>> Stashed changes
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -49,44 +39,6 @@ Notifications.setNotificationHandler({
   }),
 });
 
-<<<<<<< Updated upstream
-const Tabs = createBottomTabNavigator();
-const RootStack = createNativeStackNavigator();
-
-const HomeTabsScreen = () => (
-  <Tabs.Navigator>
-    <Tabs.Screen name="HomeScreen" component={HomeScreen} />
-    <Tabs.Screen name="ChatScreen" component={ChatScreen} />
-    <Tabs.Screen name="ProfileScreen" component={ProfileScreen} />
-  </Tabs.Navigator>
-);
-
-const RootStackScreen = ({ userToken, error }) => {
-  return (
-    <RootStack.Navigator>
-      {userToken ? (
-        <RootStack.Screen name="Home" component={HomeTabsScreen} options={{ headerShown: false }} />
-      ) : (
-        <>
-          <RootStack.Screen
-            name="Authentication"
-            component={AuthenticationScreen}
-            options={{ headerShown: false }}
-            initialParams={{ error }}
-          />
-          <RootStack.Screen
-            name="Onboarding"
-            component={OnboardingDetailsScreen}
-            options={{ headerShown: false }}
-          />
-        </>
-      )}
-    </RootStack.Navigator>
-  );
-};
-
-=======
->>>>>>> Stashed changes
 export default function App() {
   const [userToken, setUserToken] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -116,27 +68,35 @@ export default function App() {
           setError(e);
         }
       },
-      signUp: async (data) => {
+      onboarding: async (signupData, onboardingData) => {
         setIsLoading(true);
-        try {
-          const resSignup = await signUp(data);
-          setIsLoading(false);
 
-          if (resSignup.result) {
-            const resSignin = await login({ email: data.email, password: data.password });
-            setUserToken(resSignin.data);
+        try {
+          const resSignIn = await login({ email: signupData.email, password: signupData.password });
+
+          let resOB;
+          if (signupData.type === USER_TYPES.OWNER) {
+            resOB = await onBoardingOwner(onboardingData, signupData.id);
           } else {
-            setError('Error registrando usuario, verifique los datos ingresados');
+            resOB = await onBoardingWalker(onboardingData, signupData.id);
           }
+
+          if (resSignIn.result && resOB.result) {
+            setUserToken(resSignIn.data);
+          }
+          setIsLoading(false);
         } catch (e) {
-          setError(e);
+          console.log(e);
         }
       },
       signOut: async () => {
         setIsLoading(true);
         try {
           const pushToken = await getStorageItem('push_token');
-          if (pushToken) await deletePushTokenToUser(pushToken);
+
+          if (pushToken) {
+            await deletePushTokenToUser(pushToken);
+          }
 
           await clearUserData();
           setIsLoading(false);

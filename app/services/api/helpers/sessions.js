@@ -5,19 +5,19 @@ const { OWNER, WALKER } = USER_TYPES;
 
 export const realEmail = 'uri.lukacher@gmail.com';
 export const makeAppUserCredentials = (overrides) => {
-    return {
-        email: realEmail,
-        password: '1234',
-        ...overrides
-    }
-}
+  return {
+    email: realEmail,
+    password: '1234',
+    ...overrides,
+  };
+};
 
 export const makeFakeSignUpParams = () => {
-    return {
-        type: faker.random.arrayElement([WALKER, OWNER]),
-        first_name: faker.names.firstName(),
-        last_name: faker.names.lastName(),
-        email: faker.internet.email(),
-        password: '1234'
-    }
-}
+  return {
+    type: faker.random.arrayElement([WALKER, OWNER]),
+    first_name: faker.names.firstName(),
+    last_name: faker.names.lastName(),
+    email: faker.internet.email(),
+    password: '1234',
+  };
+};

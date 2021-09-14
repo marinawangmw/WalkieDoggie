@@ -1,13 +1,14 @@
 import React from 'react';
-import { View, Text, Button } from 'react-native';
+import { View } from 'react-native';
+import AddressScreen from '../AddressScreen';
+import { WalkerOnboarding } from '../../components';
+
 import styles from './styles';
 
-const OnboardingDetailsScreen = ({ navigation }) => {
+const OnboardingDetailsScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
-      <Text>Hello OnboardingDetailsScreen!</Text>
-      <Button title="Sign out" onPress={() => navigation.navigate('Authentication')} />
-      <Button title="Next" onPress={() => navigation.navigate('Home')} />
+      <AddressScreen navigation={navigation} signupData={route.params.signupData} />
     </View>
   );
 };
