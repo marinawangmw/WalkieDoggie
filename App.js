@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+<<<<<<< Updated upstream
 import {
   AuthenticationScreen,
   OnboardingDetailsScreen,
@@ -6,26 +7,39 @@ import {
   ChatScreen,
   ProfileScreen,
 } from './app/screens';
+=======
+import { Platform, useColorScheme } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { RootStackNavigator } from './app/services/navigation';
+>>>>>>> Stashed changes
 import {
   getAccessTokenStorage,
   clearUserData,
   setStorageItem,
   getStorageItem,
 } from './app/utils/storage';
+<<<<<<< Updated upstream
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+=======
+import { onBoardingOwner, onBoardingWalker } from './app/services/api/users/onboarding';
+>>>>>>> Stashed changes
 import LoadingScreen from './app/screens/LoadingScreen';
 import { AuthContext } from './app/utils/authContext';
 import { login } from './app/services/api/sessions/login';
 import { signUp } from './app/services/api/sessions/signUp';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
 import {
   addPushTokenToUser,
   deletePushTokenToUser,
 } from './app/services/api/users/pushNotifications';
+<<<<<<< Updated upstream
+=======
+import { USER_TYPES } from './app/utils/constants';
+import { theme } from './app/theme';
+>>>>>>> Stashed changes
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -35,6 +49,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
+<<<<<<< Updated upstream
 const Tabs = createBottomTabNavigator();
 const RootStack = createNativeStackNavigator();
 
@@ -70,12 +85,15 @@ const RootStackScreen = ({ userToken, error }) => {
   );
 };
 
+=======
+>>>>>>> Stashed changes
 export default function App() {
   const [userToken, setUserToken] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const notificationListener = useRef();
   const responseListener = useRef();
+  const scheme = useColorScheme();
 
   const authContext = React.useMemo(() => {
     return {
@@ -168,8 +186,8 @@ export default function App() {
 
   return (
     <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
-        <RootStackScreen userToken={userToken} error={error} />
+      <NavigationContainer theme={theme[scheme]}>
+        <RootStackNavigator userToken={userToken} error={error} />
       </NavigationContainer>
     </AuthContext.Provider>
   );
@@ -185,12 +203,12 @@ async function registerForPushNotificationsAsync() {
       finalStatus = status;
     }
     if (finalStatus !== 'granted') {
-      alert('Failed to get push token for push notification!');
+      console.log('Failed to get push token for push notification!');
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
   } else {
-    alert('Must use physical device for Push Notifications');
+    console.log('Must use physical device for Push Notifications');
   }
 
   if (Platform.OS === 'android') {

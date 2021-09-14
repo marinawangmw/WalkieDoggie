@@ -134,14 +134,14 @@ const AuthenticationContent = ({ error }) => {
               <SvgUri
                 width="25"
                 height="25"
-                source={require('../../assets/invisible.svg')}
+                source={require('../../assets/images/invisible.svg')}
                 style={styles.authentication__pwVisibility}
               />
             ) : (
               <SvgUri
                 width="25"
                 height="25"
-                source={require('../../assets/visible.svg')}
+                source={require('../../assets/images/visible.svg')}
                 style={styles.authentication__pwVisibility}
               />
             )}
