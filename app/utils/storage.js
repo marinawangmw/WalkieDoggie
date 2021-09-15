@@ -19,3 +19,4 @@ export const getCurrentUserInfoStorage = async () =>
   getStorageItem('user_info').then((storageValue) => JSON.parse(storageValue));
 
 export const getCurrentUserId = () => getCurrentUserInfoStorage().then((data) => data.sub);
+export const getCurrentUserType = () => getCurrentUserInfoStorage().then((data) => data.user_type);

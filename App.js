@@ -29,7 +29,7 @@ import {
   deletePushTokenToUser,
 } from './app/services/api/users/pushNotifications';
 import { USER_TYPES } from './app/utils/constants';
-
+import  * as Location from 'expo-location';
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -159,6 +159,9 @@ export default function App() {
   useEffect(() => {
     const initUserTokens = async () => {
       setIsLoading(true);
+      await Location.requestBackgroundPermissionsAsync();
+      await Location.requestForegroundPermissionsAsync();
+
       const token = await getAccessTokenStorage('access_token');
       setUserToken(token);
 

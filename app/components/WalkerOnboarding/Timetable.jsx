@@ -20,9 +20,9 @@ const Timetable = ({ ranges, setRanges }) => {
       </Text>
       <Table squares={ranges} handleChangeText={handleTimeCell} />
       <Text style={styles.text}>
-        Estos horarios serán los cuales que se les ofrecerá a los dueños de perros para que estos
-        puedan hacer una propuesta de paseo, lo cual luego puede decidir aceptar o rechazar según su
-        conveniencia.{'\n'}
+        Estos horarios serán aquellos que se les ofrecerá a los dueños de mascotas, para que estos
+        puedan hacerte una propuesta de paseo. Estas propuestas de paseo las vas a poder aceptar o
+        rechazar según tu conveniencia y disponibilidad.{'\n'}
         {'\n'}
         Los horarios ingresados podrán ser modificados más adelante
       </Text>
