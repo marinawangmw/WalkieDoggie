@@ -13,8 +13,8 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 const pubnub = new PubNub({
-  publishKey: 'pub-c-02ef8883-45bc-4b6a-87ca-8732a384e76e',
-  subscribeKey: 'sub-c-e9bdffd2-15d2-11ec-9d3c-1ae560ca2970',
+  publishKey: '',
+  subscribeKey: '',
 });
 
 export default class LocationComponent extends React.Component {
@@ -46,13 +46,15 @@ export default class LocationComponent extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if (this.props.latitude !== prevState.latitude) {
       console.log('Proceed to write Pubnub', new Date(), this.state);
-      pubnub.publish({
-        message: {
-          latitude: this.state.latitude,
-          longitude: this.state.longitude,
-        },
-        channel: 'location',
-      }).then((response) => console.log('response pubnub', response));
+      pubnub
+        .publish({
+          message: {
+            latitude: this.state.latitude,
+            longitude: this.state.longitude,
+          },
+          channel: 'location',
+        })
+        .then((response) => console.log('response pubnub', response));
     }
   }
 
