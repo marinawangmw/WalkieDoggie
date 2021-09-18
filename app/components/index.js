@@ -1,5 +1,4 @@
 export { default as AuthenticationContent } from './AuthenticationContent';
-export { default as GooglePlacesInput } from './GoogleMaps/PlacesInput';
 export { default as GooglePlacesInput } from './GooglePlacesInput';
 export { default as OwnerOnboarding } from './OwnerOnboarding';
 export { default as WalkerOnboarding } from './WalkerOnboarding';
