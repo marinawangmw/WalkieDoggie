@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, View, Platform, Dimensions, SafeAreaView } from 'react-native';
 import MapView, { Marker, AnimatedRegion, MarkerAnimated } from 'react-native-maps';
 import PubNub from 'pubnub';
-import { PubNubProvider, usePubNub } from 'pubnub-react';
 import * as Location from 'expo-location';
 
 // eslint-disable-next-line import/no-unresolved
@@ -36,11 +35,6 @@ export default class LocationComponent extends React.Component {
       }),
     };
 
-    // this.pubnub = new PubNubReact({
-    //   publishKey: 'pub-c-02ef8883-45bc-4b6a-87ca-8732a384e76e',
-    //   subscribeKey: 'sub-c-e9bdffd2-15d2-11ec-9d3c-1ae560ca2970',
-    // });
-    // this.pubnub.init(this);
   }
 
   componentDidMount() {
