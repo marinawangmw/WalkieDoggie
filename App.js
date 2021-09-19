@@ -1,15 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {
-  AuthenticationScreen,
-  OnboardingDetailsScreen,
-  HomeScreen,
-  ChatScreen,
-  ProfileScreen,
-  AddressScreen,
-} from './app/screens';
 import { Platform, useColorScheme } from 'react-native';
 import { RootStackNavigator } from './app/services/navigation';
 import {
@@ -141,7 +131,7 @@ export default function App() {
   }, []);
 
   if (isLoading) {
-    return <LoadingScreen />;
+    return <LoadingScreen logo />;
   }
 
   return (

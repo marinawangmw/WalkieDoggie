@@ -3,9 +3,10 @@ import { View, Text, Image, Linking } from 'react-native';
 import styles from './styles';
 import CustomButton from '../CustomButton';
 
-const FileOpener = () => {
+const FileOpener = ({
+  url = 'https://bucket-walkie-doggie.s3.us-east-2.amazonaws.com/sample.pdf',
+}) => {
   const openFile = () => {
-    const url = 'https://bucket-walkie-doggie.s3.us-east-2.amazonaws.com/sample.pdf';
     Linking.openURL(url);
   };
   return (

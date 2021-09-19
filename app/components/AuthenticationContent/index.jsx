@@ -58,59 +58,74 @@ const AuthenticationContent = ({ error, navigation }) => {
     }
   };
 
+  // FAKE
   const handleSignUp = async () => {
-    if (
-      Boolean(firstName) &&
-      Boolean(lastName) &&
-      Boolean(email) &&
-      Boolean(password) &&
-      Boolean(confirmPassword) &&
-      Boolean(!confirmPasswordError) &&
-      Boolean(!emailError) &&
-      Boolean(userTypeSelected)
-      // true
-    ) {
-      const signupData = {
-        type: userTypeSelected,
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        password,
-      };
+    const signupData = {
+      type: 'WALKER',
+      first_name: 'Marina',
+      last_name: 'Wang',
+      email: 'marinawang@gmail.com',
+      password: '123',
+    };
 
-      // const signupData = {
-      //   type: 'WALKER',
-      //   first_name: 'Marina',
-      //   last_name: 'Wang',
-      //   email: 'marinawang@gmail.com',
-      //   password: '123',
-      // };
+    setLoading(true);
 
-      setLoading(true);
-      const res = await signUp(signupData);
-      // const res = {
-      //   data: {
-      //     id: 35,
-      //     type: 'WALKER',
-      //     first_name: 'Marina',
-      //     last_name: 'Wang',
-      //     email: 'marinawang@gmail.com',
-      //     password: '123',
-      //   },
-      //   result: true,
-      // };
-      setLoading(false);
+    const res = {
+      data: {
+        id: 35,
+        type: 'WALKER',
+        first_name: 'Marina',
+        last_name: 'Wang',
+        email: 'marinawang@gmail.com',
+        password: '123',
+      },
+      result: true,
+    };
+    setLoading(false);
 
-      if (res.result) {
-        signupData.id = res.data.id;
-        return navigation.navigate('Onboarding', { signupData });
-      } else {
-        setErrorMessage('El mail ya se encuentra registrado');
-      }
+    if (res.result) {
+      signupData.id = res.data.id;
+      return navigation.navigate('Onboarding', { signupData });
     } else {
-      setErrorMessage('Por favor complete todos los campos y verifique los datos ingresados.');
+      setErrorMessage('El mail ya se encuentra registrado');
     }
   };
+
+  // REAL
+  // const handleSignUp = async () => {
+  //   if (
+  //     Boolean(firstName) &&
+  //     Boolean(lastName) &&
+  //     Boolean(email) &&
+  //     Boolean(password) &&
+  //     Boolean(confirmPassword) &&
+  //     Boolean(!confirmPasswordError) &&
+  //     Boolean(!emailError) &&
+  //     Boolean(userTypeSelected)
+  //   ) {
+  //     const signupData = {
+  //       type: userTypeSelected,
+  //       first_name: firstName,
+  //       last_name: lastName,
+  //       email,
+  //       password,
+  //     };
+
+  //     setLoading(true);
+  //     const res = await signUp(signupData);
+
+  //     setLoading(false);
+
+  //     if (res.result) {
+  //       signupData.id = res.data.id;
+  //       return navigation.navigate('Onboarding', { signupData });
+  //     } else {
+  //       setErrorMessage('El mail ya se encuentra registrado');
+  //     }
+  //   } else {
+  //     setErrorMessage('Por favor complete todos los campos y verifique los datos ingresados.');
+  //   }
+  // };
 
   const handleChangeAuthProcess = () => {
     setHasAccount(!hasAccount);
@@ -209,7 +224,7 @@ const AuthenticationContent = ({ error, navigation }) => {
 
   const renderAuthentication = () => {
     if (loading) {
-      return <LoadingScreen />;
+      return <LoadingScreen logo />;
     }
 
     return (

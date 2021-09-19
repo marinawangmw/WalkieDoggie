@@ -9,3 +9,7 @@ export { default as splash } from './splash.png';
 export { default as visible } from './visible.svg';
 export { default as homeIcon } from './homeScreen.png';
 export { default as profileIcon } from './paw.png';
+export { default as phoneIcon } from './phone.png';
+export { default as addressIcon } from './address.png';
+export { default as calendarIcon } from './calendar.png';
+export { default as plusIcon } from './plus.png';

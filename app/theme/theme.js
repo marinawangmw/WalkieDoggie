@@ -6,7 +6,6 @@ const defaultColors = {
   background: '#f3f3eb',
   text: '#364C63',
   error: '#D32F2F',
-  border: '#212121',
   activeTab: '#f4b445',
   inactiveTab: '#757575',
 };

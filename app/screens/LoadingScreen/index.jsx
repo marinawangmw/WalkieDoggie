@@ -3,10 +3,10 @@ import { View, ActivityIndicator } from 'react-native';
 import Logo from '../../components/Logo';
 import styles from './styles';
 
-const LoadingScreen = () => {
+const LoadingScreen = ({ logo }) => {
   return (
     <View style={styles.container}>
-      <Logo />
+      {logo && <Logo />}
       <View style={styles.space} />
       <ActivityIndicator size="large" color="#f8b444" />
     </View>

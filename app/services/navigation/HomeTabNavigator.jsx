@@ -1,8 +1,9 @@
 import React from 'react';
 import { useTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HomeScreen, ChatScreen, ProfileScreen } from '../../screens';
+import { HomeScreen } from '../../screens';
 import { TabIcon } from '../../components';
+import ProfileStackNavigator from './ProfileStackNavigator';
 
 const Tabs = createBottomTabNavigator();
 
@@ -23,7 +24,11 @@ const HomeTabNavigator = () => {
         component={HomeScreen}
         options={{ title: 'Walkie Doggie', tabBarLabel: 'Home' }}
       />
-      <Tabs.Screen name="ProfileScreen" component={ProfileScreen} options={{ title: 'Perfil' }} />
+      <Tabs.Screen
+        name="ProfileScreen"
+        component={ProfileStackNavigator}
+        options={{ headerShown: false }}
+      />
     </Tabs.Navigator>
   );
 };
