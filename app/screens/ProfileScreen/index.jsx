@@ -5,9 +5,15 @@ import { getProfile } from '../../services/api/users/profile';
 import { AuthContext } from '../../utils/authContext';
 import { getCurrentUserId } from '../../utils/storage';
 import LoadingScreen from '../LoadingScreen';
-import { CustomButton, ProfileDataRow } from '../../components';
+import { ProfileDataRow } from '../../components';
 import { styles, name, personal } from './styles';
-import { addressIcon, phoneIcon, profileIcon, calendarIcon } from '../../assets/images';
+import {
+  addressIcon,
+  phoneIcon,
+  profileIcon,
+  calendarIcon,
+  certificationIcon,
+} from '../../assets/images';
 
 const ProfileScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
@@ -74,6 +80,10 @@ const ProfileScreen = ({ navigation, route }) => {
     });
   };
 
+  const handleNavigateCertifications = () => {
+    navigation.navigate('walkerCertifications');
+  };
+
   const handleSaveChangeData = () => {
     if (userProfile.type === 'OWNER') {
       // quizas validar datos y sacar id de los pets
@@ -103,12 +113,20 @@ const ProfileScreen = ({ navigation, route }) => {
       </View>
     );
   };
+
   const renderWalkerSpecialData = () => {
     return (
-      <TouchableOpacity style={styles.petDataRow} onPress={handleNavigateRanges}>
-        <Image source={calendarIcon} style={styles.icon} />
-        <Text style={styles.petName}>Franjas horarias de trabajo</Text>
-      </TouchableOpacity>
+      <>
+        <TouchableOpacity style={styles.petDataRow} onPress={handleNavigateRanges}>
+          <Image source={calendarIcon} style={styles.icon} />
+          <Text style={styles.petName}>Franjas horarias de trabajo</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.petDataRow} onPress={handleNavigateCertifications}>
+          <Image source={certificationIcon} style={styles.icon} />
+          <Text style={styles.petName}>Certificaciones</Text>
+        </TouchableOpacity>
+      </>
     );
   };
 
