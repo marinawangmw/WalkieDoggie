@@ -1,25 +1,28 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useEffect } from 'react/cjs/react.development';
-import { CustomButton } from '../../components';
+import React, { useState } from 'react';
+import { Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import Timetable from '../../components/TimeTable';
-import { INITIAL_RANGES } from '../../helpers/initialRanges';
 
-const Ranges = ({ route }) => {
+const Ranges = ({ navigation, route }) => {
   const { ranges } = route.params;
   const [changeRanges, setChangeRanges] = useState(ranges);
 
-  const saveChangeRanges = () => {
-    //validar changeRanges y llamar a api?
+  const handleSaveRanges = () => {
+    navigation.navigate('profile', {
+      ranges: changeRanges,
+    });
+  };
+  console.log('ranges ', changeRanges);
+  const handleChangeRanges = (input) => {
+    setChangeRanges(input);
   };
 
   if (ranges.length) {
     return (
       <ScrollView contentContainerStyle={styles.container}>
-        <Timetable ranges={changeRanges} setRanges={setChangeRanges} />
-        <View style={styles.btnContainer}>
-          <CustomButton buttonLabel="Guardar" handleOnclick={saveChangeRanges} />
-        </View>
+        <Timetable ranges={changeRanges} setRanges={handleChangeRanges} />
+        <TouchableOpacity onPress={handleSaveRanges} style={styles.btnContainer}>
+          <Text style={styles.btnLabel}>Guardar franjas horarias</Text>
+        </TouchableOpacity>
       </ScrollView>
     );
   }
@@ -31,5 +34,18 @@ export default Ranges;
 
 const styles = StyleSheet.create({
   container: { padding: 20 },
-  btnContainer: { alignSelf: 'center' },
+  btnContainer: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+    borderRadius: 5,
+    backgroundColor: '#f4d7a380',
+  },
+  btnLabel: {
+    color: '#f4b445',
+    fontSize: 18,
+    fontWeight: '600',
+  },
 });

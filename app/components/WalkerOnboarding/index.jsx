@@ -7,7 +7,7 @@ import { uploadFileAws } from '../../utils/aws';
 import { AuthContext } from '../../utils/authContext';
 import styles from './styles';
 import { removeAccents } from '../../helpers/stringHelper';
-import { INITIAL_RANGES } from '../../helpers/initialRanges';
+import { INITIAL_RANGES } from '../../helpers/profileAndOnboarding';
 
 const WalkerOnboarding = ({ route }) => {
   const { address, lat, long, signupData } = route.params;

@@ -1,10 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import Cell from './Cell';
-import { RANGES_HEADER } from '../../helpers/initialRanges';
+import { RANGES_HEADER } from '../../helpers/profileAndOnboarding';
 
 const Table = ({ squares, handleChangeText, handleAddDayRow }) => {
-  console.log('table', squares);
   const renderHeader = () => {
     return (
       <>

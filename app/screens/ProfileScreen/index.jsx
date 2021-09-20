@@ -18,8 +18,18 @@ const ProfileScreen = ({ navigation, route }) => {
   const [changeLastName, setChangeLastName] = useState('');
   const [changePhone, setChangePhone] = useState('');
   const [changeAddress, setChangeAddress] = useState('');
+  const [changeRanges, setChangeRanges] = useState([]);
+
+  const [pets, setPets] = useState(null);
 
   const { signOut } = React.useContext(AuthContext);
+
+  useEffect(() => {
+    if (route.params) {
+      const newRanges = route.params.ranges;
+      setChangeRanges(newRanges);
+    }
+  }, [route]);
 
   useEffect(() => {
     const getUserProfileInfo = async () => {
@@ -29,6 +39,7 @@ const ProfileScreen = ({ navigation, route }) => {
 
         const userProfileResult = await getProfile(userId);
         setUserProfile(userProfileResult.data);
+        setPets(userProfileResult.data.pets);
 
         setLoading(false);
       } catch (e) {
@@ -46,12 +57,32 @@ const ProfileScreen = ({ navigation, route }) => {
     }
   };
 
-  const handleNavigatePetDetails = (pet) => {
-    navigation.navigate('petDetail', { pet });
+  const handleEditPets = (input, idx, dataLabel) => {
+    const aux = pets.slice();
+    aux[idx][dataLabel] = input;
+    setPets(aux);
+  };
+
+  const handleNavigatePetDetails = (pet, idx) => {
+    navigation.navigate('petDetail', { pet, handleEditPets, idx });
   };
 
   const handleNavigateRanges = () => {
-    navigation.navigate('walkerRanges', { ranges: userProfile.ranges });
+    setChangeRanges(userProfile.ranges);
+    navigation.navigate('walkerRanges', {
+      ranges: userProfile.ranges,
+    });
+  };
+
+  const handleSaveChangeData = () => {
+    if (userProfile.type === 'OWNER') {
+      // quizas validar datos y sacar id de los pets
+      // agarrar pets + userprofile y mandar a services/editProfile
+    } else {
+      // quizas validar datos y sacar id de los ranges
+      // agarrar ranges + userprofile y mandar a services/editPorfile
+    }
+    // mostrar alert una vez guardada
   };
 
   const renderPets = () => {
@@ -63,7 +94,7 @@ const ProfileScreen = ({ navigation, route }) => {
           <TouchableOpacity
             style={styles.petDataRow}
             key={idx}
-            onPress={() => handleNavigatePetDetails(pet)}
+            onPress={() => handleNavigatePetDetails(pet, idx)}
           >
             <Image source={profileIcon} style={styles.icon} />
             <Text style={styles.petName}>{pet.name}</Text>
@@ -141,7 +172,12 @@ const ProfileScreen = ({ navigation, route }) => {
           {userProfile.type === 'OWNER' ? renderPets() : renderWalkerSpecialData()}
           {/* walker - certification */}
           {/* walker - achievements */}
-          {/* walker - ranges */}
+
+          <View style={styles.hr} />
+
+          <TouchableOpacity style={styles.btnContainer} onPress={handleSaveChangeData}>
+            <Text style={[styles.btnLabel, { color: '#0662c2' }]}>Guardar cambios</Text>
+          </TouchableOpacity>
 
           <View style={styles.hr} />
 

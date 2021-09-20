@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
-import { useEffect } from 'react/cjs/react.development';
 import { CustomButton } from '..';
 
-const ProfileDataRow = ({ data, customStyles, changeData, setChangeData }) => {
+const ProfileDataRow = ({ data, customStyles, dataLabel, handleChangeData }) => {
   const [visible, setVisible] = useState(false);
   const styles = { ...defaultStyles, ...customStyles };
-  useEffect(() => {
-    setChangeData(data);
-  }, [data, setChangeData]);
 
   const handlePress = () => {
     setVisible(!visible);
@@ -30,10 +26,8 @@ const ProfileDataRow = ({ data, customStyles, changeData, setChangeData }) => {
               autoFocus
               multiline
               style={styles.editInput}
-              value={changeData}
-              defaultValue={data}
-              placeholder={data}
-              onChangeText={setChangeData}
+              value={data}
+              onChangeText={(input) => handleChangeData(input, dataLabel)}
             />
             <CustomButton handleOnclick={() => setVisible(!visible)} buttonLabel="Confirmar" />
           </View>
@@ -44,7 +38,7 @@ const ProfileDataRow = ({ data, customStyles, changeData, setChangeData }) => {
 
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress}>
-      <Text style={styles.label}>{changeData}</Text>
+      <Text style={styles.label}>{data}</Text>
     </TouchableOpacity>
   );
 };

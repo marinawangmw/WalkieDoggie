@@ -38,3 +38,12 @@ export const INITIAL_RANGES = [
 ];
 
 export const RANGES_HEADER = [{ day_of_week: '', end_at: 'Fin', start_at: 'Inicio' }];
+
+export const PETS_DATA_LABEL = {
+  name: 'Nombre',
+  birth_year: 'Año de nacimiento aproximado',
+  breed: 'Raza',
+  description: 'Descripcion',
+  gender: 'Género',
+  weight: 'Peso',
+};
