@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import CustomButton from '../CustomButton';
 import styles from './styles';
 
-// file types : img, file, video, undefined
+// file types : img, file, video, pdf, undefined
 
 const FilePicker = ({ label, setFileData, fileType }) => {
   const [file, setFile] = useState(null);
@@ -26,7 +26,9 @@ const FilePicker = ({ label, setFileData, fileType }) => {
       case 'file':
         setType('application/*');
         break;
-
+      case 'pdf':
+        setType('application/pdf');
+        break;
       default:
         setType('*/*');
     }
@@ -64,7 +66,7 @@ const FilePicker = ({ label, setFileData, fileType }) => {
 
   return (
     <View style={styles.container}>
-      {file && (
+      {file && fileType === 'img' && (
         <View>
           <Image
             source={{

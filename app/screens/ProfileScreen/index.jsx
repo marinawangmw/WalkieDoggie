@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useEffect, useState } from 'react/cjs/react.development';
-import { getProfile } from '../../services/api/users/profile';
+import { editOwner, editWalker, getProfile } from '../../services/api/users/profile';
 import { AuthContext } from '../../utils/authContext';
 import { getCurrentUserId } from '../../utils/storage';
 import LoadingScreen from '../LoadingScreen';
@@ -14,6 +14,8 @@ import {
   calendarIcon,
   certificationIcon,
 } from '../../assets/images';
+import { USER_TYPES } from '../../utils/constants';
+import { removeProps } from '../../helpers/objectHelper';
 
 const ProfileScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
@@ -25,6 +27,7 @@ const ProfileScreen = ({ navigation, route }) => {
   const [changePhone, setChangePhone] = useState('');
   const [changeAddress, setChangeAddress] = useState('');
   const [changeRanges, setChangeRanges] = useState([]);
+  const [changeCertifications, setChangeCertifications] = useState([]);
 
   const [pets, setPets] = useState(null);
 
@@ -32,8 +35,14 @@ const ProfileScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     if (route.params) {
-      const newRanges = route.params.ranges;
-      setChangeRanges(newRanges);
+      const { ranges, certifications } = route.params;
+      if (ranges && ranges.length > 0) {
+        setChangeRanges(ranges);
+      }
+
+      if (certifications && certifications.length > 0) {
+        setChangeCertifications(certifications);
+      }
     }
   }, [route]);
 
@@ -44,13 +53,14 @@ const ProfileScreen = ({ navigation, route }) => {
         const userId = await getCurrentUserId();
 
         const userProfileResult = await getProfile(userId);
-
         setUserProfile(userProfileResult.data);
         setPets(userProfileResult.data.pets);
         setChangeFirstName(userProfileResult.data.first_name);
         setChangeLastName(userProfileResult.data.last_name);
         setChangePhone(userProfileResult.data.phone);
         setChangeAddress(userProfileResult.data.address.description);
+        setChangeCertifications(userProfileResult.data.certifications);
+        setChangeRanges(userProfileResult.data.ranges);
 
         setLoading(false);
       } catch (e) {
@@ -79,23 +89,49 @@ const ProfileScreen = ({ navigation, route }) => {
   };
 
   const handleNavigateRanges = () => {
-    setChangeRanges(userProfile.ranges);
     navigation.navigate('walkerRanges', {
-      ranges: userProfile.ranges,
+      ranges: changeRanges,
     });
   };
 
   const handleNavigateCertifications = () => {
-    navigation.navigate('walkerCertifications');
+    navigation.navigate('walkerCertifications', {
+      certifications: changeCertifications,
+    });
   };
 
-  const handleSaveChangeData = () => {
-    if (userProfile.type === 'OWNER') {
+  const showResultUpdateProfile = (response) => {
+    if (!response.result) {
+      Alert.alert('Error al actualizar datos del perfil');
+    } else {
+      Alert.alert('Los datos del perfil han sido actualizados');
+    }
+  };
+
+  const handleSaveChangeData = async () => {
+    const userProfileEdited = { ...userProfile };
+    userProfileEdited.last_name = changeLastName;
+    userProfileEdited.first_name = changeFirstName;
+    userProfileEdited.address.description = changeAddress;
+    userProfileEdited.phone = changePhone;
+
+    if (userProfileEdited.type === USER_TYPES.OWNER) {
       // quizas validar datos y sacar id de los pets
       // agarrar pets + userprofile y mandar a services/editProfile
+
+      removeProps(userProfileEdited, ['id', 'last_login', 'email']);
+      const response = await editOwner(userProfileEdited);
+      showResultUpdateProfile(response);
     } else {
-      // quizas validar datos y sacar id de los ranges
-      // agarrar ranges + userprofile y mandar a services/editPorfile
+      //TODO: Validar ranges
+
+      userProfileEdited.ranges = changeRanges;
+      userProfileEdited.certifications = changeCertifications;
+
+      removeProps(userProfileEdited, ['id', 'last_login', 'email']);
+
+      const response = await editWalker(userProfileEdited);
+      showResultUpdateProfile(response);
     }
     // mostrar alert una vez guardada
   };

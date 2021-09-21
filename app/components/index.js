@@ -8,3 +8,4 @@ export { default as FilePicker } from './FilePicker';
 export { default as TabIcon } from './TabIcon';
 export { default as ProfileDataRow } from './ProfileDataRow';
 export { default as TimeTable } from './TimeTable';
+export { default as FileOpener } from './FileOpener';

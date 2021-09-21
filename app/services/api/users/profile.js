@@ -1,3 +1,4 @@
+import { getCurrentUserId } from '../../../utils/storage';
 import { HTTP_METHOD, privateRequest } from '../axiosConfig';
 
 export const getProfile = (id) => {
@@ -10,15 +11,20 @@ export const getProfile = (id) => {
     .catch((error) => ({ result: false, data: error.metadata }));
 };
 
-const editUser = (id, type) => {
+const editUser = async (type, data) => {
+  const id = await getCurrentUserId();
   const config = {
     method: HTTP_METHOD.PUT,
     url: `users/${id}/${type}`,
+    data,
   };
   return privateRequest(config)
-    .then((data) => ({ result: true, data }))
-    .catch((error) => ({ result: false, data: error.metadata }));
+    .then((dataResponse) => ({ result: true, data: dataResponse }))
+    .catch((error) => {
+      console.log(error.metadata);
+      return { result: false, data: error.metadata };
+    });
 };
 
-export const editWalker = (id) => editUser(id, 'walker');
-export const editOwner = (id) => editUser(id, 'owner');
+export const editWalker = (data) => editUser('walker', data);
+export const editOwner = (data) => editUser('owner', data);

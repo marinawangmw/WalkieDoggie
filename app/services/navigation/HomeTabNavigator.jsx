@@ -27,7 +27,7 @@ const HomeTabNavigator = () => {
       <Tabs.Screen
         name="ProfileScreen"
         component={ProfileStackNavigator}
-        options={{ headerShown: false }}
+        options={{ headerShown: false, tabBarLabel: 'Perfil' }}
       />
     </Tabs.Navigator>
   );
