@@ -11,7 +11,7 @@ const Ranges = ({ navigation, route }) => {
       ranges: changeRanges,
     });
   };
-  console.log('ranges ', changeRanges);
+
   const handleChangeRanges = (input) => {
     setChangeRanges(input);
   };

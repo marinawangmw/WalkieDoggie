@@ -44,8 +44,13 @@ const ProfileScreen = ({ navigation, route }) => {
         const userId = await getCurrentUserId();
 
         const userProfileResult = await getProfile(userId);
+
         setUserProfile(userProfileResult.data);
         setPets(userProfileResult.data.pets);
+        setChangeFirstName(userProfileResult.data.first_name);
+        setChangeLastName(userProfileResult.data.last_name);
+        setChangePhone(userProfileResult.data.phone);
+        setChangeAddress(userProfileResult.data.address.description);
 
         setLoading(false);
       } catch (e) {
@@ -150,15 +155,13 @@ const ProfileScreen = ({ navigation, route }) => {
             <View style={styles.personalRight}>
               <View style={styles.nameContainer}>
                 <ProfileDataRow
-                  data={changeFirstName || userProfile.first_name}
                   customStyles={name}
-                  changeData={changeFirstName}
+                  value={changeFirstName}
                   setChangeData={setChangeFirstName}
                 />
                 <ProfileDataRow
-                  data={userProfile.last_name}
                   customStyles={name}
-                  changeData={changeLastName}
+                  value={changeLastName}
                   setChangeData={setChangeLastName}
                 />
               </View>
@@ -169,18 +172,16 @@ const ProfileScreen = ({ navigation, route }) => {
           <View style={styles.iconAndData}>
             <Image source={phoneIcon} style={styles.icon} tintColor="#364C63" />
             <ProfileDataRow
-              data={userProfile.phone}
               customStyles={personal}
-              changeData={changePhone}
+              value={changePhone}
               setChangeData={setChangePhone}
             />
           </View>
           <View style={styles.iconAndData}>
             <Image source={addressIcon} style={styles.icon} tintColor="#364C63" />
             <ProfileDataRow
-              data={userProfile.address.description}
               customStyles={personal}
-              changeData={changeAddress}
+              value={changeAddress}
               setChangeData={setChangeAddress}
             />
           </View>
@@ -188,7 +189,7 @@ const ProfileScreen = ({ navigation, route }) => {
           <View style={styles.hr} />
 
           {userProfile.type === 'OWNER' ? renderPets() : renderWalkerSpecialData()}
-          {/* walker - certification */}
+
           {/* walker - achievements */}
 
           <View style={styles.hr} />
