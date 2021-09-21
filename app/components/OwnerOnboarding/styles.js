@@ -69,6 +69,14 @@ const styles = StyleSheet.create({
     color: '#D32F2F',
     textAlign: 'center',
   },
+  loader: {
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F3F3EBCC',
+  },
 });
 
 export default styles;

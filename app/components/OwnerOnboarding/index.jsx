@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, ScrollView } from 'react-native';
+import { View, Text, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 
 import { AuthContext } from '../../utils/authContext';
 import { FilePicker, CustomButton } from '../../components';
@@ -14,6 +14,7 @@ const OwnerOnboarding = ({ route }) => {
   const { address, lat, long, signupData } = route.params;
   const { onboarding } = React.useContext(AuthContext);
 
+  const [isLoading, setIsLoading] = useState(false);
   const [phone, setPhone] = useState(null);
   const [profilePhotoData, setProfilePhotoData] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
@@ -32,6 +33,7 @@ const OwnerOnboarding = ({ route }) => {
   const handleOnclick = async () => {
     if (address && lat && long && phone && profilePhotoData && validateFieldsPets()) {
       try {
+        setIsLoading(true);
         //Bulk upload to AWS
         const profilePhotoUri = await uploadProfilePhoto(profilePhotoData);
         const petsAfterAws = await uploadPetsPhotos(pets);
@@ -48,6 +50,7 @@ const OwnerOnboarding = ({ route }) => {
         };
 
         await onboarding(signupData, onboardingData);
+        setIsLoading(false);
       } catch (e) {
         console.log(e);
       }
@@ -70,29 +73,36 @@ const OwnerOnboarding = ({ route }) => {
   };
 
   return (
-    <ScrollView style={styles.scrollContainer} showsButtons={false}>
-      <Text style={[styles.sectionTitle]}>Información Personal</Text>
-      <FilePicker
-        label="Elegir tu foto de perfil"
-        setFileData={setProfilePhotoData}
-        fileType="img"
-      />
-      <TextInput
-        placeholder="Número de teléfono (solo números)"
-        style={styles.input}
-        value={phone}
-        onChangeText={(text) => numericValidation(text, setPhone)}
-      />
+    <>
+      <ScrollView style={styles.scrollContainer} showsButtons={false}>
+        <Text style={[styles.sectionTitle]}>Información Personal</Text>
+        <FilePicker
+          label="Elegir tu foto de perfil"
+          setFileData={setProfilePhotoData}
+          fileType="img"
+        />
+        <TextInput
+          placeholder="Número de teléfono (solo números)"
+          style={styles.input}
+          value={phone}
+          onChangeText={(text) => numericValidation(text, setPhone)}
+        />
 
-      <Text style={[styles.sectionTitle]}>Información sobre tus mascotas</Text>
-      <Pet pets={pets} setPets={setPets} setErrorMessage={setErrorMessage} />
+        <Text style={[styles.sectionTitle]}>Información sobre tus mascotas</Text>
+        <Pet pets={pets} setPets={setPets} setErrorMessage={setErrorMessage} />
 
-      <View style={styles.saveButton}>
-        <CustomButton handleOnclick={handleOnclick} buttonLabel="Guardar" />
-      </View>
-      {Boolean(errorMessage) && <Text style={styles.error}>{errorMessage}</Text>}
-      <View style={styles.bottomSpace} />
-    </ScrollView>
+        <View style={styles.saveButton}>
+          <CustomButton handleOnclick={handleOnclick} buttonLabel="Guardar" />
+        </View>
+        {Boolean(errorMessage) && <Text style={styles.error}>{errorMessage}</Text>}
+        <View style={styles.bottomSpace} />
+      </ScrollView>
+      {isLoading && (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color="#f8b444" />
+        </View>
+      )}
+    </>
   );
 };
 

@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, Platform, TextInput, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Platform, Image, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { plusIcon } from '../../assets/images';
 
-const Square = ({ idx, value, handleChangeText }) => {
+const Cell = ({
+  customStyles,
+  value,
+  idx,
+  col,
+  handleChangeText,
+  isTitle,
+  addPlusIcon,
+  handleAddDayRow,
+}) => {
   var today = new Date();
   const initialDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
 
@@ -10,6 +20,11 @@ const Square = ({ idx, value, handleChangeText }) => {
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [hourSelectedInput, setHourSelectedInput] = useState(value);
+
+  const addDayRow = () => {
+    console.log(idx);
+    handleAddDayRow(idx);
+  };
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -24,7 +39,7 @@ const Square = ({ idx, value, handleChangeText }) => {
       const formatHour = currentHours + ':' + currentMinutes;
       setHourSelectedInput(formatHour);
 
-      handleChangeText(formatHour, idx);
+      handleChangeText(formatHour, idx, col);
     }
   };
 
@@ -37,40 +52,33 @@ const Square = ({ idx, value, handleChangeText }) => {
     showMode('time');
   };
 
-  const cellStyling = () => {
-    if (idx % 3 === 0 || idx === 0) {
-      return (
-        <View style={[styles.cell, styles.titleCell]}>
-          <Text>{value}</Text>
-        </View>
-      );
-    }
-    if (idx < 3) {
-      return (
-        <View style={[styles.cell, styles.headerCell]}>
-          <Text>{value}</Text>
-        </View>
-      );
-    }
-
+  if (isTitle) {
     return (
-      <View style={[styles.cell, styles.dataCell]}>
-        <TextInput value={hourSelectedInput} onFocus={showTimepicker} />
-        {show && (
-          <DateTimePicker
-            value={initialDate}
-            mode={mode}
-            is24Hour={true}
-            display="default"
-            onChange={onChange}
-            locale="es-AR"
-          />
+      <View style={[styles.cell, customStyles.container]}>
+        <Text style={customStyles.text}>{value}</Text>
+        {addPlusIcon && (
+          <TouchableOpacity style={styles.iconContainer} onPress={addDayRow}>
+            <Image source={plusIcon} style={styles.icon} />
+          </TouchableOpacity>
         )}
       </View>
     );
-  };
-
-  return <>{cellStyling()}</>;
+  }
+  return (
+    <View style={[styles.cell, customStyles.container]}>
+      <TextInput value={hourSelectedInput} onFocus={showTimepicker} />
+      {show && (
+        <DateTimePicker
+          value={initialDate}
+          mode={mode}
+          is24Hour={true}
+          display="default"
+          onChange={onChange}
+          locale="es-AR"
+        />
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -80,22 +88,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 0.5,
+    flexDirection: 'row',
+    flex: 1,
   },
-  dataCell: {
-    flex: 3,
-    backgroundColor: 'white',
-    borderColor: '#f4d7a3',
+  icon: {
+    width: 20,
+    height: 20,
+    tintColor: '#f4b445',
+    resizeMode: 'cover',
   },
-  titleCell: {
-    flex: 2,
-    backgroundColor: '#f4d7a3',
-    borderColor: '#F3F3EB',
-  },
-  headerCell: {
-    flex: 3,
-    backgroundColor: '#f4d7a3',
-    borderColor: '#F3F3EB',
+  iconContainer: {
+    paddingLeft: 5,
   },
 });
 
-export default Square;
+export default Cell;

@@ -5,3 +5,7 @@ export { default as WalkerOnboarding } from './WalkerOnboarding';
 export { default as Logo } from './Logo';
 export { default as CustomButton } from './CustomButton';
 export { default as FilePicker } from './FilePicker';
+export { default as TabIcon } from './TabIcon';
+export { default as ProfileDataRow } from './ProfileDataRow';
+export { default as TimeTable } from './TimeTable';
+export { default as FileOpener } from './FileOpener';

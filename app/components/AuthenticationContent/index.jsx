@@ -58,6 +58,40 @@ const AuthenticationContent = ({ error, navigation }) => {
     }
   };
 
+  // FAKE
+  // const handleSignUp = async () => {
+  //   const signupData = {
+  //     type: 'WALKER',
+  //     first_name: 'Marina',
+  //     last_name: 'Wang',
+  //     email: 'marinawang@gmail.com',
+  //     password: '123',
+  //   };
+
+  //   setLoading(true);
+
+  //   const res = {
+  //     data: {
+  //       id: 35,
+  //       type: 'WALKER',
+  //       first_name: 'Marina',
+  //       last_name: 'Wang',
+  //       email: 'marinawang@gmail.com',
+  //       password: '123',
+  //     },
+  //     result: true,
+  //   };
+  //   setLoading(false);
+
+  //   if (res.result) {
+  //     signupData.id = res.data.id;
+  //     return navigation.navigate('Onboarding', { signupData });
+  //   } else {
+  //     setErrorMessage('El mail ya se encuentra registrado');
+  //   }
+  // };
+
+  // REAL
   const handleSignUp = async () => {
     if (
       Boolean(firstName) &&
@@ -68,7 +102,6 @@ const AuthenticationContent = ({ error, navigation }) => {
       Boolean(!confirmPasswordError) &&
       Boolean(!emailError) &&
       Boolean(userTypeSelected)
-      // true
     ) {
       const signupData = {
         type: userTypeSelected,
@@ -78,27 +111,9 @@ const AuthenticationContent = ({ error, navigation }) => {
         password,
       };
 
-      // const signupData = {
-      //   type: 'WALKER',
-      //   first_name: 'Marina',
-      //   last_name: 'Wang',
-      //   email: 'marinawang@gmail.com',
-      //   password: '123',
-      // };
-
       setLoading(true);
       const res = await signUp(signupData);
-      // const res = {
-      //   data: {
-      //     id: 35,
-      //     type: 'WALKER',
-      //     first_name: 'Marina',
-      //     last_name: 'Wang',
-      //     email: 'marinawang@gmail.com',
-      //     password: '123',
-      //   },
-      //   result: true,
-      // };
+
       setLoading(false);
 
       if (res.result) {
@@ -170,14 +185,14 @@ const AuthenticationContent = ({ error, navigation }) => {
               <SvgUri
                 width="25"
                 height="25"
-                source={require('../../assets/invisible.svg')}
+                source={require('../../assets/images/invisible.svg')}
                 style={styles.authentication__pwVisibility}
               />
             ) : (
               <SvgUri
                 width="25"
                 height="25"
-                source={require('../../assets/visible.svg')}
+                source={require('../../assets/images/visible.svg')}
                 style={styles.authentication__pwVisibility}
               />
             )}
@@ -209,7 +224,7 @@ const AuthenticationContent = ({ error, navigation }) => {
 
   const renderAuthentication = () => {
     if (loading) {
-      return <LoadingScreen />;
+      return <LoadingScreen logo />;
     }
 
     return (

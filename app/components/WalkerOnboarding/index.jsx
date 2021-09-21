@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { View, TextInput, ScrollView, Text, ActivityIndicator } from 'react-native';
-import Timetable from './Timetable';
+import Timetable from '../TimeTable';
 import FilePicker from '../FilePicker';
 import CustomButton from '../CustomButton';
 import { uploadFileAws } from '../../utils/aws';
 import { AuthContext } from '../../utils/authContext';
 import styles from './styles';
 import { removeAccents } from '../../helpers/stringHelper';
+import { INITIAL_RANGES } from '../../helpers/profileAndOnboarding';
 
 const WalkerOnboarding = ({ route }) => {
   const { address, lat, long, signupData } = route.params;
@@ -18,49 +19,10 @@ const WalkerOnboarding = ({ route }) => {
   const [cover_letter, setCover_letter] = useState('');
   const [profilePhotoData, setProfilePhotoData] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
-  const [ranges, setRanges] = useState([
-    null, //0
-    'Inicio', // 1
-    'Fin', // 2
-    'Lunes', // 3
-    null,
-    null,
-    'Martes', // 6
-    null,
-    null,
-    'Miércoles', // 9
-    null,
-    null,
-    'Jueves', // 12
-    null,
-    null,
-    'Viernes', // 15
-    null,
-    null,
-    'Sábado', // 18
-    null,
-    null,
-    'Domingo', // 21
-    null,
-    null,
-  ]);
+  const [ranges, setRanges] = useState(INITIAL_RANGES);
 
   const formatTimeTableObject = () => {
     let aux = ranges.slice();
-
-    for (var i = 0; i < ranges.length; ++i) {
-      if (i % 3 === 0 && i > 2) {
-        aux[aux.length] = { day_of_week: removeAccents(ranges[i].toUpperCase()) };
-      }
-
-      if (i % 3 === 1 && i > 2) {
-        aux[aux.length - 1] = { ...aux[aux.length - 1], start_at: ranges[i] };
-      }
-      if (i % 3 === 2 && i > 2) {
-        aux[aux.length - 1] = { ...aux[aux.length - 1], end_at: ranges[i] };
-      }
-    }
-    aux = aux.slice(24, aux.length);
 
     //Filtro los días para los cuales NO se ingresa ningún horario
     aux = aux.filter((d) => d.start_at !== null && d.end_at !== null);
@@ -147,7 +109,7 @@ const WalkerOnboarding = ({ route }) => {
           onChangeText={setPrice_per_hour}
         />
 
-        <Timetable ranges={ranges} setRanges={setRanges} />
+        <Timetable ranges={ranges} setRanges={setRanges} onboardingNote />
 
         <TextInput
           placeholder="Carta de presentación"
