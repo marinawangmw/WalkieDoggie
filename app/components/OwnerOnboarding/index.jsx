@@ -33,6 +33,7 @@ const OwnerOnboarding = ({ route }) => {
   const handleOnclick = async () => {
     if (address && lat && long && phone && profilePhotoData && validateFieldsPets()) {
       try {
+        setIsLoading(true);
         //Bulk upload to AWS
         const profilePhotoUri = await uploadProfilePhoto(profilePhotoData);
         const petsAfterAws = await uploadPetsPhotos(pets);
@@ -49,6 +50,7 @@ const OwnerOnboarding = ({ route }) => {
         };
 
         await onboarding(signupData, onboardingData);
+        setIsLoading(false);
       } catch (e) {
         console.log(e);
       }
@@ -95,7 +97,7 @@ const OwnerOnboarding = ({ route }) => {
         {Boolean(errorMessage) && <Text style={styles.error}>{errorMessage}</Text>}
         <View style={styles.bottomSpace} />
       </ScrollView>
-      {!isLoading && (
+      {isLoading && (
         <View style={styles.loader}>
           <ActivityIndicator size="large" color="#f8b444" />
         </View>

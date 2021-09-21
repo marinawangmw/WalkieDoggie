@@ -24,20 +24,6 @@ const WalkerOnboarding = ({ route }) => {
   const formatTimeTableObject = () => {
     let aux = ranges.slice();
 
-    for (var i = 0; i < ranges.length; ++i) {
-      if (i % 3 === 0 && i > 2) {
-        aux[aux.length] = { day_of_week: removeAccents(ranges[i].toUpperCase()) };
-      }
-
-      if (i % 3 === 1 && i > 2) {
-        aux[aux.length - 1] = { ...aux[aux.length - 1], start_at: ranges[i] };
-      }
-      if (i % 3 === 2 && i > 2) {
-        aux[aux.length - 1] = { ...aux[aux.length - 1], end_at: ranges[i] };
-      }
-    }
-    aux = aux.slice(24, aux.length);
-
     //Filtro los días para los cuales NO se ingresa ningún horario
     aux = aux.filter((d) => d.start_at !== null && d.end_at !== null);
 
