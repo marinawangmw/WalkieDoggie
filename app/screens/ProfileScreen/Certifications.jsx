@@ -44,20 +44,26 @@ const Certifications = ({ navigation, route }) => {
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.hr} />
 
-        <View>
-          {localCertifications &&
-            localCertifications.map((row, rowIdx) => {
-              return (
-                <View key={rowIdx} styles={styles.certificationRow}>
-                  <Image source={pdfIcon} style={styles.icon} />
-                  <Text style={{ color: 'blue' }} onPress={() => Linking.openURL(row.file_uri)}>
-                    {row.description}
-                  </Text>
-                </View>
-              );
-            })}
+        <View styles={styles.certificationsContainer}>
+          {localCertifications && (
+            <>
+              {localCertifications.map((row, rowIdx) => {
+                return (
+                  <View key={rowIdx} style={styles.certificationRow}>
+                    <Image source={pdfIcon} style={styles.icon} />
+                    <Text
+                      style={[styles.text, { color: 'black' }]}
+                      onPress={() => Linking.openURL(row.file_uri)}
+                    >
+                      {row.description}
+                    </Text>
+                  </View>
+                );
+              })}
+              <View style={styles.hr} />
+            </>
+          )}
         </View>
-        <View style={styles.hr} />
 
         <View style={styles.viewAddNewCertification}>
           <FilePicker
@@ -113,14 +119,17 @@ const styles = StyleSheet.create({
     width: 40,
     resizeMode: 'cover',
   },
+
   certificationRow: {
     flexDirection: 'row',
-    display: 'flex',
-    flex: 1,
-    backgroundColor: 'green',
+    alignItems: 'center',
+    padding: 10,
   },
   data: {
     flexDirection: 'row',
+  },
+  text: {
+    paddingHorizontal: 10,
   },
   btnContainer: {
     justifyContent: 'center',
