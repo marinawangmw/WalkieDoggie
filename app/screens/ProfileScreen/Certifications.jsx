@@ -9,17 +9,22 @@ import {
   TextInput,
   TouchableOpacity,
   Linking,
+  ActivityIndicator,
 } from 'react-native';
 import { FilePicker, FileOpener, CustomButton } from '../../components';
 import { uploadFileAws } from '../../utils/aws';
 import { pdfIcon } from '../../assets/images';
+import Hyperlink from 'react-native-hyperlink';
+
 const Certifications = ({ navigation, route }) => {
   const { certifications = [] } = route.params;
   const [localCertifications, setChangeCertifications] = useState(certifications);
   const [newCertificationData, setNewCertificationData] = useState(null);
   const [newCertificationDescription, setnewCertificationDescription] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleUploadCertification = () => {
+    setIsLoading(true);
     return uploadFileAws(newCertificationData)
       .then((url) => {
         setChangeCertifications([
@@ -29,8 +34,12 @@ const Certifications = ({ navigation, route }) => {
 
         setNewCertificationData(null);
         setnewCertificationDescription(null);
+        setIsLoading(false);
       })
-      .catch((e) => console.error(e));
+      .catch((e) => {
+        setIsLoading(false);
+        console.error(e);
+      });
   };
 
   const handleSaveCertifications = () => {
@@ -51,10 +60,7 @@ const Certifications = ({ navigation, route }) => {
                 return (
                   <View key={rowIdx} style={styles.certificationRow}>
                     <Image source={pdfIcon} style={styles.icon} />
-                    <Text
-                      style={[styles.text, { color: 'black' }]}
-                      onPress={() => Linking.openURL(row.file_uri)}
-                    >
+                    <Text style={[styles.text]} onPress={() => Linking.openURL(row.file_uri)}>
                       {row.description}
                     </Text>
                   </View>
@@ -88,6 +94,11 @@ const Certifications = ({ navigation, route }) => {
           <Text style={styles.btnLabel}>Guardar certificaciones</Text>
         </TouchableOpacity>
       </ScrollView>
+      {isLoading && (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color="#f8b444" />
+        </View>
+      )}
     </>
   );
 };
@@ -129,7 +140,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   text: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 15,
+    textDecorationLine: 'underline',
+    color: 'blue',
   },
   btnContainer: {
     justifyContent: 'center',
@@ -146,5 +159,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderBottomColor: '#bfbfbf',
     borderBottomWidth: 1,
+  },
+  loader: {
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F3F3EBCC',
   },
 });
