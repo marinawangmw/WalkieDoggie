@@ -8,10 +8,11 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Linking,
 } from 'react-native';
 import { FilePicker, FileOpener, CustomButton } from '../../components';
 import { uploadFileAws } from '../../utils/aws';
-import { certificationIcon } from '../../assets/images';
+import { pdfIcon } from '../../assets/images';
 const Certifications = ({ navigation, route }) => {
   const { certifications = [] } = route.params;
   const [localCertifications, setChangeCertifications] = useState(certifications);
@@ -43,14 +44,15 @@ const Certifications = ({ navigation, route }) => {
       <ScrollView style={styles.scrollContainer}>
         <View style={styles.hr} />
 
-        <View style={styles.data}>
+        <View>
           {localCertifications &&
             localCertifications.map((row, rowIdx) => {
               return (
                 <View key={rowIdx} styles={styles.certificationRow}>
-                  <Image source={certificationIcon} style={styles.icon} />
-                  <Text> {row.description} </Text>
-                  <FileOpener url={row.file_uri} label={'Ver'} />
+                  <Image source={pdfIcon} style={styles.icon} />
+                  <Text style={{ color: 'blue' }} onPress={() => Linking.openURL(row.file_uri)}>
+                    {row.description}
+                  </Text>
                 </View>
               );
             })}
@@ -112,7 +114,12 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   certificationRow: {
+    flexDirection: 'row',
+    display: 'flex',
     flex: 1,
+    backgroundColor: 'green',
+  },
+  data: {
     flexDirection: 'row',
   },
   btnContainer: {
