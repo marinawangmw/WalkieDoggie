@@ -1,9 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { useEffect, useState } from 'react/cjs/react.development';
-import { editOwner, editWalker, getProfile } from '../../services/api/users/profile';
+import { editOwner, editWalker } from '../../services/api/users/profile';
 import { AuthContext } from '../../utils/authContext';
-import { getCurrentUserId } from '../../utils/storage';
 import LoadingScreen from '../LoadingScreen';
 import { ProfileDataRow } from '../../components';
 import { styles, name, personal } from './styles';
@@ -20,7 +18,7 @@ import { removeProps } from '../../helpers/objectHelper';
 const ProfileScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const [userProfile, setUserProfile] = useState(null);
+  const [currentUserProfile, setCurrentUserProfile] = useState(null);
 
   const [changeFirstName, setChangeFirstName] = useState('');
   const [changeLastName, setChangeLastName] = useState('');
@@ -47,30 +45,18 @@ const ProfileScreen = ({ navigation, route }) => {
   }, [route]);
 
   useEffect(() => {
-    const getUserProfileInfo = async () => {
-      try {
-        setLoading(true);
-        const userId = await getCurrentUserId();
-
-        const userProfileResult = await getProfile(userId);
-        setUserProfile(userProfileResult.data);
-        setPets(userProfileResult.data.pets);
-        setChangeFirstName(userProfileResult.data.first_name);
-        setChangeLastName(userProfileResult.data.last_name);
-        setChangePhone(userProfileResult.data.phone);
-        setChangeAddress(userProfileResult.data.address.description);
-        setChangeCertifications(userProfileResult.data.certifications);
-        setChangeRanges(userProfileResult.data.ranges);
-
-        setLoading(false);
-      } catch (e) {
-        setLoading(false);
-        console.log('Error in profile ', e);
-      }
-    };
-
-    getUserProfileInfo();
-  }, []);
+    const { userProfile } = route.params;
+    if (userProfile) {
+      setCurrentUserProfile(userProfile);
+      setPets(userProfile.pets);
+      setChangeFirstName(userProfile.first_name);
+      setChangeLastName(userProfile.last_name);
+      setChangePhone(userProfile.phone);
+      setChangeAddress(userProfile.address.description);
+      setChangeCertifications(userProfile.certifications);
+      setChangeRanges(userProfile.ranges);
+    }
+  }, [route.params]);
 
   const handleImageLoadEnd = () => {
     if (!isImageLoaded) {
@@ -109,7 +95,7 @@ const ProfileScreen = ({ navigation, route }) => {
   };
 
   const handleSaveChangeData = async () => {
-    const userProfileEdited = { ...userProfile };
+    const userProfileEdited = { ...currentUserProfile };
     userProfileEdited.last_name = changeLastName;
     userProfileEdited.first_name = changeFirstName;
     userProfileEdited.address.description = changeAddress;
@@ -141,7 +127,7 @@ const ProfileScreen = ({ navigation, route }) => {
       <View>
         <Text style={styles.petTitle}>Información sobre mascotas</Text>
 
-        {userProfile.pets.map((pet, idx) => (
+        {currentUserProfile.pets.map((pet, idx) => (
           <TouchableOpacity
             style={styles.petDataRow}
             key={idx}
@@ -175,14 +161,14 @@ const ProfileScreen = ({ navigation, route }) => {
     return <LoadingScreen />;
   }
 
-  if (userProfile) {
+  if (currentUserProfile) {
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView>
           <View style={styles.personal}>
             <Image
               source={{
-                uri: userProfile.profile_photo_uri,
+                uri: currentUserProfile.profile_photo_uri,
               }}
               style={styles.picture}
               onLoadEnd={handleImageLoadEnd}
@@ -202,7 +188,7 @@ const ProfileScreen = ({ navigation, route }) => {
                 />
               </View>
 
-              <Text style={styles.email}>{userProfile.email}</Text>
+              <Text style={styles.email}>{currentUserProfile.email}</Text>
             </View>
           </View>
           <View style={styles.iconAndData}>
@@ -224,7 +210,7 @@ const ProfileScreen = ({ navigation, route }) => {
 
           <View style={styles.hr} />
 
-          {userProfile.type === 'OWNER' ? renderPets() : renderWalkerSpecialData()}
+          {currentUserProfile.type === 'OWNER' ? renderPets() : renderWalkerSpecialData()}
 
           {/* walker - achievements */}
 

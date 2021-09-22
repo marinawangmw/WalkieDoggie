@@ -14,3 +14,7 @@ export { default as addressIcon } from './address.png';
 export { default as calendarIcon } from './calendar.png';
 export { default as plusIcon } from './plus.png';
 export { default as certificationIcon } from './certificate.png';
+export { default as walker } from './walkers.png';
+export { default as shelter } from './shelter.png';
+export { default as petBoarding } from './pet-boarding.png';
+export { default as colonies } from './colonies.png';
