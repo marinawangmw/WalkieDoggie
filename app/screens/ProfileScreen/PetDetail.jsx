@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, Image, ScrollView } from 'react-native';
-import { ProfileDataRow } from '../../components';
+import { CustomButton, ProfileDataRow } from '../../components';
 import { PETS_DATA_LABEL } from '../../helpers/profileAndOnboarding';
+import { editPet } from '../../services/api/users/pets';
 
 const PetDetail = ({ route }) => {
-  const { pet, handleEditPets, idx } = route.params;
+  const { pet, handleEditPets, idx, saveInformationPet } = route.params;
 
   const [_changeData, setChangeData] = useState('');
 
@@ -13,9 +14,13 @@ const PetDetail = ({ route }) => {
     handleEditPets(input, idx, dataLabel);
   };
 
+  const saveChanges = () => {
+    saveInformationPet(idx);
+  };
+
   const renderDataRow = (row) => {
     const label = PETS_DATA_LABEL[row[0]];
-    const value = row[1];
+    const value = row[1].toString();
 
     if (label) {
       return (
@@ -42,6 +47,8 @@ const PetDetail = ({ route }) => {
           return <View key={rowIdx}>{renderDataRow(row)}</View>;
         })}
       </View>
+
+      <CustomButton buttonLabel="Guardar" handleOnclick={saveChanges} />
     </ScrollView>
   );
 };

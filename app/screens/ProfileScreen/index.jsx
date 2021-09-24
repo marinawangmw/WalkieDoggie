@@ -16,6 +16,7 @@ import {
 } from '../../assets/images';
 import { USER_TYPES } from '../../utils/constants';
 import { removeProps } from '../../helpers/objectHelper';
+import { editPet } from '../../services/api/users/pets';
 
 const ProfileScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
@@ -84,8 +85,20 @@ const ProfileScreen = ({ navigation, route }) => {
     setPets(aux);
   };
 
+  const saveInformationPet = async (idx) => {
+    const aux = pets.slice();
+    const data = aux[idx];
+    const { id, ...resParams } = data;
+    const response = await editPet(id, resParams);
+    if (!response.result) {
+      Alert.alert('Error al actualizar datos de la mascota.');
+    } else {
+      Alert.alert('Los datos de la mascota han sido actualizados.');
+    }
+  };
+
   const handleNavigatePetDetails = (pet, idx) => {
-    navigation.navigate('petDetail', { pet, handleEditPets, idx });
+    navigation.navigate('petDetail', { pet, handleEditPets, idx, saveInformationPet });
   };
 
   const handleNavigateRanges = () => {
@@ -116,9 +129,6 @@ const ProfileScreen = ({ navigation, route }) => {
     userProfileEdited.phone = changePhone;
 
     if (userProfileEdited.type === USER_TYPES.OWNER) {
-      // quizas validar datos y sacar id de los pets
-      // agarrar pets + userprofile y mandar a services/editProfile
-
       removeProps(userProfileEdited, ['id', 'last_login', 'email']);
       const response = await editOwner(userProfileEdited);
       showResultUpdateProfile(response);
