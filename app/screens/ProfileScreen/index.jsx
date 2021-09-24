@@ -13,6 +13,7 @@ import {
   profileIcon,
   calendarIcon,
   certificationIcon,
+  priceIcon,
 } from '../../assets/images';
 import { USER_TYPES } from '../../utils/constants';
 import { removeProps } from '../../helpers/objectHelper';
@@ -29,8 +30,8 @@ const ProfileScreen = ({ navigation, route }) => {
   const [changeAddress, setChangeAddress] = useState('');
   const [changeRanges, setChangeRanges] = useState([]);
   const [changeCertifications, setChangeCertifications] = useState([]);
-
   const [pets, setPets] = useState(null);
+  const [changePricePerHour, setChangePricePerHour] = useState([]);
 
   const { signOut } = React.useContext(AuthContext);
 
@@ -62,6 +63,7 @@ const ProfileScreen = ({ navigation, route }) => {
         setChangeAddress(userProfileResult.data.address.description);
         setChangeCertifications(userProfileResult.data.certifications);
         setChangeRanges(userProfileResult.data.ranges);
+        setChangePricePerHour(userProfileResult.data.price_per_hour);
 
         setLoading(false);
       } catch (e) {
@@ -134,6 +136,7 @@ const ProfileScreen = ({ navigation, route }) => {
       showResultUpdateProfile(response);
     } else {
       //TODO: Validar ranges
+      userProfileEdited.price_per_hour = changePricePerHour;
 
       userProfileEdited.ranges = changeRanges;
       userProfileEdited.certifications = changeCertifications;
@@ -168,6 +171,15 @@ const ProfileScreen = ({ navigation, route }) => {
   const renderWalkerSpecialData = () => {
     return (
       <>
+        <View style={styles.iconAndData}>
+          <Image source={priceIcon} style={styles.icon} tintColor="#364C63" />
+          <ProfileDataRow
+            customStyles={personal}
+            value={changePricePerHour.toString()}
+            setChangeData={setChangePricePerHour}
+          />
+          <Text>(Precio x hora)</Text>
+        </View>
         <TouchableOpacity style={styles.petDataRow} onPress={handleNavigateRanges}>
           <Image source={calendarIcon} style={styles.icon} />
           <Text style={styles.petName}>Franjas horarias de trabajo</Text>
