@@ -1,14 +1,28 @@
 import React, { useState } from 'react';
-import { Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import Timetable from '../../components/TimeTable';
+import { existOverlapsRanges } from '../../helpers/validatorHelper';
 
 const Ranges = ({ navigation, route }) => {
   const { ranges } = route.params;
   const [changeRanges, setChangeRanges] = useState(ranges);
 
   const handleSaveRanges = () => {
+    //Filtro aquellas franjas que tengan valores
+    const filterRanges = changeRanges.filter((d) => d.start_at !== null && d.end_at !== null);
+    if (filterRanges.some((day) => day.end_at < day.start_at)) {
+      Alert.alert('Los horarios ingresados no son válidos.');
+      return;
+    }
+
+    //Verificamos que no haya solapamientos
+    if (existOverlapsRanges(filterRanges)) {
+      Alert.alert('Los horarios no se pueden solapar para un mismo día.');
+      return;
+    }
+
     navigation.navigate('profile', {
-      ranges: changeRanges,
+      ranges: filterRanges,
     });
   };
 

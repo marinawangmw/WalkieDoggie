@@ -11,10 +11,9 @@ import {
   Linking,
   ActivityIndicator,
 } from 'react-native';
-import { FilePicker, FileOpener, CustomButton } from '../../components';
+import { FilePicker } from '../../components';
 import { uploadFileAws } from '../../utils/aws';
 import { pdfIcon } from '../../assets/images';
-import Hyperlink from 'react-native-hyperlink';
 
 const Certifications = ({ navigation, route }) => {
   const { certifications = [] } = route.params;

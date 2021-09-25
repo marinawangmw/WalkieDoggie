@@ -22,7 +22,6 @@ const Cell = ({
   const [hourSelectedInput, setHourSelectedInput] = useState(value);
 
   const addDayRow = () => {
-    console.log(idx);
     handleAddDayRow(idx);
   };
 

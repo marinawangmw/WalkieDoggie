@@ -6,8 +6,8 @@ import CustomButton from '../CustomButton';
 import { uploadFileAws } from '../../utils/aws';
 import { AuthContext } from '../../utils/authContext';
 import styles from './styles';
-import { removeAccents } from '../../helpers/stringHelper';
 import { INITIAL_RANGES } from '../../helpers/profileAndOnboarding';
+import { existOverlapsRanges } from '../../helpers/validatorHelper';
 
 const WalkerOnboarding = ({ route }) => {
   const { address, lat, long, signupData } = route.params;
@@ -35,6 +35,11 @@ const WalkerOnboarding = ({ route }) => {
     } else if (aux.some((day) => day.end_at < day.start_at)) {
       setIsLoading(false);
       const err = 'Los horarios ingresados no son válidos.';
+      setErrorMessage(err);
+      throw new Error(err);
+    } else if (existOverlapsRanges(aux)) {
+      setIsLoading(false);
+      const err = 'Los horarios no se pueden solapar para un mismo día.';
       setErrorMessage(err);
       throw new Error(err);
     } else {
