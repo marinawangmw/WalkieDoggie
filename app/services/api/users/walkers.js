@@ -1,6 +1,6 @@
 import { HTTP_METHOD, privateRequest } from '../axiosConfig';
 
-export const getWalkers = (id) => {
+export const getWalkers = () => {
   const config = {
     method: HTTP_METHOD.GET,
     url: 'users/walkers',
