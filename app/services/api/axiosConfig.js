@@ -85,6 +85,7 @@ axiosInstance.interceptors.response.use(
     return response.data;
   },
   async function (error) {
+    console.log(error);
     const originalRequest = error.config;
     const { message, internal_code } = error.response.data;
 

@@ -3,9 +3,76 @@ import { Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-nat
 import Timetable from '../../components/TimeTable';
 import { existOverlapsRanges } from '../../helpers/validatorHelper';
 
+export const INITIAL_RANGES = [
+  {
+    day_of_week: 'LUNES',
+    end_at: null,
+    start_at: null,
+  },
+  {
+    day_of_week: 'MARTES',
+    end_at: null,
+    start_at: null,
+  },
+
+  {
+    day_of_week: 'MIERCOLES',
+    end_at: null,
+    start_at: null,
+  },
+  {
+    day_of_week: 'JUEVES',
+    end_at: null,
+    start_at: null,
+  },
+  {
+    day_of_week: 'VIERNES',
+    end_at: null,
+    start_at: null,
+  },
+  {
+    day_of_week: 'SABADO',
+    end_at: null,
+    start_at: null,
+  },
+  {
+    day_of_week: 'DOMINGO',
+    end_at: null,
+    start_at: null,
+  },
+];
+
+const DAY_ORDER = {
+  LUNES: 0,
+  MARTES: 1,
+  MIERCOLES: 2,
+  JUEVES: 3,
+  VIERNES: 4,
+  SABADO: 5,
+  DOMINGO: 6,
+};
+
 const Ranges = ({ navigation, route }) => {
   const { ranges } = route.params;
-  const [changeRanges, setChangeRanges] = useState(ranges);
+
+  let existingRangesAndEmpties = [...ranges, ...INITIAL_RANGES];
+
+  existingRangesAndEmpties = existingRangesAndEmpties.filter((range, index) => {
+    return (
+      (range.start_at !== null && range.end_at !== null) ||
+      (range.start_at === null &&
+        range.end_at === null &&
+        !existingRangesAndEmpties.some(
+          (a, indexSome) => a.day_of_week === range.day_of_week && index !== indexSome,
+        ))
+    );
+  });
+
+  existingRangesAndEmpties = existingRangesAndEmpties.sort((a, b) =>
+    DAY_ORDER[a.day_of_week] > DAY_ORDER[b.day_of_week] ? 1 : -1,
+  );
+
+  const [changeRanges, setChangeRanges] = useState(existingRangesAndEmpties);
 
   const handleSaveRanges = () => {
     //Filtro aquellas franjas que tengan valores

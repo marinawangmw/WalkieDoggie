@@ -15,6 +15,7 @@ export const uploadFileAws = async (fileData) => {
     const { name: fileName, type: contentType, arrayBuffer } = fileData;
     const contentDisposition = 'inline;filename="' + fileName + '"';
     s3bucket.createBucket(() => {
+      console.log("prueba:", AWS_S3_BUCKET);
       const params = {
         Bucket: AWS_S3_BUCKET,
         Key: fileName,
