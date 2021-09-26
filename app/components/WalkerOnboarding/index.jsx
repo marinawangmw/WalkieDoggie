@@ -6,7 +6,7 @@ import CustomButton from '../CustomButton';
 import { uploadFileAws } from '../../utils/aws';
 import { AuthContext } from '../../utils/authContext';
 import styles from './styles';
-import { INITIAL_RANGES } from '../../helpers/profileAndOnboarding';
+import { initRanges } from '../../helpers/profileAndOnboarding';
 import { existOverlapsRanges } from '../../helpers/validatorHelper';
 
 const WalkerOnboarding = ({ route }) => {
@@ -19,7 +19,7 @@ const WalkerOnboarding = ({ route }) => {
   const [cover_letter, setCover_letter] = useState('');
   const [profilePhotoData, setProfilePhotoData] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
-  const [ranges, setRanges] = useState(INITIAL_RANGES);
+  const [ranges, setRanges] = useState(initRanges());
 
   const formatTimeTableObject = () => {
     let aux = ranges.slice();

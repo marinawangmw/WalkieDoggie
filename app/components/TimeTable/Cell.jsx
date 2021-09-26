@@ -66,11 +66,11 @@ const Cell = ({
             <Image source={plusIcon} style={styles.plusIcon} />
           </TouchableOpacity>
         )}
-        {/* {addMinusIcon && (
+        {addMinusIcon && (
           <TouchableOpacity style={styles.iconContainer} onPress={removeDayRow}>
             <Image source={minusIcon} style={styles.minusIcon} />
           </TouchableOpacity>
-        )} */}
+        )}
       </View>
     );
   }

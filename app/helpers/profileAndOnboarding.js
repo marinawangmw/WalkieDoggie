@@ -1,4 +1,4 @@
-export const INITIAL_RANGES = [
+export const initRanges = () => [
   {
     day_of_week: 'LUNES',
     end_at: null,

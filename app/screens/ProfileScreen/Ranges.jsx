@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import Timetable from '../../components/TimeTable';
-import { DAY_ORDER, INITIAL_RANGES } from '../../helpers/profileAndOnboarding';
+import { DAY_ORDER, initRanges } from '../../helpers/profileAndOnboarding';
 import { existOverlapsRanges } from '../../helpers/validatorHelper';
 
 const Ranges = ({ navigation, route }) => {
   const { ranges } = route.params;
 
-  let existingRangesAndEmpties = [...ranges, ...INITIAL_RANGES];
+  let existingRangesAndEmpties = [...ranges, ...initRanges()];
 
   existingRangesAndEmpties = existingRangesAndEmpties.filter((range, index) => {
     return (
@@ -46,6 +46,7 @@ const Ranges = ({ navigation, route }) => {
   };
 
   const handleChangeRanges = (input) => {
+    setChangeRanges([]);
     setChangeRanges(input);
   };
 
