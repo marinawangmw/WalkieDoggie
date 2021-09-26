@@ -22,35 +22,37 @@ const Table = ({ squares, handleChangeText, handleAddDayRow, handleRemoveDayRow 
     return (
       <>
         {renderHeader()}
-        {squares.map((day, idx) => (
-          <View style={styles.row} key={idx}>
-            <Cell
-              customStyles={titleStyles}
-              value={day.day_of_week}
-              handleChangeText={handleChangeText}
-              isTitle
-              idx={idx}
-              addPlusIcon
-              addMinusIcon
-              handleAddDayRow={handleAddDayRow}
-              handleRemoveDayRow={handleRemoveDayRow}
-            />
-            <Cell
-              customStyles={dataStyles}
-              value={day.start_at}
-              idx={idx}
-              col="start_at"
-              handleChangeText={handleChangeText}
-            />
-            <Cell
-              customStyles={dataStyles}
-              value={day.end_at}
-              idx={idx}
-              col="end_at"
-              handleChangeText={handleChangeText}
-            />
-          </View>
-        ))}
+        {squares.map((day, idx) => {
+          return (
+            <View style={styles.row} key={idx}>
+              <Cell
+                customStyles={titleStyles}
+                value={day.day_of_week}
+                handleChangeText={handleChangeText}
+                isTitle
+                idx={idx}
+                addPlusIcon
+                addMinusIcon
+                handleAddDayRow={handleAddDayRow}
+                handleRemoveDayRow={handleRemoveDayRow}
+              />
+              <Cell
+                customStyles={dataStyles}
+                value={day.start_at}
+                idx={idx}
+                col="start_at"
+                handleChangeText={handleChangeText}
+              />
+              <Cell
+                customStyles={dataStyles}
+                value={day.end_at}
+                idx={idx}
+                col="end_at"
+                handleChangeText={handleChangeText}
+              />
+            </View>
+          );
+        })}
       </>
     );
   };

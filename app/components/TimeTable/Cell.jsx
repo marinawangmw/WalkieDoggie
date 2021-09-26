@@ -21,7 +21,6 @@ const Cell = ({
   const [date, setDate] = useState(initialDate);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
-  const [hourSelectedInput, setHourSelectedInput] = useState(value);
 
   const addDayRow = () => {
     handleAddDayRow(idx);
@@ -42,7 +41,6 @@ const Cell = ({
       let currentMinutes = currentDate.getMinutes();
       currentMinutes = ('0' + currentMinutes).slice(-2);
       const formatHour = currentHours + ':' + currentMinutes;
-      setHourSelectedInput(formatHour);
 
       handleChangeText(formatHour, idx, col);
     }
@@ -74,9 +72,10 @@ const Cell = ({
       </View>
     );
   }
+
   return (
     <View style={[styles.cell, customStyles.container]}>
-      <TextInput value={hourSelectedInput} onFocus={showTimepicker} />
+      <TextInput value={value} onFocus={showTimepicker} />
       {show && (
         <DateTimePicker
           value={initialDate}

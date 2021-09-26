@@ -7,8 +7,7 @@ const Timetable = ({ ranges, setRanges, onboardingNote }) => {
     const aux = ranges.slice();
     const day = aux[idx].day_of_week;
     const newRow = { day_of_week: day, start_at: null, end_at: null };
-    aux.push(newRow);
-    // aux.splice(idx + 1, 0, newRow);
+    aux.splice(idx + 1, 0, newRow);
     setRanges(aux);
   };
 
