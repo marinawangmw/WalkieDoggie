@@ -17,3 +17,4 @@ export { default as minusIcon } from './minus.png';
 export { default as certificationIcon } from './certificate.png';
 export { default as pdfIcon } from './pdf.png';
 export { default as priceIcon } from './price.png';
+export { default as resumeIcon } from './resume.png';

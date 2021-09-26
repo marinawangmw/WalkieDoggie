@@ -14,6 +14,7 @@ import {
   calendarIcon,
   certificationIcon,
   priceIcon,
+  resumeIcon,
 } from '../../assets/images';
 import { USER_TYPES } from '../../utils/constants';
 import { removeProps } from '../../helpers/objectHelper';
@@ -32,6 +33,7 @@ const ProfileScreen = ({ navigation, route }) => {
   const [changeCertifications, setChangeCertifications] = useState([]);
   const [pets, setPets] = useState(null);
   const [changePricePerHour, setChangePricePerHour] = useState([]);
+  const [changeCoverLetter, setChangeCoverLetter] = useState([]);
 
   const { signOut } = React.useContext(AuthContext);
 
@@ -64,7 +66,7 @@ const ProfileScreen = ({ navigation, route }) => {
         setChangeCertifications(userProfileResult.data.certifications);
         setChangeRanges(userProfileResult.data.ranges);
         setChangePricePerHour(userProfileResult.data.price_per_hour);
-
+        setChangeCoverLetter(userProfileResult.data.cover_letter);
         setLoading(false);
       } catch (e) {
         setLoading(false);
@@ -135,8 +137,8 @@ const ProfileScreen = ({ navigation, route }) => {
       const response = await editOwner(userProfileEdited);
       showResultUpdateProfile(response);
     } else {
-      //TODO: Validar ranges
       userProfileEdited.price_per_hour = changePricePerHour;
+      userProfileEdited.cover_letter = changeCoverLetter;
 
       userProfileEdited.ranges = changeRanges;
       userProfileEdited.certifications = changeCertifications;
@@ -146,7 +148,6 @@ const ProfileScreen = ({ navigation, route }) => {
       const response = await editWalker(userProfileEdited);
       showResultUpdateProfile(response);
     }
-    // mostrar alert una vez guardada
   };
 
   const renderPets = () => {
@@ -179,6 +180,15 @@ const ProfileScreen = ({ navigation, route }) => {
             setChangeData={setChangePricePerHour}
           />
           <Text>(Precio x hora)</Text>
+        </View>
+
+        <View style={styles.iconAndData}>
+          <Image source={resumeIcon} style={styles.icon} tintColor="#364C63" />
+          <ProfileDataRow
+            customStyles={personal}
+            value={changeCoverLetter}
+            setChangeData={setChangeCoverLetter}
+          />
         </View>
         <TouchableOpacity style={styles.petDataRow} onPress={handleNavigateRanges}>
           <Image source={calendarIcon} style={styles.icon} />

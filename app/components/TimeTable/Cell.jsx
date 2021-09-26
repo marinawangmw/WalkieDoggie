@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Platform, Image, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { plusIcon } from '../../assets/images';
-import { minusIcon } from '../../assets/images';
+import { plusIcon, minusIcon } from '../../assets/images';
 
 const Cell = ({
   customStyles,
@@ -67,11 +66,11 @@ const Cell = ({
             <Image source={plusIcon} style={styles.plusIcon} />
           </TouchableOpacity>
         )}
-        {addMinusIcon && (
+        {/* {addMinusIcon && (
           <TouchableOpacity style={styles.iconContainer} onPress={removeDayRow}>
             <Image source={minusIcon} style={styles.minusIcon} />
           </TouchableOpacity>
-        )}
+        )} */}
       </View>
     );
   }

@@ -1,56 +1,8 @@
 import React, { useState } from 'react';
 import { Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import Timetable from '../../components/TimeTable';
+import { DAY_ORDER, INITIAL_RANGES } from '../../helpers/profileAndOnboarding';
 import { existOverlapsRanges } from '../../helpers/validatorHelper';
-
-export const INITIAL_RANGES = [
-  {
-    day_of_week: 'LUNES',
-    end_at: null,
-    start_at: null,
-  },
-  {
-    day_of_week: 'MARTES',
-    end_at: null,
-    start_at: null,
-  },
-
-  {
-    day_of_week: 'MIERCOLES',
-    end_at: null,
-    start_at: null,
-  },
-  {
-    day_of_week: 'JUEVES',
-    end_at: null,
-    start_at: null,
-  },
-  {
-    day_of_week: 'VIERNES',
-    end_at: null,
-    start_at: null,
-  },
-  {
-    day_of_week: 'SABADO',
-    end_at: null,
-    start_at: null,
-  },
-  {
-    day_of_week: 'DOMINGO',
-    end_at: null,
-    start_at: null,
-  },
-];
-
-const DAY_ORDER = {
-  LUNES: 0,
-  MARTES: 1,
-  MIERCOLES: 2,
-  JUEVES: 3,
-  VIERNES: 4,
-  SABADO: 5,
-  DOMINGO: 6,
-};
 
 const Ranges = ({ navigation, route }) => {
   const { ranges } = route.params;

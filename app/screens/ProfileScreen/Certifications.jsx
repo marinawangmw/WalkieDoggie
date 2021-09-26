@@ -20,19 +20,24 @@ const Certifications = ({ navigation, route }) => {
   const [localCertifications, setChangeCertifications] = useState(certifications);
   const [newCertificationData, setNewCertificationData] = useState(null);
   const [newCertificationDescription, setnewCertificationDescription] = useState(null);
+  const [canStillUploadFiles, setCanStillUploadFiles] = useState(certifications.length < 3);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleUploadCertification = () => {
     setIsLoading(true);
     return uploadFileAws(newCertificationData)
       .then((url) => {
-        setChangeCertifications([
+        const newCertifications = [
           ...localCertifications,
           { file_uri: url, description: newCertificationDescription },
-        ]);
+        ];
+        setChangeCertifications(newCertifications);
 
         setNewCertificationData(null);
         setnewCertificationDescription(null);
+        console.log(newCertifications.length < 3);
+        setCanStillUploadFiles(newCertifications.length < 3);
         setIsLoading(false);
       })
       .catch((e) => {
@@ -70,25 +75,27 @@ const Certifications = ({ navigation, route }) => {
           )}
         </View>
 
-        <View style={styles.viewAddNewCertification}>
-          <FilePicker
-            label={'Nueva certificación'}
-            fileType={'pdf'}
-            setFileData={setNewCertificationData}
-          />
+        {canStillUploadFiles && (
+          <View style={styles.viewAddNewCertification}>
+            <FilePicker
+              label={'Nueva certificación'}
+              fileType={'pdf'}
+              setFileData={setNewCertificationData}
+            />
 
-          {newCertificationData && (
-            <View styles={styles.viewDescriptionInput}>
-              <TextInput
-                style={styles.descriptionInput}
-                value={newCertificationDescription}
-                placeholder="Descripción..."
-                onChangeText={setnewCertificationDescription}
-              />
-              <Button title={'Subir'} onPress={handleUploadCertification} />
-            </View>
-          )}
-        </View>
+            {newCertificationData && (
+              <View styles={styles.viewDescriptionInput}>
+                <TextInput
+                  style={styles.descriptionInput}
+                  value={newCertificationDescription}
+                  placeholder="Descripción..."
+                  onChangeText={setnewCertificationDescription}
+                />
+                <Button title={'Subir'} onPress={handleUploadCertification} />
+              </View>
+            )}
+          </View>
+        )}
         <TouchableOpacity onPress={handleSaveCertifications} style={styles.btnContainer}>
           <Text style={styles.btnLabel}>Guardar certificaciones</Text>
         </TouchableOpacity>

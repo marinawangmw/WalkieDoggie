@@ -14,7 +14,6 @@ export const login = async (params) => {
   };
 
   try {
-    console.log("hola");
     const { access_token, refresh_token } = await publicRequest(config);
     var { user_type, sub } = jwt_decode(access_token);
 
