@@ -11,6 +11,20 @@ const Timetable = ({ ranges, setRanges, onboardingNote }) => {
     setRanges(aux);
   };
 
+  const handleRemoveDayRow = (idx) => {
+    const aux = ranges.slice();
+    const auxIdx = aux[idx];
+
+    if (aux.filter((a) => a.day_of_week === auxIdx.day_of_week).length > 1) {
+      aux.splice(idx, 1);
+    } else {
+      auxIdx.start_at = null;
+      auxIdx.end_at = null;
+    }
+
+    setRanges(aux);
+  };
+
   const handleChangeText = (input, idx, col) => {
     const aux = ranges.slice();
     aux[idx][col] = input;
@@ -29,6 +43,7 @@ const Timetable = ({ ranges, setRanges, onboardingNote }) => {
         squares={ranges}
         handleChangeText={handleChangeText}
         handleAddDayRow={handleAddDayRow}
+        handleRemoveDayRow={handleRemoveDayRow}
       />
       {onboardingNote && (
         <Text style={styles.text}>

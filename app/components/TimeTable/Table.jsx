@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import Cell from './Cell';
 import { RANGES_HEADER } from '../../helpers/profileAndOnboarding';
 
-const Table = ({ squares, handleChangeText, handleAddDayRow }) => {
+const Table = ({ squares, handleChangeText, handleAddDayRow, handleRemoveDayRow }) => {
   const renderHeader = () => {
     return (
       <>
@@ -31,7 +31,9 @@ const Table = ({ squares, handleChangeText, handleAddDayRow }) => {
               isTitle
               idx={idx}
               addPlusIcon
+              addMinusIcon
               handleAddDayRow={handleAddDayRow}
+              handleRemoveDayRow={handleRemoveDayRow}
             />
             <Cell
               customStyles={dataStyles}

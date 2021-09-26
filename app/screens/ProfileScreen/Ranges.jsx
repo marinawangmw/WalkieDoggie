@@ -68,8 +68,8 @@ const Ranges = ({ navigation, route }) => {
     );
   });
 
-  existingRangesAndEmpties = existingRangesAndEmpties.sort((a, b) =>
-    DAY_ORDER[a.day_of_week] > DAY_ORDER[b.day_of_week] ? 1 : -1,
+  existingRangesAndEmpties = existingRangesAndEmpties.sort(
+    (a, b) => DAY_ORDER[a.day_of_week] - DAY_ORDER[b.day_of_week] || a.start_at - b.start_at,
   );
 
   const [changeRanges, setChangeRanges] = useState(existingRangesAndEmpties);

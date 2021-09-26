@@ -13,6 +13,7 @@ export { default as phoneIcon } from './phone.png';
 export { default as addressIcon } from './address.png';
 export { default as calendarIcon } from './calendar.png';
 export { default as plusIcon } from './plus.png';
+export { default as minusIcon } from './minus.png';
 export { default as certificationIcon } from './certificate.png';
 export { default as pdfIcon } from './pdf.png';
 export { default as priceIcon } from './price.png';

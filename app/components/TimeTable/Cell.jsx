@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Platform, Image, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { plusIcon } from '../../assets/images';
+import { minusIcon } from '../../assets/images';
 
 const Cell = ({
   customStyles,
@@ -11,7 +12,9 @@ const Cell = ({
   handleChangeText,
   isTitle,
   addPlusIcon,
+  addMinusIcon,
   handleAddDayRow,
+  handleRemoveDayRow,
 }) => {
   var today = new Date();
   const initialDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
@@ -23,6 +26,10 @@ const Cell = ({
 
   const addDayRow = () => {
     handleAddDayRow(idx);
+  };
+
+  const removeDayRow = () => {
+    handleRemoveDayRow(idx);
   };
 
   const onChange = (event, selectedDate) => {
@@ -57,7 +64,12 @@ const Cell = ({
         <Text style={customStyles.text}>{value}</Text>
         {addPlusIcon && (
           <TouchableOpacity style={styles.iconContainer} onPress={addDayRow}>
-            <Image source={plusIcon} style={styles.icon} />
+            <Image source={plusIcon} style={styles.plusIcon} />
+          </TouchableOpacity>
+        )}
+        {addMinusIcon && (
+          <TouchableOpacity style={styles.iconContainer} onPress={removeDayRow}>
+            <Image source={minusIcon} style={styles.minusIcon} />
           </TouchableOpacity>
         )}
       </View>
@@ -90,10 +102,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
   },
-  icon: {
+  plusIcon: {
     width: 20,
     height: 20,
     tintColor: '#f4b445',
+    resizeMode: 'cover',
+  },
+  minusIcon: {
+    width: 20,
+    height: 20,
+    tintColor: '#384b63',
     resizeMode: 'cover',
   },
   iconContainer: {
