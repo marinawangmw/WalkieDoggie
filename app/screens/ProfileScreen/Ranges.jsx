@@ -46,7 +46,6 @@ const Ranges = ({ navigation, route }) => {
   };
 
   const handleChangeRanges = (input) => {
-    setChangeRanges([]);
     setChangeRanges(input);
   };
 
