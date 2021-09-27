@@ -36,7 +36,6 @@ const Certifications = ({ navigation, route }) => {
 
         setNewCertificationData(null);
         setnewCertificationDescription(null);
-        console.log(newCertifications.length < 3);
         setCanStillUploadFiles(newCertifications.length < 3);
         setIsLoading(false);
       })

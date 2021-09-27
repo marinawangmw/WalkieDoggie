@@ -3,7 +3,6 @@ import { View, Text, Modal, Pressable, StyleSheet } from 'react-native';
 
 const EditModal = ({ data }) => {
   const [visible, setVisible] = useState(false);
-  console.log('hi');
   return (
     <View>
       <Modal
