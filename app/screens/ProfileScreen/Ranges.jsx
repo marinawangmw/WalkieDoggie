@@ -20,9 +20,13 @@ const Ranges = ({ navigation, route }) => {
     );
   });
 
-  existingRangesAndEmpties = existingRangesAndEmpties.sort(
-    (a, b) => DAY_ORDER[a.day_of_week] - DAY_ORDER[b.day_of_week] || a.start_at - b.start_at,
-  );
+  existingRangesAndEmpties = existingRangesAndEmpties.sort((a, b) => {
+    if (DAY_ORDER[a.day_of_week] < DAY_ORDER[b.day_of_week]) return -1;
+    if (DAY_ORDER[a.day_of_week] > DAY_ORDER[b.day_of_week]) return 1;
+    if (a.start_at < b.start_at) return -1;
+    if (a.start_at > b.start_at) return 1;
+    return 0;
+  });
 
   const [changeRanges, setChangeRanges] = useState(existingRangesAndEmpties);
 
