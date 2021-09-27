@@ -144,7 +144,7 @@ const AuthenticationContent = ({ error, navigation }) => {
   };
 
   const togglePasswordVisibility = () => {
-    setHidePassword(!hidePassword);
+    setHidePassword((prevHidePassword) => !prevHidePassword);
   };
 
   const handleConfirmPassword = (text) => {
