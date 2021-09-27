@@ -144,7 +144,7 @@ const AuthenticationContent = ({ error, navigation }) => {
   };
 
   const togglePasswordVisibility = () => {
-    setHidePassword((prevHidePassword) => !prevHidePassword);
+    setHidePassword(!hidePassword);
   };
 
   const handleConfirmPassword = (text) => {
@@ -152,10 +152,18 @@ const AuthenticationContent = ({ error, navigation }) => {
 
     if (confirmPassword.length > 0 && password !== text) {
       setConfirmPasswordError('Las claves ingresadas no coinciden');
+    } else if (!isItValidPassword(password)) {
+      setConfirmPasswordError(
+        'La contraseña debe tener al menos 8 caracteres, una mayúscula, un dígito y un carácter especial',
+      );
     } else {
       clearErrors();
     }
   };
+
+  function isItValidPassword(str) {
+    return /^(?=.*\d)(?=.*[A-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,}$/.test(str);
+  }
 
   const renderEmailAndPassword = () => (
     <>
