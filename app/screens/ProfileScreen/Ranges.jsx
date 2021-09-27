@@ -8,7 +8,6 @@ const Ranges = ({ navigation, route }) => {
   const { ranges } = route.params;
 
   let existingRangesAndEmpties = [...ranges, ...initRanges()];
-
   existingRangesAndEmpties = existingRangesAndEmpties.filter((range, index) => {
     return (
       (range.start_at !== null && range.end_at !== null) ||
