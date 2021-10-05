@@ -28,7 +28,6 @@ const CreateWalkScreen = () => {
   };
 
   const onchange = (_event, selectedDate, setValue) => {
-    console.log(selectedDate);
     // setValue(selectedDate);
   };
 
@@ -143,6 +142,8 @@ const styles = StyleSheet.create({
   },
   pressable: {
     flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
   },
   icon: {
     height: 25,
