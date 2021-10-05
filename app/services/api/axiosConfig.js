@@ -25,7 +25,9 @@ const axiosInstance = axios.create({
   },
 });
 
-export const publicRequest = async (config) => axiosInstance.request(config);
+export const publicRequest = async (config) => {
+  return axiosInstance.request(config);
+};
 
 export const refreshToken = async () => {
   const currentRefreshToken = await getRefreshTokenStorage();
