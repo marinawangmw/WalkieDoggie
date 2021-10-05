@@ -19,7 +19,7 @@ const Ranges = ({ navigation, route }) => {
   if (ranges.length) {
     return (
       <ScrollView contentContainerStyle={styles.container}>
-        <Timetable ranges={changeRanges} setRanges={handleChangeRanges} />
+        <Timetable ranges={changeRanges} setRanges={handleChangeRanges} addPlusIcon />
         <TouchableOpacity onPress={handleSaveRanges} style={styles.btnContainer}>
           <Text style={styles.btnLabel}>Guardar franjas horarias</Text>
         </TouchableOpacity>

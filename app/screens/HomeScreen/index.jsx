@@ -1,14 +1,12 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { OwnerHomeMenu } from '../../components';
+import { OwnerHomeMenu } from 'components';
 import styles from './styles';
 
 const HomeScreen = ({ navigation, route }) => {
   const { userProfile } = route.params;
 
   const renderOwnerHome = () => {
-    // home menu -> home menu item (icon + title + touchable)
-    // + navigation: find walkers screen
     return <OwnerHomeMenu navigation={navigation} />;
   };
 

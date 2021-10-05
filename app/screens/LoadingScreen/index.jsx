@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ActivityIndicator } from 'react-native';
-import Logo from '../../components/Logo';
+import Logo from 'components/Logo';
 import styles from './styles';
 
 const LoadingScreen = ({ logo }) => {

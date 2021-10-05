@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { View, Image } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
-import { getArrayBufferContent, getMimeType } from '../../utils/files';
+import { getArrayBufferContent, getMimeType } from 'utils/files';
 import { v4 as uuidv4 } from 'uuid';
-import CustomButton from '../CustomButton';
+import { CustomButton } from 'components';
 import styles from './styles';
 
 // file types : img, file, video, pdf, undefined

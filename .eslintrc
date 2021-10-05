@@ -4,7 +4,8 @@
     "@react-native-community",
     "eslint:recommended",
     "plugin:import/errors",
-    "plugin:react/recommended"
+    "plugin:import/warnings",
+    "plugin:react/recommended",
   ],
   "rules": {
     "react/prop-types": 0,
@@ -29,7 +30,8 @@
   ], 
   "import/resolver": {
     "node": {
-      "extensions": [".js", ".jsx", ".native.js"]
+      "extensions": [".js", ".jsx", ".native.js"],
+      "paths": ["./app"]
     }
   },
   "react": {

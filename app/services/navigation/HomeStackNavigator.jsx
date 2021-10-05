@@ -1,6 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
-import { HomeScreen, FindWalkersScreen } from '../../screens';
+import { HomeScreen, FindWalkersScreen, ProfileScreen, CreateWalkScreen } from '../../screens';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +19,17 @@ const HomeStackNavigator = ({ route }) => {
       <Stack.Screen
         name="findWalker"
         component={FindWalkersScreen}
-        options={{ title: 'Paseadores' }}
+        options={{ title: 'Paseadores', headerBackTitle: '' }}
+      />
+      <Stack.Screen
+        name="profile"
+        component={ProfileScreen}
+        options={{ title: '', headerBackTitle: '' }}
+      />
+      <Stack.Screen
+        name="createWalk"
+        component={CreateWalkScreen}
+        options={{ title: 'Crear una reserva para tu paseo', headerBackTitle: '' }}
       />
     </Stack.Navigator>
   );

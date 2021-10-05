@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import HomeMenuItem from './HomeMenuItem';
-import { walker, shelter, petBoarding, colonies } from '../../assets/images';
+// eslint-disable-next-line import/no-unresolved
+import { walker, shelter, petBoarding, colonies } from 'images';
 
 const OwnerHomeMenu = ({ navigation }) => {
   const homeOptions = [
