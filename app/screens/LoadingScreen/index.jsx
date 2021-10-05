@@ -5,7 +5,12 @@ import styles from './styles';
 
 const LoadingScreen = ({ logo }) => {
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        logo ? { backgroundColor: '#f3f3eb' } : { backgroundColor: '#f3f3f3' },
+      ]}
+    >
       {logo && <Logo />}
       <View style={styles.space} />
       <ActivityIndicator size="large" color="#f8b444" />
