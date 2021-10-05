@@ -23,3 +23,6 @@ export { default as star } from './star.png';
 export { default as inactiveStar } from './inactive-star.png';
 export { default as searchIcon } from './search.png';
 export { default as user } from './user.png';
+export { default as calendar } from './calendar-black.png';
+export { default as clock } from './clock.png';
+export { default as sandClock } from './sand-clock.png';

@@ -12,10 +12,10 @@ const FindWalkerScreen = ({ navigation }) => {
     const getWalkersData = async () => {
       let walkers;
       const moreThanTwoCharName = selectedValue === 'complete_name' && input.length > 2;
-      const moreThanZeroChar = selectedValue !== 'complete_name' && input.length > 0;
+      const moreThanZeroCharOthers = selectedValue !== 'complete_name' && input.length > 0;
 
       try {
-        if (moreThanTwoCharName || moreThanZeroChar) {
+        if (moreThanTwoCharName || moreThanZeroCharOthers) {
           walkers = await getWalkers({ [selectedValue]: input });
         } else {
           walkers = await getWalkers();
