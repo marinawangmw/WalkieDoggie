@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, Image, ScrollView } from 'react-native';
-import { ProfileDataRow } from '../../components';
-import { PETS_DATA_LABEL } from '../../helpers/profileAndOnboarding';
+import { ProfileDataRow } from 'components';
+import { PETS_DATA_LABEL } from 'helpers/profileAndOnboarding';
 
 const PetDetail = ({ route }) => {
   const { pet, handleEditPets, idx } = route.params;

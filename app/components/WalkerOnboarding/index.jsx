@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
 import { View, TextInput, ScrollView, Text, ActivityIndicator } from 'react-native';
-import Timetable from '../TimeTable';
-import FilePicker from '../FilePicker';
-import CustomButton from '../CustomButton';
-import { uploadFileAws } from '../../utils/aws';
-import { AuthContext } from '../../utils/authContext';
+import { TimeTable, FilePicker, CustomButton } from 'components';
+import { uploadFileAws, AuthContext } from 'utils';
+import { INITIAL_RANGES } from 'helpers/profileAndOnboarding';
 import styles from './styles';
-import { removeAccents } from '../../helpers/stringHelper';
-import { INITIAL_RANGES } from '../../helpers/profileAndOnboarding';
 
 const WalkerOnboarding = ({ route }) => {
   const { address, lat, long, signupData } = route.params;
@@ -109,7 +105,7 @@ const WalkerOnboarding = ({ route }) => {
           onChangeText={setPrice_per_hour}
         />
 
-        <Timetable ranges={ranges} setRanges={setRanges} onboardingNote />
+        <TimeTable ranges={ranges} setRanges={setRanges} onboardingNote addPlusIcon />
 
         <TextInput
           placeholder="Carta de presentación"

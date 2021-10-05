@@ -35,6 +35,9 @@ export const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingVertical: 8,
   },
+  btn: {
+    alignItems: 'center',
+  },
   btnContainer: {
     flexGrow: 1,
     padding: 10,
@@ -64,8 +67,11 @@ export const styles = StyleSheet.create({
   },
   petDataRow: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     padding: 20,
+  },
+  petDataRowTitle: {
+    flexDirection: 'row',
   },
   petName: {
     paddingLeft: 20,

@@ -9,10 +9,12 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import { FilePicker, FileOpener, CustomButton } from '../../components';
-import { uploadFileAws } from '../../utils/aws';
-import { certificationIcon } from '../../assets/images';
-const Certifications = ({ navigation, route }) => {
+import { FilePicker, FileOpener } from 'components';
+import { uploadFileAws } from 'utils/aws';
+// eslint-disable-next-line import/no-unresolved
+import { certificationIcon } from 'images';
+
+const Certifications = ({ navigation, route, disableUpload }) => {
   const { certifications = [] } = route.params;
   const [localCertifications, setChangeCertifications] = useState(certifications);
   const [newCertificationData, setNewCertificationData] = useState(null);
@@ -41,13 +43,13 @@ const Certifications = ({ navigation, route }) => {
   return (
     <>
       <ScrollView style={styles.scrollContainer}>
-        <View style={styles.hr} />
+        {Boolean(localCertifications.length) && !disableUpload && <View style={styles.hr} />}
 
         <View style={styles.data}>
           {localCertifications &&
             localCertifications.map((row, rowIdx) => {
               return (
-                <View key={rowIdx} styles={styles.certificationRow}>
+                <View key={rowIdx} style={styles.certificationRow}>
                   <Image source={certificationIcon} style={styles.icon} />
                   <Text> {row.description} </Text>
                   <FileOpener url={row.file_uri} label={'Ver'} />
@@ -55,14 +57,16 @@ const Certifications = ({ navigation, route }) => {
               );
             })}
         </View>
-        <View style={styles.hr} />
+        {Boolean(localCertifications.length) && !disableUpload && <View style={styles.hr} />}
 
         <View style={styles.viewAddNewCertification}>
-          <FilePicker
-            label={'Nueva certificación'}
-            fileType={'pdf'}
-            setFileData={setNewCertificationData}
-          />
+          {!disableUpload && (
+            <FilePicker
+              label={'Nueva certificación'}
+              fileType={'pdf'}
+              setFileData={setNewCertificationData}
+            />
+          )}
 
           {newCertificationData && (
             <View styles={styles.viewDescriptionInput}>
@@ -72,13 +76,19 @@ const Certifications = ({ navigation, route }) => {
                 placeholder="Descripción..."
                 onChangeText={setnewCertificationDescription}
               />
-              <Button title={'Subir'} onPress={handleUploadCertification} />
+              <Button title="Subir" onPress={handleUploadCertification} />
             </View>
           )}
         </View>
-        <TouchableOpacity onPress={handleSaveCertifications} style={styles.btnContainer}>
-          <Text style={styles.btnLabel}>Guardar certificaciones</Text>
-        </TouchableOpacity>
+        {!disableUpload && (
+          <TouchableOpacity onPress={handleSaveCertifications} style={styles.btnContainer}>
+            <Text style={styles.btnLabel}>Guardar certificaciones</Text>
+          </TouchableOpacity>
+        )}
+
+        {Boolean(!localCertifications.length) && (
+          <Text style={styles.message}>No hay certificaciones subidas todavía</Text>
+        )}
       </ScrollView>
     </>
   );
@@ -91,7 +101,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     height: '100%',
-    backgroundColor: '#FFF',
+    marginTop: 20,
   },
   descriptionInput: {
     fontSize: 16,
@@ -114,6 +124,7 @@ const styles = StyleSheet.create({
   certificationRow: {
     flex: 1,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   btnContainer: {
     justifyContent: 'center',
@@ -130,5 +141,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderBottomColor: '#bfbfbf',
     borderBottomWidth: 1,
+  },
+  message: {
+    padding: 20,
+    margin: 10,
+    color: 'gray',
+    borderWidth: 1,
+    backgroundColor: '#fff',
+    textAlign: 'center',
+    borderColor: '#f4d7a3',
+    borderRadius: 10,
   },
 });

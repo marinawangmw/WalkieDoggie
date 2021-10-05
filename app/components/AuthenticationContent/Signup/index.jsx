@@ -17,12 +17,14 @@ const Signup = ({
   return (
     <>
       <TextInput
+        autoCapitalize="words"
         style={styles.authentication__input}
         placeholder="Nombre"
         value={firstName}
         onChangeText={setFirstName}
       />
       <TextInput
+        autoCapitalize="words"
         style={styles.authentication__input}
         placeholder="Apellido"
         value={lastName}
