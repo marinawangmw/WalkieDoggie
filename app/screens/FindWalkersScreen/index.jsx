@@ -1,29 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 import { getWalkers } from 'services/api/users/walkers';
 import { FilterDropdown, SearchInput, FindResultsList } from 'components/FindWalkers';
 
 const FindWalkerScreen = ({ navigation }) => {
   const [input, setInput] = useState('');
   const [walkersData, setWalkersData] = useState([]);
-  const [selectedValue, setSelectedValue] = useState('score');
+  const [selectedValue, setSelectedValue] = useState('complete_name');
 
   useEffect(() => {
     const getWalkersData = async () => {
       let walkers;
-      if (input.length > 2) {
-        walkers = await getWalkers({ complete_name: input });
-      } else {
-        walkers = await getWalkers();
-      }
+      const moreThanTwoCharName = selectedValue === 'complete_name' && input.length > 2;
+      const moreThanZeroChar = selectedValue !== 'complete_name' && input.length > 0;
 
-      if (walkers && walkers.data.walkers.length) {
-        setWalkersData(walkers.data.walkers);
+      try {
+        if (moreThanTwoCharName || moreThanZeroChar) {
+          walkers = await getWalkers({ [selectedValue]: input });
+        } else {
+          walkers = await getWalkers();
+        }
+
+        if (walkers && walkers.data.walkers.length) {
+          setWalkersData(walkers.data.walkers);
+        }
+      } catch (e) {
+        console.log(e);
       }
     };
 
     getWalkersData();
-  }, [input]);
+  }, [selectedValue, input]);
 
   if (walkersData) {
     return (
@@ -31,9 +38,10 @@ const FindWalkerScreen = ({ navigation }) => {
         <View style={styles.filterBanner}>
           <SearchInput input={input} setInput={setInput} />
         </View>
-        {/* <View style={styles.filterBanner}>
+        <View style={styles.filterBanner}>
+          <Text style={styles.message}>Buscar por:</Text>
           <FilterDropdown selectedValue={selectedValue} setSelectedValue={setSelectedValue} />
-        </View> */}
+        </View>
         <View style={styles.findWalkerResults}>
           <FindResultsList result={walkersData} navigation={navigation} />
         </View>
@@ -58,6 +66,10 @@ const styles = StyleSheet.create({
   findWalkerResults: {
     flex: 1,
     width: '100%',
+  },
+  message: {
+    color: '#757575',
+    paddingBottom: 5,
   },
 });
 
