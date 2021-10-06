@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-// eslint-disable-next-line import/no-unresolved
-import { GOOGLE_MAPS_PLACES_API_KEY } from '@env';
+import { GOOGLE_MAPS_PLACES_API_KEY } from 'react-native-dotenv';
 
 const GooglePlacesInput = ({ setLat, setLong, setAddress, signupData, navigation }) => {
   const savePlaceData = (data, details) => {

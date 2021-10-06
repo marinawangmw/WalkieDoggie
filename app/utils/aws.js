@@ -1,5 +1,9 @@
-// eslint-disable-next-line import/no-unresolved
-import { AWS_S3_BUCKET, AWS_S3_BUCKET_REGION, AWS_S3_ACCESS_KEY, AWS_S3_SECRET_KEY } from '@env';
+import {
+  AWS_S3_BUCKET,
+  AWS_S3_BUCKET_REGION,
+  AWS_S3_ACCESS_KEY,
+  AWS_S3_SECRET_KEY,
+} from 'react-native-dotenv';
 import AWS from 'aws-sdk';
 
 const s3bucket = new AWS.S3({
