@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import Cell from './Cell';
-import { RANGES_HEADER } from '../../helpers/profileAndOnboarding';
+import { RANGES_HEADER } from 'helpers/profileAndOnboarding';
 
-const Table = ({ squares, handleChangeText, handleAddDayRow, handleRemoveDayRow }) => {
+const Table = ({ squares, handleChangeText, handleAddDayRow, handleRemoveDayRow, addPlusIcon, addMinusIcon }) => {
   const renderHeader = () => {
     return (
       <>
@@ -85,8 +85,7 @@ const titleStyles = StyleSheet.create({
   container: {
     backgroundColor: '#f4d7a3',
     borderColor: '#f3f3eb',
-    justifyContent: 'flex-start',
-    paddingLeft: 25,
+    justifyContent: 'center',
   },
   text: {
     textTransform: 'capitalize',

@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Text, View, TextInput, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import SvgUri from 'react-native-svg-uri';
 
 import Login from './Login';
 import Signup from './Signup';
-import Logo from '../Logo';
+import { Logo } from 'components';
 
-import { AuthContext } from '../../utils/authContext';
-import LoadingScreen from '../../screens/LoadingScreen';
-import { signUp } from '../../services/api/sessions/signUp';
+import { AuthContext } from 'utils/authContext';
+import LoadingScreen from 'screens/LoadingScreen';
+import { signUp } from 'services/api/sessions/signUp';
 
 import styles from './styles';
 
@@ -236,7 +236,7 @@ const AuthenticationContent = ({ error, navigation }) => {
     }
 
     return (
-      <>
+      <SafeAreaView style={{ marginTop: 60 }}>
         <Logo />
         {hasAccount ? (
           <Login
@@ -259,7 +259,7 @@ const AuthenticationContent = ({ error, navigation }) => {
             handleChangeAuthProcess={handleChangeAuthProcess}
           />
         )}
-      </>
+      </SafeAreaView>
     );
   };
 

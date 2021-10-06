@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, Image, ScrollView } from 'react-native';
-import { CustomButton, ProfileDataRow } from '../../components';
-import { PETS_DATA_LABEL } from '../../helpers/profileAndOnboarding';
-import { editPet } from '../../services/api/users/pets';
+import { CustomButton, ProfileDataRow } from 'components';
+import { PETS_DATA_LABEL } from 'helpers/profileAndOnboarding';
 
 const PetDetail = ({ route }) => {
   const { pet, handleEditPets, idx, saveInformationPet } = route.params;
