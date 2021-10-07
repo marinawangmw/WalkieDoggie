@@ -7,10 +7,19 @@ import Certifications from '../../screens/ProfileScreen/Certifications';
 
 const Stack = createNativeStackNavigator();
 
-const ProfileStackNavigator = () => {
+const ProfileStackNavigator = ({ route }) => {
+  const { userProfile } = route.params;
+
   return (
     <Stack.Navigator>
-      <Stack.Screen name="profile" component={ProfileScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="profile"
+        component={ProfileScreen}
+        options={{ headerShown: false }}
+        initialParams={{
+          userProfile: userProfile,
+        }}
+      />
       <Stack.Screen name="petDetail" component={PetDetail} options={{ title: 'Editar mascota' }} />
       <Stack.Screen
         name="walkerRanges"

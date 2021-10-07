@@ -11,11 +11,13 @@ import {
   Linking,
   ActivityIndicator,
 } from 'react-native';
-import { FilePicker } from '../../components';
-import { uploadFileAws } from '../../utils/aws';
-import { pdfIcon } from '../../assets/images';
 
-const Certifications = ({ navigation, route }) => {
+import { FilePicker } from 'components';
+import { uploadFileAws } from 'utils/aws';
+// eslint-disable-next-line import/no-unresolved
+import { pdfIcon } from 'images';
+
+const Certifications = ({ navigation, route, disableUpload }) => {
   const { certifications = [] } = route.params;
   const [localCertifications, setChangeCertifications] = useState(certifications);
   const [newCertificationData, setNewCertificationData] = useState(null);
@@ -54,8 +56,7 @@ const Certifications = ({ navigation, route }) => {
   return (
     <>
       <ScrollView style={styles.scrollContainer}>
-        <View style={styles.hr} />
-
+        {Boolean(localCertifications.length) && !disableUpload && <View style={styles.hr} />}
         <View styles={styles.certificationsContainer}>
           {localCertifications && (
             <>
@@ -69,12 +70,11 @@ const Certifications = ({ navigation, route }) => {
                   </View>
                 );
               })}
-              <View style={styles.hr} />
             </>
           )}
         </View>
-
-        {canStillUploadFiles && (
+        {Boolean(localCertifications.length) && !disableUpload && <View style={styles.hr} />}
+        {canStillUploadFiles && !disableUpload && (
           <View style={styles.viewAddNewCertification}>
             <FilePicker
               label={'Nueva certificación'}
@@ -90,14 +90,20 @@ const Certifications = ({ navigation, route }) => {
                   placeholder="Descripción..."
                   onChangeText={setnewCertificationDescription}
                 />
-                <Button title={'Subir'} onPress={handleUploadCertification} />
+                <Button title="Subir" onPress={handleUploadCertification} />
               </View>
             )}
           </View>
         )}
-        <TouchableOpacity onPress={handleSaveCertifications} style={styles.btnContainer}>
-          <Text style={styles.btnLabel}>Guardar certificaciones</Text>
-        </TouchableOpacity>
+
+        {!disableUpload && (
+          <TouchableOpacity onPress={handleSaveCertifications} style={styles.btnContainer}>
+            <Text style={styles.btnLabel}>Guardar certificaciones</Text>
+          </TouchableOpacity>
+        )}
+        {Boolean(!localCertifications.length) && (
+          <Text style={styles.message}>No hay certificaciones subidas todavía</Text>
+        )}
       </ScrollView>
       {isLoading && (
         <View style={styles.loader}>
@@ -115,7 +121,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     height: '100%',
-    backgroundColor: '#FFF',
+    marginTop: 20,
   },
   descriptionInput: {
     fontSize: 16,
@@ -141,7 +147,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
   },
-  data: {
+  certificationsContainer: {
     flexDirection: 'row',
   },
   text: {
@@ -172,5 +178,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F3F3EBCC',
+  },
+  message: {
+    padding: 20,
+    margin: 10,
+    color: 'gray',
+    borderWidth: 1,
+    backgroundColor: '#fff',
+    textAlign: 'center',
+    borderColor: '#f4d7a3',
+    borderRadius: 10,
   },
 });

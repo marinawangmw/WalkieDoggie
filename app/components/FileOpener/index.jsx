@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, Linking } from 'react-native';
 import styles from './styles';
-import CustomButton from '../CustomButton';
+import { CustomButton } from 'components';
 
 const FileOpener = ({
   url = 'https://bucket-walkie-doggie.s3.us-east-2.amazonaws.com/sample.pdf',

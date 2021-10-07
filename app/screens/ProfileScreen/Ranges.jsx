@@ -6,7 +6,6 @@ import { existOverlapsRanges } from '../../helpers/validatorHelper';
 
 const Ranges = ({ navigation, route }) => {
   const { ranges } = route.params;
-
   let existingRangesAndEmpties = [...ranges, ...initRanges()];
   existingRangesAndEmpties = existingRangesAndEmpties.filter((range, index) => {
     return (
@@ -55,7 +54,7 @@ const Ranges = ({ navigation, route }) => {
   if (ranges.length) {
     return (
       <ScrollView contentContainerStyle={styles.container}>
-        <Timetable ranges={changeRanges} setRanges={handleChangeRanges} />
+        <Timetable ranges={changeRanges} setRanges={handleChangeRanges} addPlusIcon addMinusIcon />
         <TouchableOpacity onPress={handleSaveRanges} style={styles.btnContainer}>
           <Text style={styles.btnLabel}>Guardar franjas horarias</Text>
         </TouchableOpacity>

@@ -3,7 +3,7 @@ import { Text, TouchableOpacity } from 'react-native';
 
 import styles from './styles';
 
-const CustomButton = ({ handleOnclick, buttonLabel, id, disabled }) => {
+const CustomButton = ({ handleOnclick, buttonLabel, id, disabled, centered }) => {
   return (
     <TouchableOpacity
       style={[styles.button, disabled ? styles.disabled : styles.enabled]}

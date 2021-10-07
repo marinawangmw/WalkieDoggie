@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { View, TextInput, ScrollView, Text, ActivityIndicator } from 'react-native';
-import Timetable from '../TimeTable';
-import FilePicker from '../FilePicker';
-import CustomButton from '../CustomButton';
-import { uploadFileAws } from '../../utils/aws';
-import { AuthContext } from '../../utils/authContext';
+import { TimeTable, FilePicker, CustomButton } from 'components';
+import { uploadFileAws, AuthContext } from 'utils';
+import { initRanges } from 'helpers/profileAndOnboarding';
 import styles from './styles';
-import { initRanges } from '../../helpers/profileAndOnboarding';
-import { existOverlapsRanges } from '../../helpers/validatorHelper';
+import { existOverlapsRanges } from 'helpers/validatorHelper';
 
 const WalkerOnboarding = ({ route }) => {
   const { address, lat, long, signupData } = route.params;
@@ -83,7 +80,7 @@ const WalkerOnboarding = ({ route }) => {
   };
 
   function isItPhone(str) {
-    return /^(11|15)[0-9]{8}$/.test(str);
+    return /^(11)[0-9]{8}$/.test(str);
   }
 
   function isItNumber(str) {
@@ -146,7 +143,7 @@ const WalkerOnboarding = ({ route }) => {
           onChangeText={setPrice_per_hour}
         />
 
-        <Timetable ranges={ranges} setRanges={setRanges} onboardingNote />
+        <TimeTable ranges={ranges} setRanges={setRanges} onboardingNote addPlusIcon />
 
         <TextInput
           placeholder="Carta de presentación"

@@ -1,13 +1,12 @@
 import axios from 'axios';
-// eslint-disable-next-line import/no-unresolved
-import { API_URL } from '@env';
-import { WalkieDoggieAPIError } from '../../helpers/errorHandler';
+import { API_URL } from 'react-native-dotenv';
+import { WalkieDoggieAPIError } from 'helpers/errorHandler';
 import {
   getAccessTokenStorage,
   getRefreshTokenStorage,
   multiRemoveStorageItems,
   setStorageItem,
-} from '../../utils/storage';
+} from 'utils/storage';
 
 const baseURL = API_URL;
 
