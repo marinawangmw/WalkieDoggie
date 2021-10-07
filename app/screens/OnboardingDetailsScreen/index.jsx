@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
-import AddressScreen from 'screens/AddressScreen';
+import AddressScreen from '../AddressScreen';
+import { WalkerOnboarding } from '../../components';
 
 import styles from './styles';
 

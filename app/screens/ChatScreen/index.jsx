@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import FileOpener from 'components/FileOpener';
+import FileOpener from '../../components/FileOpener';
 import styles from './styles';
 
 const ChatScreen = () => {

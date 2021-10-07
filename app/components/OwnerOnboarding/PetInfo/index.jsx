@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { TextInput, View } from 'react-native';
-import { numericValidation } from 'utils/helperFuncions';
+import { numericValidation } from '../../../utils/helperFuncions';
 import SwitchSelector from 'react-native-switch-selector';
-import { FilePicker, CustomButton } from 'components';
+import FilePicker from '../../FilePicker';
+import CustomButton from '../../CustomButton';
 
 import styles from '../styles';
 
-const PetInfo = ({ id, addPet, removePet, handleChange }) => {
+const PetInfo = ({ id, addPet, removePet, setErrorMessage, handleChange }) => {
   const [_gender, setGender] = useState('HEMBRA');
   const [weight, setWeight] = useState(null);
-  const [_photoData, setPhotoData] = useState(null);
+  const [photoData, setPhotoData] = useState(null);
   const [petName, setPetName] = useState('');
   const [birthYear, setBirthYear] = useState(null);
   const [description, setDescription] = useState('');

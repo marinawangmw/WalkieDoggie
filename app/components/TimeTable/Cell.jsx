@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Platform, Image, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-// eslint-disable-next-line import/no-unresolved
-import { plusIcon, minusIcon } from 'images';
+import { plusIcon, minusIcon } from '../../assets/images';
 
 const Cell = ({
   customStyles,
@@ -18,6 +17,9 @@ const Cell = ({
 }) => {
   var today = new Date();
   const initialDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
+
+  const [date, setDate] = useState(initialDate);
+  const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
 
   const addDayRow = () => {
@@ -28,9 +30,10 @@ const Cell = ({
     handleRemoveDayRow(idx);
   };
 
-  const onChange = (_event, selectedDate) => {
+  const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     setShow(Platform.OS === 'ios');
+    setDate(currentDate);
 
     if (currentDate) {
       let currentHours = currentDate.getHours();
@@ -43,8 +46,13 @@ const Cell = ({
     }
   };
 
-  const showTimepicker = () => {
+  const showMode = (currentMode) => {
     setShow(true);
+    setMode(currentMode);
+  };
+
+  const showTimepicker = () => {
+    showMode('time');
   };
 
   if (isTitle) {
@@ -71,8 +79,8 @@ const Cell = ({
       {show && (
         <DateTimePicker
           value={initialDate}
-          mode="time"
-          is24Hour
+          mode={mode}
+          is24Hour={true}
           display="default"
           onChange={onChange}
           locale="es-AR"

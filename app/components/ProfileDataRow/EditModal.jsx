@@ -1,4 +1,4 @@
-/*import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, Modal, Pressable, StyleSheet } from 'react-native';
 
 const EditModal = ({ data }) => {
@@ -39,4 +39,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-*/

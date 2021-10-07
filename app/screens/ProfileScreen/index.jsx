@@ -1,14 +1,12 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React from 'react';
 import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import Toast from 'react-native-toast-message';
-import LoadingScreen from 'screens/LoadingScreen';
-import { CustomButton, ProfileDataRow, TimeTable } from 'components';
-import { getProfile, editOwner, editWalker } from 'services/api/users/profile';
-import { AuthContext } from 'utils/authContext';
-import { USER_TYPES } from 'utils/constants';
-import { removeProps } from 'helpers/objectHelper';
-import { styles, name, personal } from './ProfileScreen.styles';
-// eslint-disable-next-line import/no-unresolved
+import { useEffect, useState } from 'react/cjs/react.development';
+import { editOwner, editWalker, getProfile } from '../../services/api/users/profile';
+import { AuthContext } from '../../utils/authContext';
+import { getCurrentUserId } from '../../utils/storage';
+import LoadingScreen from '../LoadingScreen';
+import { ProfileDataRow } from '../../components';
+import { styles, name, personal } from './styles';
 import {
   addressIcon,
   phoneIcon,
@@ -17,15 +15,15 @@ import {
   certificationIcon,
   priceIcon,
   resumeIcon,
-} from 'images';
-import Certifications from './Certifications';
-import { editPet } from 'services/api/users/pets';
+} from '../../assets/images';
+import { USER_TYPES } from '../../utils/constants';
+import { removeProps } from '../../helpers/objectHelper';
+import { editPet } from '../../services/api/users/pets';
 
 const ProfileScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
-  const [fromHome, setFromHome] = useState(true);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-  const [currentUserProfile, setCurrentUserProfile] = useState(null);
+  const [userProfile, setUserProfile] = useState(null);
 
   const [changeFirstName, setChangeFirstName] = useState('');
   const [changeLastName, setChangeLastName] = useState('');
@@ -52,47 +50,32 @@ const ProfileScreen = ({ navigation, route }) => {
     }
   }, [route]);
 
-  const initiateUserDatas = (userProfile) => {
-    setCurrentUserProfile(userProfile);
-    setPets(userProfile.pets);
-    setChangeFirstName(userProfile.first_name);
-    setChangeLastName(userProfile.last_name);
-    setChangePhone(userProfile.phone);
-    setChangeAddress(userProfile.address.description);
-    setChangeCertifications(userProfile.certifications);
-    setChangeRanges(userProfile.ranges);
-    setChangePricePerHour(userProfile.price_per_hour);
-    setChangeCoverLetter(userProfile.cover_letter);
-  };
-
-  const fetchUserProfile = useCallback(async (id) => {
-    try {
-      const userProfile = await getProfile(id);
-
-      if (userProfile.result) {
-        initiateUserDatas(userProfile.data);
-      }
-      setLoading(false);
-    } catch (e) {
-      setLoading(false);
-      console.log('get walker profile error: ', e);
-    }
-  }, []);
-
   useEffect(() => {
-    const { userProfile, userId } = route.params;
+    const getUserProfileInfo = async () => {
+      try {
+        setLoading(true);
+        const userId = await getCurrentUserId();
 
-    if (userProfile) {
-      setFromHome(true);
-      initiateUserDatas(userProfile);
-    }
+        const userProfileResult = await getProfile(userId);
+        setUserProfile(userProfileResult.data);
+        setPets(userProfileResult.data.pets);
+        setChangeFirstName(userProfileResult.data.first_name);
+        setChangeLastName(userProfileResult.data.last_name);
+        setChangePhone(userProfileResult.data.phone);
+        setChangeAddress(userProfileResult.data.address.description);
+        setChangeCertifications(userProfileResult.data.certifications);
+        setChangeRanges(userProfileResult.data.ranges);
+        setChangePricePerHour(userProfileResult.data.price_per_hour);
+        setChangeCoverLetter(userProfileResult.data.cover_letter);
+        setLoading(false);
+      } catch (e) {
+        setLoading(false);
+        console.log('Error in profile ', e);
+      }
+    };
 
-    if (userId) {
-      setFromHome(false);
-      setLoading(true);
-      fetchUserProfile(userId);
-    }
-  }, [route.params, fetchUserProfile]);
+    getUserProfileInfo();
+  }, []);
 
   const handleImageLoadEnd = () => {
     if (!isImageLoaded) {
@@ -134,30 +117,16 @@ const ProfileScreen = ({ navigation, route }) => {
     });
   };
 
-  const handleNavigateCreateWalk = () => {
-    navigation.navigate('createWalk', {
-      ranges: currentUserProfile.ranges,
-    });
-  };
-
   const showResultUpdateProfile = (response) => {
     if (!response.result) {
-      Toast.show({
-        type: 'error',
-        text1: 'Ouch!',
-        text2: 'Error al actualizar datos del perfil',
-      });
+      Alert.alert('Error al actualizar datos del perfil');
     } else {
-      Toast.show({
-        type: 'success',
-        text1: 'Yey!',
-        text2: 'Los datos del perfil han sido actualizados',
-      });
+      Alert.alert('Los datos del perfil han sido actualizados');
     }
   };
 
   const handleSaveChangeData = async () => {
-    const userProfileEdited = { ...currentUserProfile };
+    const userProfileEdited = { ...userProfile };
     userProfileEdited.last_name = changeLastName;
     userProfileEdited.first_name = changeFirstName;
     userProfileEdited.address.description = changeAddress;
@@ -170,6 +139,7 @@ const ProfileScreen = ({ navigation, route }) => {
     } else {
       userProfileEdited.price_per_hour = changePricePerHour;
       userProfileEdited.cover_letter = changeCoverLetter;
+
       userProfileEdited.ranges = changeRanges;
       userProfileEdited.certifications = changeCertifications;
 
@@ -185,16 +155,14 @@ const ProfileScreen = ({ navigation, route }) => {
       <View>
         <Text style={styles.petTitle}>Información sobre mascotas</Text>
 
-        {currentUserProfile.pets.map((pet, idx) => (
+        {userProfile.pets.map((pet, idx) => (
           <TouchableOpacity
             style={styles.petDataRow}
             key={idx}
             onPress={() => handleNavigatePetDetails(pet, idx)}
           >
-            <View style={styles.petDataRowTitle}>
-              <Image source={profileIcon} style={styles.icon} />
-              <Text style={styles.petName}>{pet.name}</Text>
-            </View>
+            <Image source={profileIcon} style={styles.icon} />
+            <Text style={styles.petName}>{pet.name}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -222,34 +190,14 @@ const ProfileScreen = ({ navigation, route }) => {
             setChangeData={setChangeCoverLetter}
           />
         </View>
-
-        <TouchableOpacity
-          style={styles.petDataRow}
-          onPress={handleNavigateRanges}
-          disabled={!fromHome}
-        >
-          <View style={styles.petDataRowTitle}>
-            <Image source={calendarIcon} style={styles.icon} />
-            <Text style={styles.petName}>Franjas horarias de trabajo</Text>
-          </View>
-          {!fromHome && <TimeTable ranges={currentUserProfile.ranges} />}
+        <TouchableOpacity style={styles.petDataRow} onPress={handleNavigateRanges}>
+          <Image source={calendarIcon} style={styles.icon} />
+          <Text style={styles.petName}>Franjas horarias de trabajo</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.petDataRow}
-          onPress={handleNavigateCertifications}
-          disabled={!fromHome}
-        >
-          <View style={styles.petDataRowTitle}>
-            <Image source={certificationIcon} style={styles.icon} />
-            <Text style={styles.petName}>Certificaciones</Text>
-          </View>
-          {!fromHome && (
-            <Certifications
-              route={{ params: { certifications: currentUserProfile.certifications } }}
-              disableUpload
-            />
-          )}
+        <TouchableOpacity style={styles.petDataRow} onPress={handleNavigateCertifications}>
+          <Image source={certificationIcon} style={styles.icon} />
+          <Text style={styles.petName}>Certificaciones</Text>
         </TouchableOpacity>
       </>
     );
@@ -259,14 +207,14 @@ const ProfileScreen = ({ navigation, route }) => {
     return <LoadingScreen />;
   }
 
-  if (currentUserProfile) {
+  if (userProfile) {
     return (
-      <SafeAreaView style={[styles.container, !fromHome && { marginVertical: 0 }]}>
+      <SafeAreaView style={styles.container}>
         <ScrollView>
           <View style={styles.personal}>
             <Image
               source={{
-                uri: currentUserProfile.profile_photo_uri,
+                uri: userProfile.profile_photo_uri,
               }}
               style={styles.picture}
               onLoadEnd={handleImageLoadEnd}
@@ -278,17 +226,15 @@ const ProfileScreen = ({ navigation, route }) => {
                   customStyles={name}
                   value={changeFirstName}
                   setChangeData={setChangeFirstName}
-                  disabled={!fromHome}
                 />
                 <ProfileDataRow
                   customStyles={name}
                   value={changeLastName}
                   setChangeData={setChangeLastName}
-                  disabled={!fromHome}
                 />
               </View>
 
-              <Text style={styles.email}>{currentUserProfile.email}</Text>
+              <Text style={styles.email}>{userProfile.email}</Text>
             </View>
           </View>
           <View style={styles.iconAndData}>
@@ -297,7 +243,6 @@ const ProfileScreen = ({ navigation, route }) => {
               customStyles={personal}
               value={changePhone}
               setChangeData={setChangePhone}
-              disabled={!fromHome}
             />
           </View>
           <View style={styles.iconAndData}>
@@ -306,36 +251,26 @@ const ProfileScreen = ({ navigation, route }) => {
               customStyles={personal}
               value={changeAddress}
               setChangeData={setChangeAddress}
-              disabled={!fromHome}
             />
           </View>
 
           <View style={styles.hr} />
 
-          {currentUserProfile.type === 'OWNER' ? renderPets() : renderWalkerSpecialData()}
+          {userProfile.type === 'OWNER' ? renderPets() : renderWalkerSpecialData()}
+
+          {/* walker - achievements */}
 
           <View style={styles.hr} />
 
-          {fromHome ? (
-            <>
-              <TouchableOpacity style={styles.btnContainer} onPress={handleSaveChangeData}>
-                <Text style={[styles.btnLabel, { color: '#0662c2' }]}>Guardar cambios</Text>
-              </TouchableOpacity>
+          <TouchableOpacity style={styles.btnContainer} onPress={handleSaveChangeData}>
+            <Text style={[styles.btnLabel, { color: '#0662c2' }]}>Guardar cambios</Text>
+          </TouchableOpacity>
 
-              <View style={styles.hr} />
+          <View style={styles.hr} />
 
-              <TouchableOpacity style={styles.btnContainer} onPress={() => signOut()}>
-                <Text style={styles.btnLabel}>Cerrar sesión</Text>
-              </TouchableOpacity>
-            </>
-          ) : (
-            <View style={styles.btn}>
-              <CustomButton
-                buttonLabel="Quiero un paseo"
-                handleOnclick={handleNavigateCreateWalk}
-              />
-            </View>
-          )}
+          <TouchableOpacity style={styles.btnContainer} onPress={() => signOut()}>
+            <Text style={styles.btnLabel}>Cerrar sesión</Text>
+          </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
     );

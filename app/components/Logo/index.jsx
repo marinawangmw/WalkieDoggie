@@ -1,13 +1,8 @@
 import React from 'react';
-import { Image, View } from 'react-native';
+import { Image } from 'react-native';
 import styles from './styles';
-// eslint-disable-next-line import/no-unresolved
-import { iconHome } from 'images';
+import { iconHome } from '../../assets/images';
 
-const Logo = () => (
-  <View style={styles.container}>
-    <Image source={iconHome} style={styles.logo} />
-  </View>
-);
+const Logo = () => <Image source={iconHome} style={styles.logo} />;
 
 export default Logo;

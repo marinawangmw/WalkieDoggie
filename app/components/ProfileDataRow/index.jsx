@@ -1,22 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
-import { CustomButton } from 'components';
+import { CustomButton } from '..';
 
-const ProfileDataRow = ({
-  value,
-  valueLabel,
-  handleChangeData,
-  setChangeData,
-  customStyles,
-  disabled,
-}) => {
+const ProfileDataRow = ({ value, valueLabel, handleChangeData, setChangeData, customStyles }) => {
   const [visible, setVisible] = useState(false);
   const styles = { ...defaultStyles, ...customStyles };
 
   const handlePress = () => {
-    if (disabled) {
-      return null;
-    }
     setVisible(!visible);
   };
 
@@ -57,7 +47,7 @@ const ProfileDataRow = ({
   }
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handlePress} disabled={disabled}>
+    <TouchableOpacity style={styles.container} onPress={handlePress}>
       <Text style={styles.label}>{value}</Text>
     </TouchableOpacity>
   );

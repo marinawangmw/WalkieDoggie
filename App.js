@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { Platform, useColorScheme } from 'react-native';
-import Toast from 'react-native-toast-message';
 import { RootStackNavigator } from './app/services/navigation';
 import {
   getAccessTokenStorage,
@@ -139,7 +138,6 @@ export default function App() {
     <AuthContext.Provider value={authContext}>
       <NavigationContainer theme={theme[scheme]}>
         <RootStackNavigator userToken={userToken} error={error} />
-        <Toast ref={(ref) => Toast.setRef(ref)} />
       </NavigationContainer>
     </AuthContext.Provider>
   );

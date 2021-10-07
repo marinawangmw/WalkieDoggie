@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
-import { Logo, GooglePlacesInput, CustomButton } from 'components';
+import { Logo, GooglePlacesInput, CustomButton } from '../../components';
 import styles from './styles';
 
 const AdressScreen = ({ navigation, signupData }) => {

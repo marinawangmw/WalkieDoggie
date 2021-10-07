@@ -1,7 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
-// eslint-disable-next-line import/no-unresolved
-import { homeIcon, profileIcon } from 'images';
+import { homeIcon, profileIcon } from '../../assets/images';
 
 const tabIcon = {
   HomeScreen: homeIcon,

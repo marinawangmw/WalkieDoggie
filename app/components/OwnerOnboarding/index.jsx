@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 
-import { FilePicker, CustomButton } from 'components';
-import { AuthContext, numericValidation, uploadFileAws } from 'utils';
-import { isEmptyField } from 'helpers/validatorHelper';
+import { AuthContext } from '../../utils/authContext';
+import { FilePicker, CustomButton } from '../../components';
+import { numericValidation } from '../../utils/helperFuncions';
 import Pet from './Pet';
 
 import styles from './styles';
+import { uploadFileAws } from '../../utils/aws';
+import { isEmptyField } from '../../helpers/validatorHelper';
 
 const OwnerOnboarding = ({ route }) => {
   const { address, lat, long, signupData } = route.params;

@@ -8,7 +8,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: '#f4d7a3',
     borderRadius: 25,
-    textTransform: 'capitalize',
   },
   authentication__userTypeContainer: {
     flexDirection: 'row',

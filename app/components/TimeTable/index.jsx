@@ -2,16 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Table from './Table';
 
-const Timetable = ({
-  ranges,
-  setRanges,
-  onboardingNote,
-  customStyles,
-  addPlusIcon,
-  addMinusIcon,
-}) => {
-  const styles = { ...defaultStyles, ...customStyles };
-
+const Timetable = ({ ranges, setRanges, onboardingNote }) => {
   const handleAddDayRow = (idx) => {
     const aux = ranges.slice();
     const day = aux[idx].day_of_week;
@@ -53,8 +44,6 @@ const Timetable = ({
         handleChangeText={handleChangeText}
         handleAddDayRow={handleAddDayRow}
         handleRemoveDayRow={handleRemoveDayRow}
-        addMinusIcon={addMinusIcon}
-        addPlusIcon={addPlusIcon}
       />
       {onboardingNote && (
         <Text style={styles.text}>
@@ -69,10 +58,9 @@ const Timetable = ({
   );
 };
 
-const defaultStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     marginVertical: 15,
-    flex: 1,
   },
   text: {
     paddingVertical: 5,

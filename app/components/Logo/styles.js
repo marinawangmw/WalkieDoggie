@@ -1,14 +1,10 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-  container: {
-    marginBottom: 10,
-  },
   logo: {
-    height: 90,
-    width: 180,
+    height: 125,
+    width: 250,
     alignSelf: 'center',
-    resizeMode: 'cover',
   },
 });
 
