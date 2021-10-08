@@ -4,6 +4,8 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { GOOGLE_MAPS_PLACES_API_KEY } from 'react-native-dotenv';
 
 const GooglePlacesInput = ({ setLat, setLong, setAddress, signupData, navigation }) => {
+  console.log(GOOGLE_MAPS_PLACES_API_KEY);
+
   const savePlaceData = (data, details) => {
     const lat = details.geometry.location.lat.toString();
     const long = details.geometry.location.lng.toString();

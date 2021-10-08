@@ -8,30 +8,43 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  Linking,
+  ActivityIndicator,
 } from 'react-native';
-import { FilePicker, FileOpener } from 'components';
+
+import { FilePicker } from 'components';
 import { uploadFileAws } from 'utils/aws';
 // eslint-disable-next-line import/no-unresolved
-import { certificationIcon } from 'images';
+import { pdfIcon } from 'images';
 
 const Certifications = ({ navigation, route, disableUpload }) => {
   const { certifications = [] } = route.params;
   const [localCertifications, setChangeCertifications] = useState(certifications);
   const [newCertificationData, setNewCertificationData] = useState(null);
   const [newCertificationDescription, setnewCertificationDescription] = useState(null);
+  const [canStillUploadFiles, setCanStillUploadFiles] = useState(certifications.length < 3);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleUploadCertification = () => {
+    setIsLoading(true);
     return uploadFileAws(newCertificationData)
       .then((url) => {
-        setChangeCertifications([
+        const newCertifications = [
           ...localCertifications,
           { file_uri: url, description: newCertificationDescription },
-        ]);
+        ];
+        setChangeCertifications(newCertifications);
 
         setNewCertificationData(null);
         setnewCertificationDescription(null);
+        setCanStillUploadFiles(newCertifications.length < 3);
+        setIsLoading(false);
       })
-      .catch((e) => console.error(e));
+      .catch((e) => {
+        setIsLoading(false);
+        console.error(e);
+      });
   };
 
   const handleSaveCertifications = () => {
@@ -44,52 +57,59 @@ const Certifications = ({ navigation, route, disableUpload }) => {
     <>
       <ScrollView style={styles.scrollContainer}>
         {Boolean(localCertifications.length) && !disableUpload && <View style={styles.hr} />}
-
-        <View style={styles.data}>
-          {localCertifications &&
-            localCertifications.map((row, rowIdx) => {
-              return (
-                <View key={rowIdx} style={styles.certificationRow}>
-                  <Image source={certificationIcon} style={styles.icon} />
-                  <Text> {row.description} </Text>
-                  <FileOpener url={row.file_uri} label={'Ver'} />
-                </View>
-              );
-            })}
+        <View styles={styles.certificationsContainer}>
+          {localCertifications && (
+            <>
+              {localCertifications.map((row, rowIdx) => {
+                return (
+                  <View key={rowIdx} style={styles.certificationRow}>
+                    <Image source={pdfIcon} style={styles.icon} />
+                    <Text style={[styles.text]} onPress={() => Linking.openURL(row.file_uri)}>
+                      {row.description}
+                    </Text>
+                  </View>
+                );
+              })}
+            </>
+          )}
         </View>
         {Boolean(localCertifications.length) && !disableUpload && <View style={styles.hr} />}
-
-        <View style={styles.viewAddNewCertification}>
-          {!disableUpload && (
+        {canStillUploadFiles && !disableUpload && (
+          <View style={styles.viewAddNewCertification}>
             <FilePicker
               label={'Nueva certificación'}
               fileType={'pdf'}
               setFileData={setNewCertificationData}
             />
-          )}
 
-          {newCertificationData && (
-            <View styles={styles.viewDescriptionInput}>
-              <TextInput
-                style={styles.descriptionInput}
-                value={newCertificationDescription}
-                placeholder="Descripción..."
-                onChangeText={setnewCertificationDescription}
-              />
-              <Button title="Subir" onPress={handleUploadCertification} />
-            </View>
-          )}
-        </View>
+            {newCertificationData && (
+              <View styles={styles.viewDescriptionInput}>
+                <TextInput
+                  style={styles.descriptionInput}
+                  value={newCertificationDescription}
+                  placeholder="Descripción..."
+                  onChangeText={setnewCertificationDescription}
+                />
+                <Button title="Subir" onPress={handleUploadCertification} />
+              </View>
+            )}
+          </View>
+        )}
+
         {!disableUpload && (
           <TouchableOpacity onPress={handleSaveCertifications} style={styles.btnContainer}>
             <Text style={styles.btnLabel}>Guardar certificaciones</Text>
           </TouchableOpacity>
         )}
-
         {Boolean(!localCertifications.length) && (
           <Text style={styles.message}>No hay certificaciones subidas todavía</Text>
         )}
       </ScrollView>
+      {isLoading && (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color="#f8b444" />
+        </View>
+      )}
     </>
   );
 };
@@ -121,10 +141,19 @@ const styles = StyleSheet.create({
     width: 40,
     resizeMode: 'cover',
   },
+
   certificationRow: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 10,
+  },
+  certificationsContainer: {
+    flexDirection: 'row',
+  },
+  text: {
+    paddingHorizontal: 15,
+    textDecorationLine: 'underline',
+    color: 'blue',
   },
   btnContainer: {
     justifyContent: 'center',
@@ -141,6 +170,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderBottomColor: '#bfbfbf',
     borderBottomWidth: 1,
+  },
+  loader: {
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F3F3EBCC',
   },
   message: {
     padding: 20,

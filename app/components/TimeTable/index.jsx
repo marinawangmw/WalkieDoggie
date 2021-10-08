@@ -2,7 +2,15 @@ import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Table from './Table';
 
-const Timetable = ({ ranges, setRanges, onboardingNote, customStyles, addPlusIcon }) => {
+const Timetable = ({
+  ranges,
+  setRanges,
+  onboardingNote,
+  customStyles,
+  addPlusIcon,
+  addMinusIcon,
+  isWalkerEdit,
+}) => {
   const styles = { ...defaultStyles, ...customStyles };
 
   const handleAddDayRow = (idx) => {
@@ -10,6 +18,20 @@ const Timetable = ({ ranges, setRanges, onboardingNote, customStyles, addPlusIco
     const day = aux[idx].day_of_week;
     const newRow = { day_of_week: day, start_at: null, end_at: null };
     aux.splice(idx + 1, 0, newRow);
+    setRanges(aux);
+  };
+
+  const handleRemoveDayRow = (idx) => {
+    const aux = ranges.slice();
+    const auxIdx = aux[idx];
+
+    if (aux.filter((a) => a.day_of_week === auxIdx.day_of_week).length > 1) {
+      aux.splice(idx, 1);
+    } else {
+      auxIdx.start_at = null;
+      auxIdx.end_at = null;
+    }
+
     setRanges(aux);
   };
 
@@ -31,7 +53,10 @@ const Timetable = ({ ranges, setRanges, onboardingNote, customStyles, addPlusIco
         squares={ranges}
         handleChangeText={handleChangeText}
         handleAddDayRow={handleAddDayRow}
+        handleRemoveDayRow={handleRemoveDayRow}
         addPlusIcon={addPlusIcon}
+        addMinusIcon={addMinusIcon}
+        isWalkerEdit={isWalkerEdit}
       />
       {onboardingNote && (
         <Text style={styles.text}>

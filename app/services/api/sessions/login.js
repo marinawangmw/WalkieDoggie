@@ -22,6 +22,7 @@ export const login = async (params) => {
     await setStorageItem('refresh_token', refresh_token);
     return { result: true, data: access_token };
   } catch (error) {
+    console.log(error);
     const { metadata } = error;
     return { result: false, data: metadata };
   }

@@ -28,29 +28,46 @@ const OwnerOnboarding = ({ route }) => {
     },
   ]);
 
+  const validatePhoneFormat = () => {
+    if (isItPhone(phone)) {
+      return true;
+    } else {
+      setIsLoading(false);
+      setErrorMessage('El teléfono debe ser 10 números comenzando con 11 o 15');
+
+      return false;
+    }
+  };
+
+  function isItPhone(str) {
+    return /^(11)[0-9]{8}$/.test(str);
+  }
+
   const handleOnclick = async () => {
     if (address && lat && long && phone && profilePhotoData && validateFieldsPets()) {
-      try {
-        setIsLoading(true);
-        //Bulk upload to AWS
-        const profilePhotoUri = await uploadProfilePhoto(profilePhotoData);
-        const petsAfterAws = await uploadPetsPhotos(pets);
+      if (validatePhoneFormat()) {
+        try {
+          setIsLoading(true);
+          //Bulk upload to AWS
+          const profilePhotoUri = await uploadProfilePhoto(profilePhotoData);
+          const petsAfterAws = await uploadPetsPhotos(pets);
 
-        const onboardingData = {
-          phone,
-          address: {
-            description: address,
-            latitude: lat,
-            longitude: long,
-          },
-          profile_photo_uri: profilePhotoUri,
-          pets: petsAfterAws,
-        };
+          const onboardingData = {
+            phone,
+            address: {
+              description: address,
+              latitude: lat,
+              longitude: long,
+            },
+            profile_photo_uri: profilePhotoUri,
+            pets: petsAfterAws,
+          };
 
-        await onboarding(signupData, onboardingData);
-        setIsLoading(false);
-      } catch (e) {
-        console.log(e);
+          await onboarding(signupData, onboardingData);
+          setIsLoading(false);
+        } catch (e) {
+          console.log(e);
+        }
       }
     } else {
       setErrorMessage('Por favor complete todos los datos');
