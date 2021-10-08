@@ -85,10 +85,11 @@ const ProfileScreen = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    const { userProfile, userId } = route.params;
+    const { userProfile, userId: walkerId } = route.params;
     let rangesToSet;
     let certificationsToSet;
 
+    //Si se accede al perfil propio desde la Navbar de abajo
     if (userProfile) {
       rangesToSet = getRange(userProfile.ranges);
       certificationsToSet = getCertification(userProfile.certifications);
@@ -96,10 +97,11 @@ const ProfileScreen = ({ navigation, route }) => {
       fetchUserProfile(userProfile.id, rangesToSet, certificationsToSet);
     }
 
-    if (userId) {
+    // Si un dueño accede al perfil de un paseador
+    if (walkerId) {
       setFromHome(false);
       setLoading(true);
-      fetchUserProfile(userId, rangesToSet, certificationsToSet);
+      fetchUserProfile(walkerId, rangesToSet, certificationsToSet);
     }
   }, [route.params, fetchUserProfile]);
 
