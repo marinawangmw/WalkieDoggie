@@ -30,6 +30,9 @@ const HomeStackNavigator = ({ route }) => {
         name="createWalk"
         component={CreateWalkScreen}
         options={{ title: 'Crear una reserva para tu paseo', headerBackTitle: '' }}
+        initialParams={{
+          userProfile,
+        }}
       />
     </Stack.Navigator>
   );
