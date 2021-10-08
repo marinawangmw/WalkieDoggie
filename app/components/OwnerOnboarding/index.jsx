@@ -40,7 +40,7 @@ const OwnerOnboarding = ({ route }) => {
   };
 
   function isItPhone(str) {
-    return /^(11|15)[0-9]{8}$/.test(str);
+    return /^(11)[0-9]{8}$/.test(str);
   }
 
   const handleOnclick = async () => {
