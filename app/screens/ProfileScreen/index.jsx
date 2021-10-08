@@ -44,6 +44,7 @@ const ProfileScreen = ({ navigation, route }) => {
   useEffect(() => {
     if (route.params) {
       const { ranges, certifications } = route.params;
+
       if (ranges && ranges.length > 0) {
         setChangeRanges(ranges);
       }
@@ -52,27 +53,27 @@ const ProfileScreen = ({ navigation, route }) => {
         setChangeCertifications(certifications);
       }
     }
-  }, [route]);
+  }, [changeRanges, setChangeRanges, changeCertifications, setChangeCertifications, route]);
 
-  const initiateUserDatas = (userProfile) => {
+  const initiateUserDatas = (userProfile, rangesToSet, certificationsToSet) => {
     setCurrentUserProfile(userProfile);
     setPets(userProfile.pets);
     setChangeFirstName(userProfile.first_name);
     setChangeLastName(userProfile.last_name);
     setChangePhone(userProfile.phone);
     setChangeAddress(userProfile.address.description);
-    setChangeCertifications(userProfile.certifications);
-    setChangeRanges(userProfile.ranges);
+    setChangeRanges(rangesToSet);
+    setChangeCertifications(certificationsToSet);
     setChangePricePerHour(userProfile.price_per_hour);
     setChangeCoverLetter(userProfile.cover_letter);
   };
 
-  const fetchUserProfile = useCallback(async (id) => {
+  const fetchUserProfile = useCallback(async (id, rangesToSet, certificationsToSet) => {
     try {
       const userProfile = await getProfile(id);
 
       if (userProfile.result) {
-        initiateUserDatas(userProfile.data);
+        initiateUserDatas(userProfile.data, rangesToSet, certificationsToSet);
       }
       setLoading(false);
     } catch (e) {
@@ -82,20 +83,38 @@ const ProfileScreen = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    const { userProfile, userId } = route.params;
+    let { userProfile, userId } = route.params;
 
-    // NO ESTÁ FUNCANDO ACTUALIZAR RANGES/CERTIFICACIONES POR ESTO DE ABAJO:
+    const rangesToSet = getRange(userProfile.ranges);
+    const certificationsToSet = getCertification(userProfile.certifications);
+
     if (userProfile) {
       setFromHome(true);
-      initiateUserDatas(userProfile);
+      fetchUserProfile(userProfile.id, rangesToSet, certificationsToSet);
     }
 
     if (userId) {
       setFromHome(false);
       setLoading(true);
-      fetchUserProfile(userId);
+      fetchUserProfile(userId, rangesToSet, certificationsToSet);
     }
   }, [route.params, fetchUserProfile]);
+
+  const getRange = (rangesToSet) => {
+    if (changeRanges && changeRanges.length > 0) {
+      return changeRanges;
+    }
+
+    return rangesToSet;
+  };
+
+  const getCertification = (certificationsToSet) => {
+    if (changeCertifications && changeCertifications.length > 0) {
+      return changeCertifications;
+    }
+
+    return certificationsToSet;
+  };
 
   const handleImageLoadEnd = () => {
     if (!isImageLoaded) {
