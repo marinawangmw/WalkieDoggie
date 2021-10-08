@@ -30,3 +30,4 @@ export { default as user } from './user.png';
 export { default as calendar } from './calendar-black.png';
 export { default as clock } from './clock.png';
 export { default as sandClock } from './sand-clock.png';
+export { default as whatsappIcon } from './whatsapp.png';

@@ -19,9 +19,11 @@ import {
   certificationIcon,
   priceIcon,
   resumeIcon,
+  whatsappIcon,
   // eslint-disable-next-line import/no-unresolved
 } from 'images';
 import Certifications from './Certifications';
+import { openWhatsappChat } from '../../services/externalApps/whatsapp';
 
 const ProfileScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
@@ -173,6 +175,11 @@ const ProfileScreen = ({ navigation, route }) => {
     navigation.navigate('createWalk', {
       ranges: currentUserProfile.ranges,
     });
+  };
+
+  const chatWalker = () => {
+    const defaultText = `Hola ${changeFirstName}! Te quería hacer una consulta.`;
+    openWhatsappChat(changePhone, defaultText);
   };
 
   const showResultUpdateProfile = (response) => {
@@ -328,7 +335,10 @@ const ProfileScreen = ({ navigation, route }) => {
             </View>
           </View>
           <View style={styles.iconAndData}>
-            <Image source={phoneIcon} style={styles.icon} tintColor="#364C63" />
+            <TouchableOpacity onPress={chatWalker} disabled={fromHome}>
+              <Image source={whatsappIcon} style={styles.icon} tintColor="#364C63" />
+            </TouchableOpacity>
+
             <ProfileDataRow
               customStyles={personal}
               value={changePhone}
@@ -336,6 +346,7 @@ const ProfileScreen = ({ navigation, route }) => {
               disabled={!fromHome}
             />
           </View>
+
           <View style={styles.iconAndData}>
             <Image source={addressIcon} style={styles.icon} tintColor="#364C63" />
             <ProfileDataRow
