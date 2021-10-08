@@ -55,17 +55,17 @@ const ProfileScreen = ({ navigation, route }) => {
     }
   }, [changeRanges, setChangeRanges, changeCertifications, setChangeCertifications, route]);
 
-  const initiateUserDatas = (userProfile, rangesToSet, certificationsToSet) => {
-    setCurrentUserProfile(userProfile);
-    setPets(userProfile.pets);
-    setChangeFirstName(userProfile.first_name);
-    setChangeLastName(userProfile.last_name);
-    setChangePhone(userProfile.phone);
-    setChangeAddress(userProfile.address.description);
+  const initiateUserDatas = (userData, rangesToSet, certificationsToSet) => {
+    setCurrentUserProfile(userData);
+    setPets(userData.pets);
+    setChangeFirstName(userData.first_name);
+    setChangeLastName(userData.last_name);
+    setChangePhone(userData.phone);
+    setChangeAddress(userData.address.description);
     setChangeRanges(rangesToSet);
     setChangeCertifications(certificationsToSet);
-    setChangePricePerHour(userProfile.price_per_hour);
-    setChangeCoverLetter(userProfile.cover_letter);
+    setChangePricePerHour(userData.price_per_hour);
+    setChangeCoverLetter(userData.cover_letter);
   };
 
   const fetchUserProfile = useCallback(async (id, rangesToSet, certificationsToSet) => {
@@ -73,7 +73,9 @@ const ProfileScreen = ({ navigation, route }) => {
       const userProfile = await getProfile(id);
 
       if (userProfile.result) {
-        initiateUserDatas(userProfile.data, rangesToSet, certificationsToSet);
+        const ranges = rangesToSet || userProfile.result.ranges;
+        const certifications = certificationsToSet || userProfile.result.certifications;
+        initiateUserDatas(userProfile.data, ranges, certifications);
       }
       setLoading(false);
     } catch (e) {
@@ -84,11 +86,12 @@ const ProfileScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     const { userProfile, userId } = route.params;
-
-    const rangesToSet = getRange(userProfile.ranges);
-    const certificationsToSet = getCertification(userProfile.certifications);
+    let rangesToSet;
+    let certificationsToSet;
 
     if (userProfile) {
+      rangesToSet = getRange(userProfile.ranges);
+      certificationsToSet = getCertification(userProfile.certifications);
       setFromHome(true);
       fetchUserProfile(userProfile.id, rangesToSet, certificationsToSet);
     }
@@ -240,6 +243,7 @@ const ProfileScreen = ({ navigation, route }) => {
             customStyles={personal}
             value={changePricePerHour.toString()}
             setChangeData={setChangePricePerHour}
+            disabled={!fromHome}
           />
           <Text>(Precio x hora)</Text>
         </View>
@@ -250,6 +254,7 @@ const ProfileScreen = ({ navigation, route }) => {
             customStyles={personal}
             value={changeCoverLetter}
             setChangeData={setChangeCoverLetter}
+            disabled={!fromHome}
           />
         </View>
         <TouchableOpacity
@@ -261,7 +266,7 @@ const ProfileScreen = ({ navigation, route }) => {
             <Image source={calendarIcon} style={styles.icon} />
             <Text style={styles.petName}>Franjas horarias de trabajo</Text>
           </View>
-          {!fromHome && <TimeTable ranges={currentUserProfile.ranges} />}
+          {!fromHome && <TimeTable ranges={currentUserProfile.ranges} isWalkerEdit={false} />}
         </TouchableOpacity>
 
         <TouchableOpacity

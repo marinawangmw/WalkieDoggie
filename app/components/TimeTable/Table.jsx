@@ -10,6 +10,7 @@ const Table = ({
   handleRemoveDayRow,
   addPlusIcon,
   addMinusIcon,
+  isWalkerEdit,
 }) => {
   const renderHeader = () => {
     return (
@@ -48,6 +49,7 @@ const Table = ({
               idx={idx}
               col="start_at"
               handleChangeText={handleChangeText}
+              isWalkerEdit={isWalkerEdit}
             />
             <Cell
               customStyles={dataStyles}
@@ -55,6 +57,7 @@ const Table = ({
               idx={idx}
               col="end_at"
               handleChangeText={handleChangeText}
+              isWalkerEdit={isWalkerEdit}
             />
           </View>
         ))}

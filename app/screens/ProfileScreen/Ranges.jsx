@@ -54,7 +54,13 @@ const Ranges = ({ navigation, route }) => {
   if (ranges.length) {
     return (
       <ScrollView contentContainerStyle={styles.container}>
-        <Timetable ranges={changeRanges} setRanges={handleChangeRanges} addPlusIcon addMinusIcon />
+        <Timetable
+          ranges={changeRanges}
+          setRanges={handleChangeRanges}
+          isWalkerEdit={true}
+          addPlusIcon
+          addMinusIcon
+        />
         <TouchableOpacity onPress={handleSaveRanges} style={styles.btnContainer}>
           <Text style={styles.btnLabel}>Guardar franjas horarias</Text>
         </TouchableOpacity>

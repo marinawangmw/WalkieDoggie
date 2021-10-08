@@ -9,6 +9,7 @@ const Timetable = ({
   customStyles,
   addPlusIcon,
   addMinusIcon,
+  isWalkerEdit,
 }) => {
   const styles = { ...defaultStyles, ...customStyles };
 
@@ -55,6 +56,7 @@ const Timetable = ({
         handleRemoveDayRow={handleRemoveDayRow}
         addPlusIcon={addPlusIcon}
         addMinusIcon={addMinusIcon}
+        isWalkerEdit={isWalkerEdit}
       />
       {onboardingNote && (
         <Text style={styles.text}>

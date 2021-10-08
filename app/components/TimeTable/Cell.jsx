@@ -15,6 +15,7 @@ const Cell = ({
   addMinusIcon,
   handleAddDayRow,
   handleRemoveDayRow,
+  isWalkerEdit,
 }) => {
   var today = new Date();
   const initialDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0);
@@ -67,7 +68,7 @@ const Cell = ({
 
   return (
     <View style={[styles.cell, customStyles.container]}>
-      <TextInput value={value} onFocus={showTimepicker} />
+      <TextInput value={value} onFocus={showTimepicker} editable={isWalkerEdit} />
       {show && (
         <DateTimePicker
           value={initialDate}
