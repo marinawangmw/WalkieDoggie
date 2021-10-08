@@ -83,7 +83,7 @@ const ProfileScreen = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    let { userProfile, userId } = route.params;
+    const { userProfile, userId } = route.params;
 
     const rangesToSet = getRange(userProfile.ranges);
     const certificationsToSet = getCertification(userProfile.certifications);
