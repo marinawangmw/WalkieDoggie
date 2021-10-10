@@ -6,7 +6,11 @@ import styles from './styles';
 const CustomButton = ({ handleOnclick, buttonLabel, id, disabled, centered }) => {
   return (
     <TouchableOpacity
-      style={[styles.button, disabled ? styles.disabled : styles.enabled]}
+      style={[
+        styles.button,
+        disabled ? styles.disabled : styles.enabled,
+        centered && { alignSelf: 'center' },
+      ]}
       onPress={() => handleOnclick(id)}
       disabled={disabled}
     >
