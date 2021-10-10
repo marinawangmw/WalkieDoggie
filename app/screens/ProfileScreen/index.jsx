@@ -113,6 +113,7 @@ const ProfileScreen = ({ navigation, route }) => {
   const handleNavigateCreateWalk = () => {
     navigation.navigate('createWalk', {
       ranges: currentUserProfile.ranges,
+      walkerId: currentUserProfile.id,
     });
   };
 

@@ -2,43 +2,51 @@ import React, { useState, useEffect } from 'react';
 import {
   TextInput,
   StyleSheet,
-  ScrollView,
   View,
   Image,
   Text,
   TouchableOpacity,
   CheckBox,
+  FlatList,
+  ActivityIndicator,
 } from 'react-native';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
+import Toast from 'react-native-toast-message';
+import DateTimePicker from '@react-native-community/datetimepicker';
 // eslint-disable-next-line import/no-unresolved
 import { calendar } from 'images';
 import { Picker } from '@react-native-community/picker';
-import MultiSelect from 'react-native-multiple-select';
-import { GooglePlacesInput } from 'components';
+import { CustomButton } from 'components';
+import { createReservation } from 'services/api/rides/reservations';
 
-const formatDate = (selectedDate) => {
+const formatDate = (selectedDate, userVisible) => {
   const month =
     selectedDate.getMonth().toString().length === 1
       ? '0' + selectedDate.getMonth().toString()
       : selectedDate.getMonth().toString();
   const day =
-    selectedDate.getDay().toString().length === 1
-      ? '0' + selectedDate.getDay().toString()
-      : selectedDate.getDay().toString();
+    selectedDate.getDate().toString().length === 1
+      ? '0' + selectedDate.getDate().toString()
+      : selectedDate.getDate().toString();
+
+  if (userVisible) {
+    return selectedDate.getFullYear().toString() + '-' + month + '-' + day;
+  }
 
   return selectedDate.getFullYear().toString() + month + day;
 };
 
-const CreateWalkScreen = ({ route }) => {
-  const initialDate = formatDate(new Date());
+const address_start = 'ADDRESS_START';
+const address_end = 'ADDRESS_END';
+
+const CreateWalkScreen = ({ route, navigation }) => {
+  const initialDate = new Date();
   const [date, setDate] = useState(initialDate);
+  const [show, setShow] = useState(false);
+
   const [selectedRange, setSelectedRange] = useState('');
   const [duration, setDuration] = useState('');
   const [pets, setPets] = useState(null);
-  const [selectedPetsId, setSelectedPetsId] = useState([]);
-  const [startPoint, setStartPoint] = useState(null);
-  const [endPoint, setEndPoint] = useState(null);
-  const [observation, setObservation] = useState(null);
+  const [selectedPetId, setSelectedPetId] = useState([]);
   const [startSameHome, setStartSameHome] = useState(false);
   const [startLat, setStartLat] = useState(null);
   const [startLong, setStartLong] = useState(null);
@@ -47,9 +55,35 @@ const CreateWalkScreen = ({ route }) => {
   const [endLat, setEndLat] = useState(null);
   const [endLong, setEndLong] = useState(null);
   const [endAddress, setEndAddress] = useState(null);
+  const [comments, setComments] = useState(null);
+  const [walkerRanges, setWalkerRanges] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [show, setShow] = useState(false);
-  const { ranges, userProfile } = route.params;
+  const { ranges, userProfile, walkerId } = route.params;
+
+  useEffect(() => {
+    if (ranges) {
+      setWalkerRanges(ranges);
+    }
+  }, [ranges]);
+
+  useEffect(() => {
+    if (route.params) {
+      const { key, address } = route.params;
+      if (key === address_start) {
+        setStartAddress(address.description);
+        setStartLat(address.lat);
+        setStartLong(address.long);
+      }
+      if (key === address_end) {
+        console.log(address);
+        setEndAddress(address.description);
+        setEndLat(address.lat);
+        setEndLong(address.long);
+      }
+    }
+  }, [route]);
 
   useEffect(() => {
     if (userProfile) {
@@ -57,145 +91,244 @@ const CreateWalkScreen = ({ route }) => {
     }
   }, [userProfile]);
 
-  const onchange = (_event, selectedDate) => {
-    try {
-      if (selectedDate) {
-        const formattedDate = formatDate(selectedDate);
-        setDate(formattedDate);
+  const onCheckStartSameHome = () => {
+    setStartSameHome(!startSameHome);
+    setStartLat(userProfile.address.latitude);
+    setStartLong(userProfile.address.longitude);
+    setStartAddress(userProfile.address.description);
+  };
+
+  const onCheckEndSameStart = () => {
+    setEndSameStart(!endSameStart);
+    setEndLat(startLat);
+    setEndLong(startLong);
+    setEndAddress(startAddress);
+  };
+
+  const handleSubmit = async () => {
+    if (
+      date &&
+      selectedRange &&
+      duration &&
+      selectedPetId &&
+      startAddress &&
+      startLat &&
+      startLong &&
+      endAddress &&
+      endLat &&
+      endLong &&
+      comments
+    ) {
+      setIsLoading(true);
+      setErrorMessage('');
+      const formattedDate = formatDate(date, false);
+      const data = {
+        walk_date: formattedDate,
+        range_id: selectedRange,
+        duration,
+        pet_id: selectedPetId,
+        address_start: {
+          description: startAddress,
+          latitude: startLat,
+          longitude: startLong,
+        },
+        address_end: {
+          description: endAddress,
+          latitude: endLat,
+          longitude: endLong,
+        },
+        comments,
+      };
+      try {
+        console.log(walkerId, data);
+        const res = await createReservation(walkerId, data);
+        setIsLoading(false);
+        console.log(res);
+        if (res.result) {
+          Toast.show({
+            type: 'success',
+            text1: 'Bien!',
+            text2:
+              'Se creó exitosamente la reserva por el paseo, pronto el paseador se contactará contigo.',
+          });
+          navigation.navigate('home');
+        } else {
+          setErrorMessage('Oops, algo anduvo mal');
+        }
+      } catch (error) {
+        setErrorMessage('Oops, algo anduvo mal');
+        console.log(error);
       }
-    } catch (e) {
-      console.log(e);
+    } else {
+      setIsLoading(false);
+      setErrorMessage('Por favor complete todos los datos');
     }
   };
 
-  const showTimepicker = () => {
-    setShow(true);
+  const handleNavigatePlaceSearch = (key) => {
+    navigation.navigate('googlePlaceSearcher', {
+      key,
+      placeholder: 'Ingrese una dirección',
+    });
   };
 
-  const onSelectedItemsChange = (selectedItems) => {
-    setSelectedPetsId(selectedItems);
+  const onChange = (_event, selectedDate) => {
+    setShow(false);
+    const currentDate = selectedDate || date;
+    setDate(currentDate);
   };
-  console.log(userProfile);
-  return (
-    <View style={styles.container}>
-      {/* WALK_DATE */}
-      <View style={styles.data}>
-        <Text style={styles.dataTitle}>Elija una fecha</Text>
-        <View style={styles.dateContainer}>
-          <TouchableOpacity style={styles.pressable} onPress={showTimepicker}>
-            <Image source={calendar} style={styles.icon} />
-          </TouchableOpacity>
-          <Text>2021-10-07</Text>
-          {show && (
-            <RNDateTimePicker
-              value={date}
-              mode="date"
-              display="default"
-              onChange={onchange}
-              locale="es-AR"
-            />
-          )}
-        </View>
-      </View>
 
-      {/* RANGE_ID -- TODO: evaluar dia de la semana seleccionada en date y mostrar las franjas correspondientes */}
-      <View style={styles.data}>
-        <Text style={styles.dataTitle}>Elija una franja horaria</Text>
-        <Picker
-          style={styles.dateContainer}
-          selectedValue={selectedRange}
-          onValueChange={(itemValue) => setSelectedRange(itemValue)}
-        >
-          {Boolean(ranges.length) &&
-            ranges.map((range) => (
-              <Picker.Item
-                label={'De ' + range.start_at + ' a ' + range.end_at}
-                value={range.id}
-                key={range.id}
+  const renderContent = () => {
+    return (
+      <View style={styles.container}>
+        {/* WALK_DATE */}
+        <View style={styles.data}>
+          <Text style={styles.dataTitle}>Elija una fecha</Text>
+          <View style={styles.dataContainer}>
+            <TouchableOpacity style={styles.pressable} onPress={() => setShow(true)}>
+              <Image source={calendar} style={styles.icon} />
+              <Text>{formatDate(date, true)}</Text>
+            </TouchableOpacity>
+            {show && (
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="default"
+                onChange={onChange}
+                locale="es-AR"
               />
-            ))}
-        </Picker>
-      </View>
+            )}
+          </View>
+        </View>
 
-      {/* DURATION */}
-      <View style={styles.data}>
-        <Text style={styles.dataTitle}>Ingrese una duración en minutos</Text>
-        <TextInput
-          style={[styles.dateContainer, styles.durationInput]}
-          value={duration}
-          onChangeText={setDuration}
-          placeholder="Ej.: 90"
-        />
-      </View>
+        {/* RANGE_ID */}
+        <View style={styles.data}>
+          <Text style={styles.dataTitle}>Elija una franja horaria</Text>
+          <Picker
+            style={styles.dataContainer}
+            selectedValue={selectedRange}
+            onValueChange={(itemValue) => setSelectedRange(itemValue)}
+          >
+            {Boolean(walkerRanges) &&
+              Boolean(walkerRanges.length) &&
+              walkerRanges.map((range) => (
+                <Picker.Item
+                  label={range.day_of_week + ' de ' + range.start_at + ' a ' + range.end_at}
+                  value={range.id}
+                  key={range.id}
+                />
+              ))}
+          </Picker>
+        </View>
 
-      {/* PET_ID -- multi selection */}
-      <View style={styles.data}>
-        <Text style={styles.dataTitle}>Seleccione para cual/es mascota/s</Text>
-        <MultiSelect
-          items={pets}
-          uniqueKey="id"
-          onSelectedItemsChange={onSelectedItemsChange}
-          selectedItems={selectedPetsId}
-          selectText="Seleccion mascota/s"
-          searchInputPlaceholderText="Buscar por nombre..."
-          onChangeInput={(text) => console.log(text)}
-          displayKey="name"
-          submitButtonText="Confirmar selección"
-          searchInputStyle={{ padding: 10 }}
-          submitButtonColor="#f4d7a3"
-        />
-      </View>
-
-      {/* ADDRESS_START */}
-      <View style={styles.data}>
-        <Text style={styles.dataTitle}>Punto de partida</Text>
-        <View style={styles.titleRow}>
-          <CheckBox
-            value={startSameHome}
-            onValueChange={setStartSameHome}
-            style={styles.checkbox}
+        {/* DURATION */}
+        <View style={styles.data}>
+          <Text style={styles.dataTitle}>Ingrese una duración en minutos</Text>
+          <TextInput
+            style={[styles.dataContainer, styles.durationInput]}
+            value={duration}
+            onChangeText={setDuration}
+            placeholder="Ej.: 90"
           />
-          <Text style={styles.checkboxLabel}>
-            Seleccionar: &quot;{userProfile.address.description}&quot; ?
-          </Text>
         </View>
-        <GooglePlacesInput
-          setLat={setStartLat}
-          setLong={setStartLong}
-          setAddress={setStartAddress}
-          customStyles={placeInputStyles}
-          disabled={startSameHome}
-          placeholder="Seleccionar otra dirección"
-        />
-      </View>
 
-      {/* ADDRESS_END */}
-      <View style={styles.data}>
-        <Text style={styles.dataTitle}>Punto de entrega</Text>
-        <View style={styles.titleRow}>
-          <CheckBox value={endSameStart} onValueChange={setEndSameStart} style={styles.checkbox} />
-          <Text style={styles.checkboxLabel}>Misma dirección que punto de partida?</Text>
+        {/* PET_ID -- multi selection */}
+        <View style={styles.data}>
+          <Text style={styles.dataTitle}>Seleccione para cual/es mascota/s</Text>
+          <Picker
+            style={styles.dataContainer}
+            selectedValue={selectedPetId}
+            onValueChange={(itemValue) => setSelectedPetId(itemValue)}
+          >
+            {Boolean(pets) &&
+              Boolean(pets.length) &&
+              pets.map((pet) => <Picker.Item label={pet.name} value={pet.id} key={pet.id} />)}
+          </Picker>
         </View>
-        <GooglePlacesInput
-          setLat={setEndLat}
-          setLong={setEndLong}
-          setAddress={setEndAddress}
-          customStyles={placeInputStyles}
-          disabled={endSameStart}
-          placeholder="Seleccionar otra dirección"
-        />
-      </View>
 
-      {/* COMMENTS */}
-      <TextInput
-        multiline
-        value={observation}
-        onChangeText={setObservation}
-        placeholder="¿Algún comentario para agregar?"
-        style={[styles.dateContainer, styles.durationInput]}
+        {/* ADDRESS_START */}
+        <View style={styles.data}>
+          <Text style={styles.dataTitle}>Punto de partida</Text>
+          <View style={styles.titleRow}>
+            <CheckBox
+              value={startSameHome}
+              onValueChange={onCheckStartSameHome}
+              style={styles.checkbox}
+            />
+            <Text style={styles.checkboxLabel}>
+              Seleccionar: &quot;{userProfile.address.description}&quot; ?
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={styles.dataContainer}
+            onPress={() => handleNavigatePlaceSearch(address_end)}
+            disabled={startSameHome}
+          >
+            <Text style={styles.dataContent}>
+              {startAddress ? startAddress : 'Seleccionar otra dirección'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* ADDRESS_END */}
+        <View style={styles.data}>
+          <Text style={styles.dataTitle}>Punto de entrega</Text>
+          <View style={styles.titleRow}>
+            <CheckBox
+              value={endSameStart}
+              onValueChange={onCheckEndSameStart}
+              style={styles.checkbox}
+            />
+            <Text style={styles.checkboxLabel}>Misma dirección que punto de partida?</Text>
+          </View>
+
+          <TouchableOpacity
+            style={styles.dataContainer}
+            onPress={() => handleNavigatePlaceSearch(address_end)}
+            disabled={endSameStart}
+          >
+            <Text style={styles.dataContent}>
+              {endAddress ? endAddress : 'Seleccionar otra dirección'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* COMMENTS */}
+        <TextInput
+          multiline
+          value={comments}
+          onChangeText={setComments}
+          placeholder="¿Algún comentario para agregar?"
+          style={[styles.dataContainer, styles.durationInput, { marginVertical: 10 }]}
+        />
+
+        <CustomButton buttonLabel="Crear reserva" handleOnclick={handleSubmit} centered />
+        {Boolean(errorMessage) && <Text style={styles.error}>{errorMessage}</Text>}
+        {isLoading && (
+          <View style={styles.loader}>
+            <ActivityIndicator size="large" color="#f8b444" />
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  const renderLoader = () => {
+    return <></>;
+  };
+
+  if (userProfile) {
+    return (
+      <FlatList
+        data={[]}
+        renderItem={() => {}}
+        ListHeaderComponent={renderContent()}
+        ListFooterComponent={renderLoader()}
       />
-    </View>
-  );
+    );
+  }
+
+  return null;
 };
 
 const styles = StyleSheet.create({
@@ -210,20 +343,12 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 15,
   },
-  activeInput: {
-    backgroundColor: '#f4d7a3',
-    color: '#364C63',
-  },
-  disableInput: {
-    borderWidth: 1,
-    borderColor: '#75757566',
-  },
   dateWrap: {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
   data: {
-    paddingVertical: 5,
+    paddingVertical: 10,
   },
   dataTitle: {
     paddingBottom: 5,
@@ -234,7 +359,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     alignItems: 'center',
   },
-  dateContainer: {
+  dataContainer: {
     backgroundColor: 'white',
     borderRadius: 5,
     elevation: 2,
@@ -242,10 +367,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
   },
+  dataContent: {
+    paddingVertical: 10,
+  },
   durationInput: {
     paddingVertical: 10,
   },
-  pressable: {},
+  pressable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   icon: {
     height: 25,
     width: 25,
@@ -259,16 +390,16 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flex: 1,
   },
-});
-
-const placeInputStyles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    borderRadius: 5,
-    elevation: 2,
-    flexDirection: 'row',
+  error: {
+    textAlign: 'center',
+    color: '#D32F2F',
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 0,
+    backgroundColor: '#F3F3F3CC',
+    zIndex: 10,
   },
 });
 
