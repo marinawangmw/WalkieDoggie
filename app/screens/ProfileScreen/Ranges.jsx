@@ -1,14 +1,49 @@
 import React, { useState } from 'react';
-import { Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import Timetable from '../../components/TimeTable';
+import { DAY_ORDER, initRanges } from '../../helpers/profileAndOnboarding';
+import { existOverlapsRanges } from '../../helpers/validatorHelper';
 
 const Ranges = ({ navigation, route }) => {
   const { ranges } = route.params;
-  const [changeRanges, setChangeRanges] = useState(ranges);
+  let existingRangesAndEmpties = [...ranges, ...initRanges()];
+  existingRangesAndEmpties = existingRangesAndEmpties.filter((range, index) => {
+    return (
+      (range.start_at !== null && range.end_at !== null) ||
+      (range.start_at === null &&
+        range.end_at === null &&
+        !existingRangesAndEmpties.some(
+          (a, indexSome) => a.day_of_week === range.day_of_week && index !== indexSome,
+        ))
+    );
+  });
+
+  existingRangesAndEmpties = existingRangesAndEmpties.sort((a, b) => {
+    if (DAY_ORDER[a.day_of_week] < DAY_ORDER[b.day_of_week]) return -1;
+    if (DAY_ORDER[a.day_of_week] > DAY_ORDER[b.day_of_week]) return 1;
+    if (a.start_at < b.start_at) return -1;
+    if (a.start_at > b.start_at) return 1;
+    return 0;
+  });
+
+  const [changeRanges, setChangeRanges] = useState(existingRangesAndEmpties);
 
   const handleSaveRanges = () => {
+    //Filtro aquellas franjas que tengan valores
+    const filterRanges = changeRanges.filter((d) => d.start_at !== null && d.end_at !== null);
+    if (filterRanges.some((day) => day.end_at < day.start_at)) {
+      Alert.alert('Los horarios ingresados no son válidos.');
+      return;
+    }
+
+    //Verificamos que no haya solapamientos
+    if (existOverlapsRanges(filterRanges)) {
+      Alert.alert('Los horarios no se pueden solapar para un mismo día.');
+      return;
+    }
+
     navigation.navigate('profile', {
-      ranges: changeRanges,
+      ranges: filterRanges,
     });
   };
 
@@ -19,7 +54,13 @@ const Ranges = ({ navigation, route }) => {
   if (ranges.length) {
     return (
       <ScrollView contentContainerStyle={styles.container}>
-        <Timetable ranges={changeRanges} setRanges={handleChangeRanges} addPlusIcon />
+        <Timetable
+          ranges={changeRanges}
+          setRanges={handleChangeRanges}
+          isWalkerEdit={true}
+          addPlusIcon
+          addMinusIcon
+        />
         <TouchableOpacity onPress={handleSaveRanges} style={styles.btnContainer}>
           <Text style={styles.btnLabel}>Guardar franjas horarias</Text>
         </TouchableOpacity>

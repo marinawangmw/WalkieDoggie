@@ -4,13 +4,26 @@ import Toast from 'react-native-toast-message';
 import LoadingScreen from 'screens/LoadingScreen';
 import { CustomButton, ProfileDataRow, TimeTable } from 'components';
 import { getProfile, editOwner, editWalker } from 'services/api/users/profile';
+import { editPet } from 'services/api/users/pets';
+
 import { AuthContext } from 'utils/authContext';
 import { USER_TYPES } from 'utils/constants';
 import { removeProps } from 'helpers/objectHelper';
 import { styles, name, personal } from './ProfileScreen.styles';
-// eslint-disable-next-line import/no-unresolved
-import { addressIcon, phoneIcon, profileIcon, calendarIcon, certificationIcon } from 'images';
+
+import {
+  addressIcon,
+  phoneIcon,
+  profileIcon,
+  calendarIcon,
+  certificationIcon,
+  priceIcon,
+  resumeIcon,
+  whatsappIcon,
+  // eslint-disable-next-line import/no-unresolved
+} from 'images';
 import Certifications from './Certifications';
+import { openWhatsappChat } from '../../services/externalApps/whatsapp';
 
 const ProfileScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
@@ -24,14 +37,16 @@ const ProfileScreen = ({ navigation, route }) => {
   const [changeAddress, setChangeAddress] = useState('');
   const [changeRanges, setChangeRanges] = useState([]);
   const [changeCertifications, setChangeCertifications] = useState([]);
-
   const [pets, setPets] = useState(null);
+  const [changePricePerHour, setChangePricePerHour] = useState([]);
+  const [changeCoverLetter, setChangeCoverLetter] = useState([]);
 
   const { signOut } = React.useContext(AuthContext);
 
   useEffect(() => {
     if (route.params) {
       const { ranges, certifications } = route.params;
+
       if (ranges && ranges.length > 0) {
         setChangeRanges(ranges);
       }
@@ -40,25 +55,29 @@ const ProfileScreen = ({ navigation, route }) => {
         setChangeCertifications(certifications);
       }
     }
-  }, [route]);
+  }, [changeRanges, setChangeRanges, changeCertifications, setChangeCertifications, route]);
 
-  const initiateUserDatas = (userProfile) => {
-    setCurrentUserProfile(userProfile);
-    setPets(userProfile.pets);
-    setChangeFirstName(userProfile.first_name);
-    setChangeLastName(userProfile.last_name);
-    setChangePhone(userProfile.phone);
-    setChangeAddress(userProfile.address.description);
-    setChangeCertifications(userProfile.certifications);
-    setChangeRanges(userProfile.ranges);
+  const initiateUserDatas = (userData, rangesToSet, certificationsToSet) => {
+    setCurrentUserProfile(userData);
+    setPets(userData.pets);
+    setChangeFirstName(userData.first_name);
+    setChangeLastName(userData.last_name);
+    setChangePhone(userData.phone);
+    setChangeAddress(userData.address.description);
+    setChangeRanges(rangesToSet);
+    setChangeCertifications(certificationsToSet);
+    setChangePricePerHour(userData.price_per_hour);
+    setChangeCoverLetter(userData.cover_letter);
   };
 
-  const fetchUserProfile = useCallback(async (id) => {
+  const fetchUserProfile = useCallback(async (id, rangesToSet, certificationsToSet) => {
     try {
       const userProfile = await getProfile(id);
 
       if (userProfile.result) {
-        initiateUserDatas(userProfile.data);
+        const ranges = rangesToSet || userProfile.result.ranges;
+        const certifications = certificationsToSet || userProfile.result.certifications;
+        initiateUserDatas(userProfile.data, ranges, certifications);
       }
       setLoading(false);
     } catch (e) {
@@ -68,19 +87,41 @@ const ProfileScreen = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    const { userProfile, userId } = route.params;
+    const { userProfile, userId: walkerId } = route.params;
+    let rangesToSet;
+    let certificationsToSet;
 
+    //Si se accede al perfil propio desde la Navbar de abajo
     if (userProfile) {
+      rangesToSet = getRange(userProfile.ranges);
+      certificationsToSet = getCertification(userProfile.certifications);
       setFromHome(true);
-      initiateUserDatas(userProfile);
+      fetchUserProfile(userProfile.id, rangesToSet, certificationsToSet);
     }
 
-    if (userId) {
+    // Si un dueño accede al perfil de un paseador
+    if (walkerId) {
       setFromHome(false);
       setLoading(true);
-      fetchUserProfile(userId);
+      fetchUserProfile(walkerId, rangesToSet, certificationsToSet);
     }
   }, [route.params, fetchUserProfile]);
+
+  const getRange = (rangesToSet) => {
+    if (changeRanges && changeRanges.length > 0) {
+      return changeRanges;
+    }
+
+    return rangesToSet;
+  };
+
+  const getCertification = (certificationsToSet) => {
+    if (changeCertifications && changeCertifications.length > 0) {
+      return changeCertifications;
+    }
+
+    return certificationsToSet;
+  };
 
   const handleImageLoadEnd = () => {
     if (!isImageLoaded) {
@@ -94,8 +135,28 @@ const ProfileScreen = ({ navigation, route }) => {
     setPets(aux);
   };
 
+  const saveInformationPet = async (idx) => {
+    const aux = pets.slice();
+    const data = aux[idx];
+    const { id, ...resParams } = data;
+    const response = await editPet(id, resParams);
+    if (!response.result) {
+      Toast.show({
+        type: 'error',
+        text1: 'Ouch!',
+        text2: 'Error al actualizar datos de la mascota.',
+      });
+    } else {
+      Toast.show({
+        type: 'success',
+        text1: 'Yey!',
+        text2: 'Los datos de la mascota han sido actualizados.',
+      });
+    }
+  };
+
   const handleNavigatePetDetails = (pet, idx) => {
-    navigation.navigate('petDetail', { pet, handleEditPets, idx });
+    navigation.navigate('petDetail', { pet, handleEditPets, idx, saveInformationPet });
   };
 
   const handleNavigateRanges = () => {
@@ -115,6 +176,11 @@ const ProfileScreen = ({ navigation, route }) => {
       ranges: currentUserProfile.ranges,
       walkerId: currentUserProfile.id,
     });
+  };
+
+  const chatWalker = () => {
+    const defaultText = `Hola ${changeFirstName}! Te quería hacer una consulta.`;
+    openWhatsappChat(changePhone, defaultText);
   };
 
   const showResultUpdateProfile = (response) => {
@@ -145,6 +211,8 @@ const ProfileScreen = ({ navigation, route }) => {
       const response = await editOwner(userProfileEdited);
       showResultUpdateProfile(response);
     } else {
+      userProfileEdited.price_per_hour = changePricePerHour;
+      userProfileEdited.cover_letter = changeCoverLetter;
       userProfileEdited.ranges = changeRanges;
       userProfileEdited.certifications = changeCertifications;
 
@@ -179,6 +247,26 @@ const ProfileScreen = ({ navigation, route }) => {
   const renderWalkerSpecialData = () => {
     return (
       <>
+        <View style={styles.iconAndData}>
+          <Image source={priceIcon} style={styles.icon} tintColor="#364C63" />
+          <ProfileDataRow
+            customStyles={personal}
+            value={changePricePerHour.toString()}
+            setChangeData={setChangePricePerHour}
+            disabled={!fromHome}
+          />
+          <Text>(Precio x hora)</Text>
+        </View>
+
+        <View style={styles.iconAndData}>
+          <Image source={resumeIcon} style={styles.icon} tintColor="#364C63" />
+          <ProfileDataRow
+            customStyles={personal}
+            value={changeCoverLetter}
+            setChangeData={setChangeCoverLetter}
+            disabled={!fromHome}
+          />
+        </View>
         <TouchableOpacity
           style={styles.petDataRow}
           onPress={handleNavigateRanges}
@@ -188,7 +276,7 @@ const ProfileScreen = ({ navigation, route }) => {
             <Image source={calendarIcon} style={styles.icon} />
             <Text style={styles.petName}>Franjas horarias de trabajo</Text>
           </View>
-          {!fromHome && <TimeTable ranges={currentUserProfile.ranges} />}
+          {!fromHome && <TimeTable ranges={currentUserProfile.ranges} isWalkerEdit={false} />}
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -248,7 +336,10 @@ const ProfileScreen = ({ navigation, route }) => {
             </View>
           </View>
           <View style={styles.iconAndData}>
-            <Image source={phoneIcon} style={styles.icon} tintColor="#364C63" />
+            <TouchableOpacity onPress={chatWalker} disabled={fromHome}>
+              <Image source={whatsappIcon} style={styles.icon} tintColor="#364C63" />
+            </TouchableOpacity>
+
             <ProfileDataRow
               customStyles={personal}
               value={changePhone}
@@ -256,6 +347,7 @@ const ProfileScreen = ({ navigation, route }) => {
               disabled={!fromHome}
             />
           </View>
+
           <View style={styles.iconAndData}>
             <Image source={addressIcon} style={styles.icon} tintColor="#364C63" />
             <ProfileDataRow

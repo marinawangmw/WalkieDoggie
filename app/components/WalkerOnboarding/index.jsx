@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { View, TextInput, ScrollView, Text, ActivityIndicator } from 'react-native';
 import { TimeTable, FilePicker, CustomButton } from 'components';
 import { uploadFileAws, AuthContext } from 'utils';
-import { INITIAL_RANGES } from 'helpers/profileAndOnboarding';
+import { initRanges } from 'helpers/profileAndOnboarding';
 import styles from './styles';
+import { existOverlapsRanges } from 'helpers/validatorHelper';
 
 const WalkerOnboarding = ({ route }) => {
   const { address, lat, long, signupData } = route.params;
@@ -15,7 +16,7 @@ const WalkerOnboarding = ({ route }) => {
   const [cover_letter, setCover_letter] = useState('');
   const [profilePhotoData, setProfilePhotoData] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
-  const [ranges, setRanges] = useState(INITIAL_RANGES);
+  const [ranges, setRanges] = useState(initRanges());
 
   const formatTimeTableObject = () => {
     let aux = ranges.slice();
@@ -31,6 +32,11 @@ const WalkerOnboarding = ({ route }) => {
     } else if (aux.some((day) => day.end_at < day.start_at)) {
       setIsLoading(false);
       const err = 'Los horarios ingresados no son válidos.';
+      setErrorMessage(err);
+      throw new Error(err);
+    } else if (existOverlapsRanges(aux)) {
+      setIsLoading(false);
+      const err = 'Los horarios no se pueden solapar para un mismo día.';
       setErrorMessage(err);
       throw new Error(err);
     } else {
@@ -51,30 +57,62 @@ const WalkerOnboarding = ({ route }) => {
     }
   };
 
+  const validatePhoneFormat = () => {
+    if (isItPhone(phone)) {
+      return true;
+    } else {
+      setIsLoading(false);
+      setErrorMessage('El teléfono debe ser 10 números comenzando con 11 o 15');
+
+      return false;
+    }
+  };
+
+  const validatePriceFormat = () => {
+    if (isItNumber(price_per_hour)) {
+      return true;
+    } else {
+      setIsLoading(false);
+      setErrorMessage('El precio por hora no es un número válido');
+
+      return false;
+    }
+  };
+
+  function isItPhone(str) {
+    return /^(11)[0-9]{8}$/.test(str);
+  }
+
+  function isItNumber(str) {
+    return /^-?[0-9]+((\.|,)[0-9]+)?$/.test(str);
+  }
+
   const handleOnclick = async () => {
     setIsLoading(true);
     if (!!price_per_hour && !!phone && !!cover_letter && !!profilePhotoData) {
-      try {
-        const profilePhotoUri = await uploadProfilePhoto();
-        const timeTable = formatTimeTableObject();
-        if (profilePhotoUri && timeTable && timeTable.length > 0) {
-          const onboardingData = {
-            phone,
-            address: {
-              description: address,
-              latitude: lat,
-              longitude: long,
-            },
-            profile_photo_uri: profilePhotoUri,
-            cover_letter,
-            ranges: timeTable,
-            price_per_hour,
-          };
+      if (validatePhoneFormat() && validatePriceFormat()) {
+        try {
+          const profilePhotoUri = await uploadProfilePhoto();
+          const timeTable = formatTimeTableObject();
+          if (profilePhotoUri && timeTable && timeTable.length > 0) {
+            const onboardingData = {
+              phone,
+              address: {
+                description: address,
+                latitude: lat,
+                longitude: long,
+              },
+              profile_photo_uri: profilePhotoUri,
+              cover_letter,
+              ranges: timeTable,
+              price_per_hour,
+            };
 
-          await onboarding(signupData, onboardingData);
+            await onboarding(signupData, onboardingData);
+          }
+        } catch (e) {
+          console.log(e);
         }
-      } catch (e) {
-        console.log(e);
       }
     } else {
       setIsLoading(false);
