@@ -33,7 +33,7 @@ const OwnerOnboarding = ({ route }) => {
       return true;
     } else {
       setIsLoading(false);
-      setErrorMessage('El teléfono debe ser 10 números comenzando con 11 o 15');
+      setErrorMessage('El teléfono debe ser 10 números comenzando con 11');
 
       return false;
     }
