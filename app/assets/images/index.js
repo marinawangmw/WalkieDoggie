@@ -31,3 +31,6 @@ export { default as calendar } from './calendar-black.png';
 export { default as clock } from './clock.png';
 export { default as sandClock } from './sand-clock.png';
 export { default as whatsappIcon } from './whatsapp.png';
+export { default as complaintsIcon } from './complaints.png';
+export { default as complaintFile } from './complaint-file.png';
+export { default as imageIcon } from './image-icon.png';

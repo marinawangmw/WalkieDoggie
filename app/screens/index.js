@@ -7,3 +7,6 @@ export { default as AddressScreen } from './AddressScreen';
 export { default as FindWalkersScreen } from './FindWalkersScreen';
 export { default as CreateWalkScreen } from './CreateWalkScreen';
 export { default as LoadingScreen } from './LoadingScreen';
+export { default as FindComplaintsScreen } from './FindComplaintsScreen';
+export { default as ComplaintScreen } from './ComplaintScreen';
+export { default as CreateComplaintScreen } from './CreateComplaintScreen';

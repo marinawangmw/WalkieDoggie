@@ -6,6 +6,7 @@ import { TabIcon } from '../../components';
 import { getCurrentUserId } from '../../utils/storage';
 import { getProfile } from '../../services/api/users/profile';
 import ProfileStackNavigator from './ProfileStackNavigator';
+import ComplaintsStackNavigator from './ComplaintsStackNavigator';
 import LoadingScreen from '../../screens/LoadingScreen';
 
 const Tabs = createBottomTabNavigator();
@@ -54,6 +55,14 @@ const HomeTabNavigator = () => {
           name="HomeScreen"
           component={HomeStackNavigator}
           options={{ title: 'Walkie Doggie', tabBarLabel: 'Home', headerShown: false }}
+          initialParams={{
+            userProfile,
+          }}
+        />
+        <Tabs.Screen
+          name="ComplaintsScreen"
+          component={ComplaintsStackNavigator}
+          options={{ headerShown: false, tabBarLabel: 'Denuncias' }}
           initialParams={{
             userProfile,
           }}
