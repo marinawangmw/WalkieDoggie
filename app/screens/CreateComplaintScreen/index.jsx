@@ -128,7 +128,7 @@ const CreateComplaintScreen = ({ navigation, route }) => {
           style={styles.message}
           multiline={true}
           onChangeText={validateDescription}
-          placeholder="Por favor describa lo sucedido con el mayor detalle posible"
+          placeholder="Por favor describa lo sucedido con el mayor detalle posible, indicando dónde, cúando y qué ocurrió."
         />
         {Boolean(descriptionError) && (
           <Text style={styles.authentication__errorMsg}>{descriptionError}</Text>

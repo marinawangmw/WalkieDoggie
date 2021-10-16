@@ -81,6 +81,9 @@ const Files = ({ navigation, route, disableUpload }) => {
 
             {newFileData && (
               <View styles={styles.viewDescriptionInput}>
+                <Text style={styles.fileNameToUpload}>
+                  Archivo a subir: {newFileData.nameWithoutUUID}{' '}
+                </Text>
                 <Button title="Subir" onPress={handleUploadFile} />
               </View>
             )}
@@ -179,5 +182,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     borderColor: '#f4d7a3',
     borderRadius: 10,
+    marginTop: 30,
+  },
+  fileNameToUpload: {
+    fontSize: 14,
+    margin: 10,
   },
 });

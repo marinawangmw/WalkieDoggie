@@ -26,7 +26,7 @@ const FindComplaintsScreen = ({ navigation }) => {
     };
 
     getComplaintsData();
-  }, []);
+  });
 
   if (complaintsData) {
     return (

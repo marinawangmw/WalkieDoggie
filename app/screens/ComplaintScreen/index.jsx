@@ -1,21 +1,18 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, SafeAreaView, Image, ScrollView, Linking } from 'react-native';
 import { styles } from './ComplaintScreen.styles';
+import { styles as fileStyles } from './ComplaintFiles.styles';
 
 // eslint-disable-next-line import/no-unresolved
 import { imageIcon } from 'images';
-import Files from './Files';
-import { getComplaints } from 'services/api/complaints/complaints';
+import { getComplaint } from '../../services/api/complaints/complaints';
+import { formatDate } from '../../utils/dates';
 
 const ComplaintScreen = ({ navigation, route }) => {
   const [changeDescription, setChangeDescription] = useState('');
-  const [changeFiles, setChangeFiles] = useState([]);
+  const [changeCreationDate, setChangeCreationDate] = useState('');
 
-  const handleNavigateComplaintFiles = () => {
-    navigation.navigate('seeComplaintFiles', {
-      files: changeFiles,
-    });
-  };
+  const [changeFiles, setChangeFiles] = useState([]);
 
   useEffect(() => {
     if (route.params) {
@@ -29,22 +26,12 @@ const ComplaintScreen = ({ navigation, route }) => {
 
   const fetchComplaint = useCallback(async (id) => {
     try {
-      //const complaint = await getComplaint(id);
-      const complaints = await getComplaints();
-
-      if (complaints.result) {
-        let complaint = complaints.data
-          .filter(function (item) {
-            return item.id === id;
-          })
-          .map(function ({ description, complaint_files }) {
-            return { description, complaint_files };
-          });
-
-        if (complaint) {
-          setChangeDescription(complaint[0].description);
-          setChangeFiles(complaint[0].complaint_files);
-        }
+      const response = await getComplaint(id);
+      if (response.result) {
+        const complaint = response.data;
+        setChangeDescription(complaint.description);
+        setChangeCreationDate(formatDate(complaint.created_at));
+        setChangeFiles(complaint.complaint_files);
       }
     } catch (e) {
       console.log('get walker profile error: ', e);
@@ -60,13 +47,26 @@ const ComplaintScreen = ({ navigation, route }) => {
   const renderComplaintFiles = () => {
     return (
       <>
-        <TouchableOpacity style={styles.petDataRow} onPress={handleNavigateComplaintFiles}>
-          <View style={styles.petDataRowTitle}>
-            <Image source={imageIcon} style={styles.icon} />
-            <Text style={styles.petName}>Archivos</Text>
+        <ScrollView style={fileStyles.scrollContainer}>
+          <View styles={fileStyles.filesContainer}>
+            {changeFiles && (
+              <>
+                {changeFiles.map((row, rowIdx) => {
+                  const index = parseInt(rowIdx) + 1;
+
+                  return (
+                    <View key={rowIdx} style={fileStyles.fileRow}>
+                      <Image source={imageIcon} style={fileStyles.icon} />
+                      <Text style={[fileStyles.text]} onPress={() => Linking.openURL(row.file_uri)}>
+                        {'Archivo ' + index}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </>
+            )}
           </View>
-          <Files route={{ params: { files: changeFiles } }} disableUpload />
-        </TouchableOpacity>
+        </ScrollView>
       </>
     );
   };
@@ -74,6 +74,9 @@ const ComplaintScreen = ({ navigation, route }) => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container}>
+        <Text style={styles.complaintDate}> Fecha de la denuncia: {changeCreationDate}</Text>
+
+        <Text style={styles.complaintDescription}> Descripción de la denuncia:</Text>
         <Text style={styles.message} multiline={true}>
           {changeDescription}
         </Text>

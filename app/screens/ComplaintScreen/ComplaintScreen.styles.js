@@ -4,7 +4,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
-    marginVertical: 30,
+    marginVertical: 10,
   },
   picture: {
     height: 90,
@@ -76,7 +76,7 @@ export const styles = StyleSheet.create({
   petName: {
     paddingLeft: 20,
     color: '#364C63',
-    fontSize: 16,
+    fontSize: 18,
   },
   message: {
     padding: 20,
@@ -87,6 +87,17 @@ export const styles = StyleSheet.create({
     textAlign: 'left',
     borderColor: '#f4d7a3',
     borderRadius: 10,
+  },
+  complaintDescription: {
+    color: 'black',
+    paddingLeft: 15,
+    fontSize: 16,
+  },
+  complaintDate: {
+    color: 'black',
+    paddingLeft: 15,
+    fontSize: 16,
+    paddingBottom: 15,
   },
 });
 

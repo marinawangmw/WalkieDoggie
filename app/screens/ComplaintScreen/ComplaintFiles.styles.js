@@ -1,55 +1,6 @@
-import React, { useState } from 'react';
-import {
-  ScrollView,
-  View,
-  StyleSheet,
-  Button,
-  Text,
-  Image,
-  TouchableOpacity,
-  Linking,
-  ActivityIndicator,
-} from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import { FilePicker } from 'components';
-import { uploadFileAws } from 'utils/aws';
-// eslint-disable-next-line import/no-unresolved
-import { imageIcon } from 'images';
-
-const Files = ({ route, disableUpload }) => {
-  const { files } = route.params;
-  const [localFiles, setChangeFiles] = useState(files);
-
-  return (
-    <>
-      <ScrollView style={styles.scrollContainer}>
-        {Boolean(localFiles.length) && !disableUpload && <View style={styles.hr} />}
-        <View styles={styles.filesContainer}>
-          {localFiles && (
-            <>
-              {localFiles.map((row, rowIdx) => {
-                const index = parseInt(rowIdx) + 1;
-
-                return (
-                  <View key={rowIdx} style={styles.fileRow}>
-                    <Image source={imageIcon} style={styles.icon} />
-                    <Text style={[styles.text]} onPress={() => Linking.openURL(row.file_uri)}>
-                      {'Archivo ' + index}
-                    </Text>
-                  </View>
-                );
-              })}
-            </>
-          )}
-        </View>
-      </ScrollView>
-    </>
-  );
-};
-
-export default Files;
-
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   scrollContainer: {
     width: '100%',
     paddingHorizontal: 20,

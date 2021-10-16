@@ -2,6 +2,7 @@ import React from 'react';
 import { View, FlatList, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 // eslint-disable-next-line import/no-unresolved
 import { complaintFile } from 'images';
+import { formatDate } from '../../utils/dates';
 
 const FindResultsList = ({ result, navigation }) => {
   const handleNavigateComplaint = (complaintId) => {
@@ -35,15 +36,16 @@ const FindResultsList = ({ result, navigation }) => {
         </View>
 
         <View style={styles.dataContainer}>
-          <Text style={styles.text}>
-            {item.item.reporter.first_name + ' ' + item.item.reporter.last_name}
-          </Text>
+          <Text style={styles.text}>Fecha: {formatDate(item.item.created_at)}</Text>
           {renderDescription(item.item.description)}
         </View>
       </TouchableOpacity>
     );
   };
 
+  if (!result || result.length === 0) {
+    return <Text style={styles.noComplaints}>No hay denuncias cargadas todavía.</Text>;
+  }
   return (
     <FlatList data={result} renderItem={renderItem} keyExtractor={(_item, idx) => idx.toString()} />
   );
@@ -85,6 +87,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  noComplaints: {
+    fontSize: 16,
+    marginTop: 20,
+    marginLeft: 30,
   },
 });
 

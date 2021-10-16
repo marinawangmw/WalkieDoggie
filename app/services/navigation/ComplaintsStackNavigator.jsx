@@ -2,7 +2,6 @@ import React from 'react';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 import { FindComplaintsScreen, ComplaintScreen, CreateComplaintScreen } from 'screens';
 import CreateFiles from 'screens/CreateComplaintScreen/Files';
-import SeeFiles from 'screens/ComplaintScreen/Files';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,7 +17,7 @@ const ComplaintsStackNavigator = ({ route }) => {
       <Stack.Screen
         name="complaint"
         component={ComplaintScreen}
-        options={{ title: '', headerBackTitle: '' }}
+        options={{ title: 'Denuncia', headerBackTitle: '' }}
       />
       <Stack.Screen
         name="createComplaint"
@@ -30,7 +29,6 @@ const ComplaintsStackNavigator = ({ route }) => {
         component={CreateFiles}
         options={{ title: 'Subir archivos' }}
       />
-      <Stack.Screen name="seeComplaintFiles" component={SeeFiles} options={{ title: 'Archivos' }} />
     </Stack.Navigator>
   );
 };
