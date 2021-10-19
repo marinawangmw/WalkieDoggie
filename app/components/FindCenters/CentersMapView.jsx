@@ -3,7 +3,6 @@ import { StyleSheet, View, Platform, Dimensions, SafeAreaView } from 'react-nati
 import MapView, { Marker, AnimatedRegion, MarkerAnimated } from 'react-native-maps';
 
 const CentersMapView = ({ center }) => {
-  console.log(center);
   const {
     address: { description, latitude, longitude },
   } = center;
