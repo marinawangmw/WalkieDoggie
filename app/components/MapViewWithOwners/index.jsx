@@ -14,7 +14,7 @@ const MapViewWithOwners = ({ owners, initialLocation }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
-        <MapView style={styles.map} region={getMapRegion()}>
+        <MapView region={getMapRegion()}>
           <Marker
             coordinate={initialLocation}
             title="Lugar de inicio"
@@ -43,9 +43,5 @@ const styles = StyleSheet.create({
     // backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  map: {
-    width: Dimensions.get('window').width * 0.8,
-    height: Dimensions.get('window').height * 0.5,
   },
 });

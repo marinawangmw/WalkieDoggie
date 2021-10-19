@@ -1,6 +1,16 @@
 import { CENTER_TYPE } from '../../../utils/constants';
 import { HTTP_METHOD, privateRequest } from '../axiosConfig';
 
+export const getCenter = async (id) => {
+  const config = {
+    method: HTTP_METHOD.GET,
+    url: `centers/${id}`,
+  };
+  return privateRequest(config)
+    .then((data) => ({ result: true, data }))
+    .catch((error) => ({ result: false, data: error.metadata }));
+};
+
 const getCenters = async (type) => {
   const config = {
     method: HTTP_METHOD.GET,
