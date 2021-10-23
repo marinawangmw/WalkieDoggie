@@ -53,6 +53,7 @@ const FilePicker = ({ label, setFileData, fileType }) => {
         const fileData = {
           uri,
           type: getMimeType(uri),
+          nameWithoutUUID: result.name,
           name: `${uuidv4()}_${result.name}`,
           arrayBuffer: await getArrayBufferContent(uri),
         };

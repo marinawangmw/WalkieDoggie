@@ -45,3 +45,9 @@ export const dayOfTheWeekSpanish = {
   6: 'SABADO',
   0: 'DOMINGO',
 };
+
+export const CENTER_TYPE = {
+  COLONY: 'COLONY',
+  SHELTER: 'SHELTER',
+  DAY_CARE: 'DAY_CARE',
+};

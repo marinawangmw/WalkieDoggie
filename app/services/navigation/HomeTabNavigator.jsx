@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeStackNavigator from './HomeStackNavigator';
+import ComplaintsStackNavigator from './ComplaintsStackNavigator';
+import ProfileStackNavigator from './ProfileStackNavigator';
 import { TabIcon } from 'components';
+import { LoadingScreen } from 'screens';
 import { getCurrentUserId } from 'utils/storage';
 import { getProfile } from 'services/api/users/profile';
-import ProfileStackNavigator from './ProfileStackNavigator';
-import { LoadingScreen } from 'screens';
 
 const Tabs = createBottomTabNavigator();
 
@@ -59,6 +60,14 @@ const HomeTabNavigator = () => {
           }}
         />
 
+        <Tabs.Screen
+          name="ComplaintsScreen"
+          component={ComplaintsStackNavigator}
+          options={{ headerShown: false, tabBarLabel: 'Denuncias' }}
+          initialParams={{
+            userProfile,
+          }}
+        />
         <Tabs.Screen
           name="ProfileScreen"
           component={ProfileStackNavigator}
