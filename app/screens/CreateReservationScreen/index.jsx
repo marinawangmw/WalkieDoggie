@@ -38,7 +38,7 @@ const formatDate = (selectedDate, userVisible) => {
 const address_start = 'ADDRESS_START';
 const address_end = 'ADDRESS_END';
 
-const CreateWalkScreen = ({ route, navigation }) => {
+const CreateReservationScreen = ({ route, navigation }) => {
   const initialDate = new Date();
   const [date, setDate] = useState(initialDate);
   const [show, setShow] = useState(false);
@@ -77,7 +77,6 @@ const CreateWalkScreen = ({ route, navigation }) => {
         setStartLong(address.long);
       }
       if (key === address_end) {
-        console.log(address);
         setEndAddress(address.description);
         setEndLat(address.lat);
         setEndLong(address.long);
@@ -140,10 +139,8 @@ const CreateWalkScreen = ({ route, navigation }) => {
         comments,
       };
       try {
-        console.log(walkerId, data);
         const res = await createReservation(walkerId, data);
         setIsLoading(false);
-        console.log(res);
         if (res.result) {
           Toast.show({
             type: 'success',
@@ -169,6 +166,7 @@ const CreateWalkScreen = ({ route, navigation }) => {
     navigation.navigate('googlePlaceSearcher', {
       key,
       placeholder: 'Ingrese una dirección',
+      nextScreen: 'createReservation',
     });
   };
 
@@ -313,19 +311,8 @@ const CreateWalkScreen = ({ route, navigation }) => {
     );
   };
 
-  const renderLoader = () => {
-    return <></>;
-  };
-
   if (userProfile) {
-    return (
-      <FlatList
-        data={[]}
-        renderItem={() => {}}
-        ListHeaderComponent={renderContent()}
-        ListFooterComponent={renderLoader()}
-      />
-    );
+    return <FlatList data={[]} renderItem={() => {}} ListHeaderComponent={renderContent()} />;
   }
 
   return null;
@@ -403,4 +390,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateWalkScreen;
+export default CreateReservationScreen;

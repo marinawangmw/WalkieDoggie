@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { Text } from 'react-native';
 import { GooglePlacesInput, CustomButton } from 'components';
 
 const GooglePlaceSearcher = ({ route, navigation }) => {
-  const { placeholder, key } = route.params;
+  const { placeholder, key, nextScreen } = route.params;
   const [lat, setLat] = useState(null);
   const [long, setLong] = useState(null);
   const [description, setDescription] = useState(null);
 
   const handleSave = () => {
-    navigation.navigate('createWalk', {
+    navigation.navigate(nextScreen, {
       key,
       address: {
         description,
