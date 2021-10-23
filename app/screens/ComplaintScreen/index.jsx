@@ -34,7 +34,7 @@ const ComplaintScreen = ({ navigation, route }) => {
         setChangeFiles(complaint.complaint_files);
       }
     } catch (e) {
-      console.log('get walker profile error: ', e);
+      console.log('get complaint error: ', e);
     }
   }, []);
 

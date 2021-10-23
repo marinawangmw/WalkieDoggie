@@ -1,7 +1,11 @@
 import React from 'react';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
 import { HomeScreen, FindWalkersScreen, ProfileScreen, CreateWalkScreen } from '../../screens';
+import CenterDetailsScreen from '../../screens/CenterDetailsScreen';
 import GooglePlaceSearcher from '../../screens/CreateWalkScreen/GooglePlaceSearcher';
+import FindColoniesScreen from '../../screens/FindColoniesScreen';
+import FindDayCaresScreen from '../../screens/FindDayCaresScreen';
+import FindSheltersScreen from '../../screens/FindSheltersScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +30,26 @@ const HomeStackNavigator = ({ route }) => {
         <Stack.Screen
           name="profile"
           component={ProfileScreen}
+          options={{ title: '', headerBackTitle: '' }}
+        />
+        <Stack.Screen
+          name="findDayCares"
+          component={FindDayCaresScreen}
+          options={{ title: 'Guarderías', headerBackTitle: '' }}
+        />
+        <Stack.Screen
+          name="findShelters"
+          component={FindSheltersScreen}
+          options={{ title: 'Refugios', headerBackTitle: '' }}
+        />
+        <Stack.Screen
+          name="findColonies"
+          component={FindColoniesScreen}
+          options={{ title: 'Colonias', headerBackTitle: '' }}
+        />
+        <Stack.Screen
+          name="centerDetails"
+          component={CenterDetailsScreen}
           options={{ title: '', headerBackTitle: '' }}
         />
       </Stack.Group>

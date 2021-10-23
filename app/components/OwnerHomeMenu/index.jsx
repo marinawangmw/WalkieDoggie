@@ -7,9 +7,9 @@ import { walker, shelter, petBoarding, colonies } from 'images';
 const OwnerHomeMenu = ({ navigation }) => {
   const homeOptions = [
     { title: 'Paseadores', icon: walker, navigateTo: 'findWalker' },
-    { title: 'Refugios', icon: shelter, navigateTo: null },
-    { title: 'Guarderías', icon: petBoarding, navigateTo: null },
-    { title: 'Colonias', icon: colonies, navigateTo: null },
+    { title: 'Refugios', icon: shelter, navigateTo: 'findShelters' },
+    { title: 'Guarderías', icon: petBoarding, navigateTo: 'findDayCares' },
+    { title: 'Colonias', icon: colonies, navigateTo: 'findColonies' },
   ];
   return (
     <View style={styles.container}>
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    paddingHorizontal: 50,
+    paddingHorizontal: 35,
   },
 });
 export default OwnerHomeMenu;
