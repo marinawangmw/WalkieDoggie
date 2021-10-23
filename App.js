@@ -21,7 +21,6 @@ import {
 } from './app/services/api/users/pushNotifications';
 import { USER_TYPES } from './app/utils/constants';
 import { theme } from './app/theme';
-import * as Location from 'expo-location';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -105,8 +104,6 @@ export default function App() {
       setIsLoading(true);
       const token = await getAccessTokenStorage('access_token');
       setUserToken(token);
-      await Location.requestBackgroundPermissionsAsync();
-      await Location.requestForegroundPermissionsAsync();
 
       //----------------------------PUSH NOTIFICATIONS --------------------------------------------
 

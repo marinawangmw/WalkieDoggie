@@ -51,9 +51,7 @@ const ProgramWalkScreen = ({ route, navigation }) => {
     }
   }, [route]);
 
-  const handleSubmit = () => {
-    console.log('🥑', startTime, startAddress, startLat, startLong);
-  };
+  const handleSubmit = () => {};
 
   const onCheckStartSameHome = () => {
     setStartSameHome(!startSameHome);
@@ -132,6 +130,10 @@ const ProgramWalkScreen = ({ route, navigation }) => {
     );
   };
 
+  const renderMapView = () => {
+    return null;
+  };
+
   const renderContent = () => {
     return (
       <>
@@ -143,6 +145,7 @@ const ProgramWalkScreen = ({ route, navigation }) => {
         </Text>
         {startTimePicker()}
         {startAddressInput()}
+        {renderMapView()}
         <CustomButton buttonLabel="Crear" handleOnclick={handleSubmit} centered />
       </>
     );
