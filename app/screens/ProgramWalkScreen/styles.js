@@ -53,4 +53,8 @@ export const styles = StyleSheet.create({
   dataContent: {
     paddingVertical: 10,
   },
+  error: {
+    textAlign: 'center',
+    color: '#D32F2F',
+  },
 });
