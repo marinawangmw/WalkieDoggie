@@ -68,4 +68,8 @@ export const styles = StyleSheet.create({
     width: '100%',
     flexWrap: 'wrap',
   },
+  error: {
+    textAlign: 'center',
+    color: '#D32F2F',
+  },
 });

@@ -1,5 +1,14 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Image, CheckBox } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  CheckBox,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { CustomButton } from 'components';
@@ -7,6 +16,9 @@ import { styles } from './styles';
 // eslint-disable-next-line import/no-unresolved
 import { clock } from 'images';
 import { formatReservationsDataForMapView } from 'utils/helperFuncions';
+import MapViewWithOwners from 'components/MapViewWithOwners';
+import { createPetWalk } from 'services/api/rides/petWalks';
+import Toast from 'react-native-toast-message';
 
 const title = 'Programar paseo para el día ';
 const startTimeTitle = 'Seleccione un horario de inicio';
@@ -35,6 +47,8 @@ const ProgramWalkScreen = ({ route, navigation }) => {
   const [startLong, setStartLong] = useState(null);
   const [startSameHome, setStartSameHome] = useState(false);
   const [ownersToPickup, setOwnersToPickup] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (route.params) {
@@ -65,14 +79,32 @@ const ProgramWalkScreen = ({ route, navigation }) => {
     }
   }, [userData]);
 
-  const handleSubmit = () => {
-    // if(ownersToPickup && initialLocation) {
-    // navigation.navigate('mapView', {
-    //   owners: ownersToPickup,
-    //   initialLocation,
-    // });
-    //}
-    console.log(startTime, ownersToPickup, initialLocation);
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    const reservationIds = reservations.map((r) => r.id);
+    const addressStart = {
+      latitude: startLat,
+      longitude: startLong,
+      description: startAddress,
+    };
+
+    try {
+      const res = await createPetWalk(startTime, addressStart, reservationIds);
+      setIsLoading(false);
+      if (res.result) {
+        Toast.show({
+          type: 'success',
+          text1: 'Bien!',
+          text2: 'El paseo se ha programado con éxito.',
+        });
+        navigation.navigate('home');
+      } else {
+        setErrorMessage('Oops, algo anduvo mal');
+      }
+    } catch (error) {
+      setErrorMessage('Oops, algo anduvo mal');
+      console.log(error);
+    }
   };
 
   const onCheckStartSameHome = () => {
@@ -178,27 +210,48 @@ const ProgramWalkScreen = ({ route, navigation }) => {
     }
   };
 
-  const renderOwnersInMap = () => {};
+  const renderMapView = () => {
+    const initialLocation = {
+      latitude: parseFloat(startLat),
+      longitude: parseFloat(startLong),
+      description: startAddress,
+    };
+
+    const owners = reservations.map((res) => ({
+      latlng: {
+        latitude: parseFloat(res.addressStart.latitude),
+        longitude: parseFloat(res.addressStart.longitude),
+      },
+      title: res.owner.first_name + ' ' + res.owner.last_name,
+      description: res.addressStart.description,
+    }));
+    return <MapViewWithOwners initialLocation={initialLocation} owners={owners} />;
+  };
 
   const renderContent = () => {
     return (
       <>
-        <Text style={styles.title}>
-          {title}{' '}
-          {reservations &&
-            reservations.length &&
-            formatShowDateFromBE(reservations[0].reservationDate)}
-        </Text>
-        {startTimePicker()}
-        {startAddressInput()}
-        {renderOwnersList()}
-        {/* renderOwnersInMap() */}
-        <CustomButton
-          buttonLabel="Crear"
-          handleOnclick={handleSubmit}
-          centered
-          disabled={!startAddress}
-        />
+        <ScrollView>
+          <Text style={styles.title}>
+            {title}{' '}
+            {reservations &&
+              reservations.length &&
+              formatShowDateFromBE(reservations[0].reservationDate)}
+          </Text>
+          {startTimePicker()}
+          {startAddressInput()}
+          {renderOwnersList()}
+          {reservations && reservations.length && startAddress && renderMapView()}
+          <CustomButton buttonLabel="Crear" handleOnclick={handleSubmit} centered />
+
+          {Boolean(errorMessage) && <Text style={styles.error}>{errorMessage}</Text>}
+
+          {isLoading && (
+            <View style={styles.loader}>
+              <ActivityIndicator size="large" color="#f8b444" />
+            </View>
+          )}
+        </ScrollView>
       </>
     );
   };

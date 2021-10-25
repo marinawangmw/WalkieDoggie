@@ -7,17 +7,17 @@ const MapViewWithOwners = ({ owners, initialLocation }) => {
   const getMapRegion = () => ({
     latitude: latitude,
     longitude: longitude,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
+    latitudeDelta: 0.3,
+    longitudeDelta: 0.2,
   });
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView>
       <View style={styles.container}>
-        <MapView region={getMapRegion()}>
+        <MapView style={styles.map} region={getMapRegion()}>
           <Marker
             coordinate={initialLocation}
-            title="Lugar de inicio"
+            title="Punto de partida"
             description={description}
             pinColor={'green'}
           />
@@ -43,5 +43,9 @@ const styles = StyleSheet.create({
     // backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  map: {
+    width: Dimensions.get('window').width * 0.6,
+    height: Dimensions.get('window').height * 0.4,
   },
 });
