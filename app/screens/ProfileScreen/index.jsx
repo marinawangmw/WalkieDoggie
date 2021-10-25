@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Switch,
+} from 'react-native';
 import Toast from 'react-native-toast-message';
 import LoadingScreen from 'screens/LoadingScreen';
 import { CustomButton, ProfileDataRow, TimeTable } from 'components';
@@ -13,13 +21,13 @@ import { styles, name, personal } from './ProfileScreen.styles';
 
 import {
   addressIcon,
-  phoneIcon,
   profileIcon,
   calendarIcon,
   certificationIcon,
   priceIcon,
   resumeIcon,
   whatsappIcon,
+  locationIcon,
   // eslint-disable-next-line import/no-unresolved
 } from 'images';
 import Certifications from './Certifications';
@@ -40,7 +48,9 @@ const ProfileScreen = ({ navigation, route }) => {
   const [pets, setPets] = useState(null);
   const [changePricePerHour, setChangePricePerHour] = useState([]);
   const [changeCoverLetter, setChangeCoverLetter] = useState([]);
+  const [changeAllowsTracking, setChangeAllowsTracking] = useState(true);
 
+  const toggleSwitch = () => setChangeAllowsTracking((previousState) => !previousState);
   const { signOut } = React.useContext(AuthContext);
 
   useEffect(() => {
@@ -68,6 +78,7 @@ const ProfileScreen = ({ navigation, route }) => {
     setChangeCertifications(certificationsToSet);
     setChangePricePerHour(userData.price_per_hour);
     setChangeCoverLetter(userData.cover_letter);
+    setChangeAllowsTracking(userData.allows_tracking);
   };
 
   const fetchUserProfile = useCallback(async (id, rangesToSet, certificationsToSet) => {
@@ -215,6 +226,7 @@ const ProfileScreen = ({ navigation, route }) => {
       userProfileEdited.cover_letter = changeCoverLetter;
       userProfileEdited.ranges = changeRanges;
       userProfileEdited.certifications = changeCertifications;
+      userProfileEdited.allows_tracking = changeAllowsTracking;
 
       removeProps(userProfileEdited, ['id', 'last_login', 'email']);
 
@@ -256,6 +268,23 @@ const ProfileScreen = ({ navigation, route }) => {
             disabled={!fromHome}
           />
           <Text>(Precio x hora)</Text>
+        </View>
+
+        <View style={styles.iconAndData}>
+          <Image source={locationIcon} style={styles.icon} tintColor="#364C63" />
+          <Text style={styles.allowsTrackingText}>
+            {fromHome ? 'Compartir ubicación en los paseos' : 'Comparte ubicación en los paseos:'}
+          </Text>
+          {!fromHome && (
+            <Text style={styles.allowsTrackingText}> {changeAllowsTracking ? 'SI' : 'NO'}</Text>
+          )}
+          {fromHome && (
+            <Switch
+              disabled={!fromHome}
+              onValueChange={toggleSwitch}
+              value={changeAllowsTracking}
+            />
+          )}
         </View>
 
         <View style={styles.iconAndData}>

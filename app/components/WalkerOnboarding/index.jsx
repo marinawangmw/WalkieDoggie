@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, ScrollView, Text, ActivityIndicator } from 'react-native';
+import { View, TextInput, ScrollView, Text, ActivityIndicator, Switch } from 'react-native';
 import { TimeTable, FilePicker, CustomButton } from 'components';
 import { uploadFileAws, AuthContext } from 'utils';
 import { initRanges } from 'helpers/profileAndOnboarding';
@@ -17,6 +17,9 @@ const WalkerOnboarding = ({ route }) => {
   const [profilePhotoData, setProfilePhotoData] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [ranges, setRanges] = useState(initRanges());
+  const [allowsTracking, setAllowsTracking] = useState(true);
+
+  const toggleSwitch = () => setAllowsTracking((previousState) => !previousState);
 
   const formatTimeTableObject = () => {
     let aux = ranges.slice();
@@ -106,6 +109,7 @@ const WalkerOnboarding = ({ route }) => {
               cover_letter,
               ranges: timeTable,
               price_per_hour,
+              allows_tracking: allowsTracking,
             };
 
             await onboarding(signupData, onboardingData);
@@ -144,6 +148,11 @@ const WalkerOnboarding = ({ route }) => {
         />
 
         <TimeTable ranges={ranges} setRanges={setRanges} onboardingNote addPlusIcon />
+
+        <View style={styles.allowsTrackingView}>
+          <Text style={styles.allowsTrackingText}> Compartir mi ubicación en los paseos: </Text>
+          <Switch onValueChange={toggleSwitch} value={allowsTracking} />
+        </View>
 
         <TextInput
           placeholder="Carta de presentación"
