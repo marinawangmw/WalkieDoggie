@@ -42,6 +42,7 @@ export const styles = StyleSheet.create({
   },
   btnContainer: {
     flexDirection: 'row',
+    width: '100%',
   },
   errorMessage: {
     textAlign: 'center',

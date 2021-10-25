@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { GooglePlacesInput, CustomButton } from 'components';
 
 const GooglePlaceSearcher = ({ route, navigation }) => {
@@ -19,7 +20,7 @@ const GooglePlaceSearcher = ({ route, navigation }) => {
   };
 
   return (
-    <>
+    <View style={styles.container}>
       <GooglePlacesInput
         setLat={setLat}
         setLong={setLong}
@@ -27,8 +28,14 @@ const GooglePlaceSearcher = ({ route, navigation }) => {
         placeholder={placeholder}
       />
       <CustomButton handleOnclick={handleSave} buttonLabel="Guardar" centered />
-    </>
+    </View>
   );
 };
 
 export default GooglePlaceSearcher;
+
+const styles = StyleSheet.create({
+  container: {
+    height: 400,
+  },
+});

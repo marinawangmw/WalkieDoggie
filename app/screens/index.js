@@ -17,3 +17,4 @@ export { default as CenterDetailsScreen } from './CenterDetailsScreen';
 export { default as FindColoniesScreen } from './FindColoniesScreen';
 export { default as FindDayCaresScreen } from './FindDayCaresScreen';
 export { default as FindSheltersScreen } from './FindSheltersScreen';
+export { default as MapViewWithOwners } from './MapViewWithOwners';

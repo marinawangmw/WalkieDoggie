@@ -6,6 +6,7 @@ import { CustomButton } from 'components';
 import { styles } from './styles';
 // eslint-disable-next-line import/no-unresolved
 import { clock } from 'images';
+import { formatReservationsDataForMapView } from 'utils/helperFuncions';
 
 const title = 'Programar paseo para el día ';
 const startTimeTitle = 'Seleccione un horario de inicio';
@@ -25,7 +26,7 @@ const ProgramWalkScreen = ({ route, navigation }) => {
     return new Date('2021-10-20T12:00:00.00');
   }, []);
 
-  const [reservation, setReservation] = useState(null);
+  const [reservations, setReservations] = useState(null);
   const [userData, setUserData] = useState(null);
   const [startTime, setStartTime] = useState(initialDate);
   const [showStartTime, setShowStartTime] = useState(false);
@@ -33,13 +34,16 @@ const ProgramWalkScreen = ({ route, navigation }) => {
   const [startLat, setStartLat] = useState(null);
   const [startLong, setStartLong] = useState(null);
   const [startSameHome, setStartSameHome] = useState(false);
+  const [ownersToPickup, setOwnersToPickup] = useState(null);
 
   useEffect(() => {
     if (route.params) {
       const { address, reservationsToProgram, userProfile } = route.params;
 
       if (reservationsToProgram && userProfile) {
-        setReservation(reservationsToProgram);
+        const dataForMapView = formatReservationsDataForMapView(reservationsToProgram);
+        setOwnersToPickup(dataForMapView);
+        setReservations(reservationsToProgram);
         setUserData(userProfile);
       }
 
@@ -51,7 +55,25 @@ const ProgramWalkScreen = ({ route, navigation }) => {
     }
   }, [route]);
 
-  const handleSubmit = () => {};
+  const initialLocation = useMemo(() => {
+    if (userData) {
+      return {
+        latitude: parseFloat(userData.address.latitude),
+        longitude: parseFloat(userData.address.longitude),
+        description: userData.address.description,
+      };
+    }
+  }, [userData]);
+
+  const handleSubmit = () => {
+    // if(ownersToPickup && initialLocation) {
+    // navigation.navigate('mapView', {
+    //   owners: ownersToPickup,
+    //   initialLocation,
+    // });
+    //}
+    console.log(startTime, ownersToPickup, initialLocation);
+  };
 
   const onCheckStartSameHome = () => {
     setStartSameHome(!startSameHome);
@@ -130,23 +152,53 @@ const ProgramWalkScreen = ({ route, navigation }) => {
     );
   };
 
-  const renderMapView = () => {
-    return null;
+  const renderOwnersList = () => {
+    if (reservations) {
+      return reservations.map((item, idx) => (
+        <View style={styles.data} key={idx}>
+          <View style={styles.dataContainer}>
+            <View style={styles.details}>
+              <Text style={styles.reservationTitle}>{item.pet.name}</Text>
+              <Text style={styles.reservationItem}>Dueño: {item.owner.first_name}</Text>
+              <Text style={styles.reservationItem}>
+                Fecha de paseo: {formatShowDateFromBE(item.reservationDate)}
+              </Text>
+              <Text style={styles.reservationItem}>Tiempo de paseo: {item.duration} minutos</Text>
+              <Text style={styles.reservationItem}>
+                Dirección de Partida: {item.addressStart.description}
+              </Text>
+              <Text style={styles.reservationItem}>
+                Dirección de Entrega: {item.addressEnd.description}
+              </Text>
+              <Text style={styles.reservationItem}>Observaciones: {item.observations}</Text>
+            </View>
+          </View>
+        </View>
+      ));
+    }
   };
+
+  const renderOwnersInMap = () => {};
 
   const renderContent = () => {
     return (
       <>
         <Text style={styles.title}>
           {title}{' '}
-          {reservation &&
-            reservation.length &&
-            formatShowDateFromBE(reservation[0].reservationDate)}
+          {reservations &&
+            reservations.length &&
+            formatShowDateFromBE(reservations[0].reservationDate)}
         </Text>
         {startTimePicker()}
         {startAddressInput()}
-        {renderMapView()}
-        <CustomButton buttonLabel="Crear" handleOnclick={handleSubmit} centered />
+        {renderOwnersList()}
+        {/* renderOwnersInMap() */}
+        <CustomButton
+          buttonLabel="Crear"
+          handleOnclick={handleSubmit}
+          centered
+          disabled={!startAddress}
+        />
       </>
     );
   };

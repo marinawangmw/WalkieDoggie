@@ -28,6 +28,10 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
   },
+  details: {
+    padding: 10,
+    flexShrink: 1,
+  },
   titleRow: {
     flexDirection: 'row',
     paddingVertical: 5,
@@ -52,5 +56,16 @@ export const styles = StyleSheet.create({
   },
   dataContent: {
     paddingVertical: 10,
+  },
+  reservationTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  reservationItem: {
+    fontSize: 14,
+    lineHeight: 21,
+    width: '100%',
+    flexWrap: 'wrap',
   },
 });

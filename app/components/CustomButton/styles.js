@@ -8,6 +8,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 25,
+    flex: 1,
   },
   disabled: {
     borderColor: '#999999',
