@@ -79,9 +79,9 @@ export const styles = StyleSheet.create({
     fontSize: 16,
   },
   allowsTrackingText: {
-    marginLeft: 12,
+    marginLeft: 10,
     color: '#364C63',
-    fontSize: 14,
+    fontSize: 15,
   },
 });
 

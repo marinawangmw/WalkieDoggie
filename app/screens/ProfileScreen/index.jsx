@@ -234,6 +234,10 @@ const ProfileScreen = ({ navigation, route }) => {
       showResultUpdateProfile(response);
     }
   };
+  const showBoolAllowsTracking = () => {
+    if (changeAllowsTracking) return 'SI';
+    return 'NO';
+  };
 
   const renderPets = () => {
     return (
@@ -268,23 +272,6 @@ const ProfileScreen = ({ navigation, route }) => {
             disabled={!fromHome}
           />
           <Text>(Precio x hora)</Text>
-        </View>
-
-        <View style={styles.iconAndData}>
-          <Image source={locationIcon} style={styles.icon} tintColor="#364C63" />
-          <Text style={styles.allowsTrackingText}>
-            {fromHome ? 'Compartir ubicación en los paseos' : 'Comparte ubicación en los paseos:'}
-          </Text>
-          {!fromHome && (
-            <Text style={styles.allowsTrackingText}> {changeAllowsTracking ? 'SI' : 'NO'}</Text>
-          )}
-          {fromHome && (
-            <Switch
-              disabled={!fromHome}
-              onValueChange={toggleSwitch}
-              value={changeAllowsTracking}
-            />
-          )}
         </View>
 
         <View style={styles.iconAndData}>
@@ -364,6 +351,25 @@ const ProfileScreen = ({ navigation, route }) => {
               <Text style={styles.email}>{currentUserProfile.email}</Text>
             </View>
           </View>
+          {currentUserProfile.type === USER_TYPES.WALKER && (
+            <View style={styles.iconAndData}>
+              <Image source={locationIcon} style={styles.icon} tintColor="#364C63" />
+              <Text style={styles.allowsTrackingText}>
+                {fromHome
+                  ? 'Compartir ubicación en los paseos'
+                  : 'Comparte ubicación en los paseos: ' + showBoolAllowsTracking()}
+              </Text>
+
+              {fromHome && (
+                <Switch
+                  disabled={!fromHome}
+                  onValueChange={toggleSwitch}
+                  value={changeAllowsTracking}
+                />
+              )}
+            </View>
+          )}
+
           <View style={styles.iconAndData}>
             <TouchableOpacity onPress={chatWalker} disabled={fromHome}>
               <Image source={whatsappIcon} style={styles.icon} tintColor="#364C63" />
@@ -389,7 +395,7 @@ const ProfileScreen = ({ navigation, route }) => {
 
           <View style={styles.hr} />
 
-          {currentUserProfile.type === 'OWNER' ? renderPets() : renderWalkerSpecialData()}
+          {currentUserProfile.type === USER_TYPES.OWNER ? renderPets() : renderWalkerSpecialData()}
 
           <View style={styles.hr} />
 
