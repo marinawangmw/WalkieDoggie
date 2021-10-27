@@ -19,6 +19,7 @@ import { formatReservationsDataForMapView } from 'utils/helperFuncions';
 import MapViewWithOwners from 'components/MapViewWithOwners';
 import { createPetWalk } from 'services/api/rides/petWalks';
 import Toast from 'react-native-toast-message';
+import { calculatePath } from '../../helpers/mapsHelper';
 
 const title = 'Programar paseo para el día ';
 const startTimeTitle = 'Seleccione un horario de inicio';
@@ -77,6 +78,8 @@ const ProgramWalkScreen = ({ route, navigation }) => {
       longitude: startLong,
       description: startAddress,
     };
+    //TODO: sacarlo de acá y meterlo donde corresponda
+    // calculatePath(addressStart, reservations);
 
     try {
       const res = await createPetWalk(startTime, addressStart, reservationIds);
