@@ -34,6 +34,7 @@ export const ReservationStatusSpanish = [
   { id: 'REJECTED_BY_OWNER', name: 'Rechazado por el dueño' },
   { id: 'REJECTED_BY_WALKER', name: 'Rechazado por el paseador' },
   { id: 'REJECTED_BY_SYSTEM', name: 'Rechazado por el sistema' },
+  { id: '', name: 'Todos' },
 ];
 
 export const dayOfTheWeekSpanish = {

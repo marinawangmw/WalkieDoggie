@@ -8,6 +8,7 @@ export const onBoardingWalker = (paramsOnBoardingWalker, id) => {
     cover_letter = '',
     ranges,
     price_per_hour,
+    allows_tracking,
   } = paramsOnBoardingWalker;
   const config = {
     method: HTTP_METHOD.PUT,
@@ -19,6 +20,7 @@ export const onBoardingWalker = (paramsOnBoardingWalker, id) => {
       ranges,
       address,
       profile_photo_uri,
+      allows_tracking,
     },
   };
 

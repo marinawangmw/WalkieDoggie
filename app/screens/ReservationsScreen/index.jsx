@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { View, Text, FlatList, CheckBox, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { Picker } from '@react-native-community/picker';
 import { getReservations } from 'services/api/rides/reservations';
 import { DatePicker, CustomButton } from 'components';
@@ -15,9 +16,10 @@ const chooseReservationsFromSameDateError =
   'Por favor selecctione reservas de la misma fecha y mismo horario';
 
 const ReservationsScreen = ({ navigation, userProfile }) => {
+  const isFocused = useIsFocused();
   const initialDate = useMemo(() => new Date(), []);
   const [date, setDate] = useState(initialDate);
-  const [status, setStatus] = useState(null);
+  const [status, setStatus] = useState(ReservationStatusSpanish[0].id);
   const [checkedStatus, setCheckedStatus] = useState([]);
   const [data, setData] = useState([]);
   const [walkerRanges, setWalkerRanges] = useState([]);
@@ -40,7 +42,7 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
   //get reservations according to selected filters
   useEffect(() => {
     setErrorMessage(null);
-    const test = async (params) => {
+    const getData = async (params) => {
       setIsLoading(true);
       const res = await getReservations(params);
       setIsLoading(false);
@@ -52,14 +54,17 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
       }
     };
 
-    if (date !== initialDate || status) {
-      const filterDate = formatDate(date);
-      test({ status, date: filterDate });
+    const filterDate = formatDate(date);
+
+    if (status) {
+      getData({ status, date: filterDate });
+    } else {
+      getData({ date: filterDate });
     }
-  }, [status, date, initialDate]);
+  }, [status, date, isFocused]);
 
   const statusInSpanish = (currentStatus) => {
-    const statusObject = ReservationStatusSpanish.find((status) => status.id === currentStatus);
+    const statusObject = ReservationStatusSpanish.find((item) => item.id === currentStatus);
     return statusObject.name;
   };
 
@@ -78,6 +83,7 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
     const res = await getReservations();
     setIsLoading(false);
 
+    setStatus(ReservationStatusSpanish[6].id);
     if (res.result) {
       setData(res.data);
       const initializeCheckedStatusWithNulls = new Array(res.data.length).fill(null);

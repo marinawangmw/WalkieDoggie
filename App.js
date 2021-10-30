@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { Platform, useColorScheme } from 'react-native';
+import { Platform, useColorScheme, LogBox } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { RootStackNavigator } from './app/services/navigation';
 import {
@@ -21,6 +21,8 @@ import {
 } from './app/services/api/users/pushNotifications';
 import { USER_TYPES } from './app/utils/constants';
 import { theme } from './app/theme';
+
+LogBox.ignoreAllLogs();
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
