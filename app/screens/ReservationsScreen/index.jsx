@@ -80,10 +80,10 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
 
   const handleShowAllClicked = async () => {
     setIsLoading(true);
-    setStatus(ReservationStatusSpanish[6].id);
     const res = await getReservations();
     setIsLoading(false);
 
+    setStatus(ReservationStatusSpanish[6].id);
     if (res.result) {
       setData(res.data);
       const initializeCheckedStatusWithNulls = new Array(res.data.length).fill(null);
