@@ -19,13 +19,16 @@ const Stack = createNativeStackNavigator();
 
 const HomeStackNavigator = ({ route }) => {
   const { userProfile } = route.params;
+
   return (
     <Stack.Navigator>
       <Stack.Group>
         <Stack.Screen
           name="home"
           component={HomeScreen}
-          options={{ title: userProfile === 'OWNER' ? 'Walkie Doggie' : 'Reservas recibidas' }}
+          options={{
+            title: userProfile.type === 'OWNER' ? 'Walkie Doggie' : 'Reservas recibidas',
+          }}
           initialParams={{
             userProfile,
           }}

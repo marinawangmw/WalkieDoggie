@@ -69,16 +69,6 @@ const ProgramWalkScreen = ({ route, navigation }) => {
     }
   }, [route]);
 
-  const initialLocation = useMemo(() => {
-    if (userData) {
-      return {
-        latitude: parseFloat(userData.address.latitude),
-        longitude: parseFloat(userData.address.longitude),
-        description: userData.address.description,
-      };
-    }
-  }, [userData]);
-
   const handleSubmit = async () => {
     setIsLoading(true);
     const reservationIds = reservations.map((r) => r.id);
