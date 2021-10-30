@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { OwnerHomeMenu } from 'components';
+import { ProgramWalkScreen, ReservationsScreen } from 'screens';
 import styles from './styles';
 
 const HomeScreen = ({ navigation, route }) => {
@@ -11,7 +12,8 @@ const HomeScreen = ({ navigation, route }) => {
   };
 
   const renderWalkerHome = () => {
-    return <Text>Welcome to walker home!</Text>;
+    return <ReservationsScreen navigation={navigation} userProfile={userProfile} />;
+    // return <ProgramWalkScreen />;
   };
 
   if (userProfile) {

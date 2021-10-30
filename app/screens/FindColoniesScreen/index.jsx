@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { FindResultsList } from '../../components/FindCenters';
-import { getColonies } from '../../services/api/centers/centers';
-import { CENTER_TYPE } from '../../utils/constants';
+import { FindResultsList } from 'components/FindCenters';
+import { getColonies } from 'services/api/centers/centers';
+import { CENTER_TYPE } from 'utils/constants';
 
 const FindColoniesScreen = ({ navigation }) => {
   const [coloniesData, setColoniesData] = useState([]);

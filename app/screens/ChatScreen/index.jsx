@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import styles from './styles';
-import MapViewWithOwners from '../../components/MapViewWithOwners';
+import MapViewWithOwners from 'components/MapViewWithOwners';
 
 const ChatScreen = () => {
   const owners = [

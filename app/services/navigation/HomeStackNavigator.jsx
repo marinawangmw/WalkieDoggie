@@ -1,23 +1,34 @@
 import React from 'react';
 import { createNativeStackNavigator } from 'react-native-screens/native-stack';
-import { HomeScreen, FindWalkersScreen, ProfileScreen, CreateWalkScreen } from '../../screens';
-import CenterDetailsScreen from '../../screens/CenterDetailsScreen';
-import GooglePlaceSearcher from '../../screens/CreateWalkScreen/GooglePlaceSearcher';
-import FindColoniesScreen from '../../screens/FindColoniesScreen';
-import FindDayCaresScreen from '../../screens/FindDayCaresScreen';
-import FindSheltersScreen from '../../screens/FindSheltersScreen';
+import {
+  HomeScreen,
+  FindWalkersScreen,
+  ProfileScreen,
+  CreateReservationScreen,
+  RejectReservationsScreen,
+  ProgramWalkScreen,
+  CenterDetailsScreen,
+  FindColoniesScreen,
+  FindDayCaresScreen,
+  FindSheltersScreen,
+  MapViewWithOwners,
+} from 'screens';
+import GooglePlaceSearcher from '../../screens/CreateReservationScreen/GooglePlaceSearcher';
 
 const Stack = createNativeStackNavigator();
 
 const HomeStackNavigator = ({ route }) => {
   const { userProfile } = route.params;
+
   return (
     <Stack.Navigator>
       <Stack.Group>
         <Stack.Screen
           name="home"
           component={HomeScreen}
-          options={{ title: 'Walkie Doggie' }}
+          options={{
+            title: userProfile.type === 'OWNER' ? 'Walkie Doggie' : 'Reservas recibidas',
+          }}
           initialParams={{
             userProfile,
           }}
@@ -55,8 +66,8 @@ const HomeStackNavigator = ({ route }) => {
       </Stack.Group>
       <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen
-          name="createWalk"
-          component={CreateWalkScreen}
+          name="createReservation"
+          component={CreateReservationScreen}
           options={{ title: 'Crear una reserva para tu paseo', headerBackTitle: '' }}
           initialParams={{
             userProfile,
@@ -66,6 +77,24 @@ const HomeStackNavigator = ({ route }) => {
           name="googlePlaceSearcher"
           component={GooglePlaceSearcher}
           options={{ title: '' }}
+        />
+        <Stack.Screen
+          name="rejectReservation"
+          component={RejectReservationsScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="programWalk"
+          component={ProgramWalkScreen}
+          options={{ headerShown: false }}
+          initialParams={{
+            userProfile,
+          }}
+        />
+        <Stack.Screen
+          name="mapView"
+          component={MapViewWithOwners}
+          options={{ headerShown: false }}
         />
       </Stack.Group>
     </Stack.Navigator>

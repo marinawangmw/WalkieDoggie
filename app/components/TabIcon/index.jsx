@@ -5,6 +5,7 @@ import { homeIcon, profileIcon, complaintsIcon } from 'images';
 
 const tabIcon = {
   HomeScreen: homeIcon,
+  ChatScreen: homeIcon,
   ProfileScreen: profileIcon,
   ComplaintsScreen: complaintsIcon,
 };

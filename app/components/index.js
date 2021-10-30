@@ -10,3 +10,5 @@ export { default as ProfileDataRow } from './ProfileDataRow';
 export { default as TimeTable } from './TimeTable';
 export { default as FileOpener } from './FileOpener';
 export { default as OwnerHomeMenu } from './OwnerHomeMenu';
+export { default as DatePicker } from './DatePicker';
+export { default as MapViewWithOwners } from './MapViewWithOwners';

@@ -97,6 +97,28 @@ const ProfileScreen = ({ navigation, route }) => {
     }
   }, []);
 
+  const getRange = useCallback(
+    (rangesToSet) => {
+      if (changeRanges && changeRanges.length > 0) {
+        return changeRanges;
+      }
+
+      return rangesToSet;
+    },
+    [changeRanges],
+  );
+
+  const getCertification = useCallback(
+    (certificationsToSet) => {
+      if (changeCertifications && changeCertifications.length > 0) {
+        return changeCertifications;
+      }
+
+      return certificationsToSet;
+    },
+    [changeCertifications],
+  );
+
   useEffect(() => {
     const { userProfile, userId: walkerId } = route.params;
     let rangesToSet;
@@ -116,23 +138,7 @@ const ProfileScreen = ({ navigation, route }) => {
       setLoading(true);
       fetchUserProfile(walkerId, rangesToSet, certificationsToSet);
     }
-  }, [route.params, fetchUserProfile]);
-
-  const getRange = (rangesToSet) => {
-    if (changeRanges && changeRanges.length > 0) {
-      return changeRanges;
-    }
-
-    return rangesToSet;
-  };
-
-  const getCertification = (certificationsToSet) => {
-    if (changeCertifications && changeCertifications.length > 0) {
-      return changeCertifications;
-    }
-
-    return certificationsToSet;
-  };
+  }, [route.params, fetchUserProfile, getRange, getCertification]);
 
   const handleImageLoadEnd = () => {
     if (!isImageLoaded) {
@@ -182,8 +188,8 @@ const ProfileScreen = ({ navigation, route }) => {
     });
   };
 
-  const handleNavigateCreateWalk = () => {
-    navigation.navigate('createWalk', {
+  const handleNavigateCreateReservation = () => {
+    navigation.navigate('createReservation', {
       ranges: currentUserProfile.ranges,
       walkerId: currentUserProfile.id,
     });
@@ -415,7 +421,7 @@ const ProfileScreen = ({ navigation, route }) => {
             <View style={styles.btn}>
               <CustomButton
                 buttonLabel="Quiero un paseo"
-                handleOnclick={handleNavigateCreateWalk}
+                handleOnclick={handleNavigateCreateReservation}
               />
             </View>
           )}

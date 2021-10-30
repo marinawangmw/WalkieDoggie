@@ -38,7 +38,7 @@ export const createReservation = (walker_id, data) => {
  * 'status' must be one of RESERVATION_STATUS constant values. 'date' must have format YYYYMMDD.
  * @returns
  */
-export const getReservations = async (params) => {
+export const getReservations = async (params = {}) => {
   const { status, date } = params;
   const walker_id = await getCurrentUserId();
   const config = {
