@@ -64,7 +64,7 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
   }, [status, date, isFocused]);
 
   const statusInSpanish = (currentStatus) => {
-    const statusObject = ReservationStatusSpanish.find((status) => status.id === currentStatus);
+    const statusObject = ReservationStatusSpanish.find((item) => item.id === currentStatus);
     return statusObject.name;
   };
 
@@ -77,7 +77,7 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
       setData(aux);
     }
   };
-  // console.log(status);
+
   const handleShowAllClicked = async () => {
     setIsLoading(true);
     setStatus(ReservationStatusSpanish[6].id);
