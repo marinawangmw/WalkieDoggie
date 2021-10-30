@@ -52,7 +52,9 @@ const RejectReservationsScreen = ({ route, navigation }) => {
             <Text style={styles.reservationItem}>
               Fecha de paseo: {formatShowDateFromBE(item.reservationDate)}
             </Text>
-            <Text style={styles.reservationItem}>Tiempo de paseo: {item.duration} minutos</Text>
+            <Text style={styles.reservationItem}>
+              Tiempo de paseo deseado: {item.duration} minutos
+            </Text>
             <Text style={styles.reservationItem}>
               Dirección de Partida: {item.addressStart.description}
             </Text>

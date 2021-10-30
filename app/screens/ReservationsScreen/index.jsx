@@ -231,7 +231,9 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
               Franja horaria de paseo:
               {' De ' + item.start_at.slice(0, 5) + ' a ' + item.end_at.slice(0, 5)}
             </Text>
-            <Text style={styles.reservationItem}>Tiempo de paseo: {item.duration} minutos</Text>
+            <Text style={styles.reservationItem}>
+              Tiempo de paseo deseado: {item.duration} minutos
+            </Text>
             <Text style={styles.reservationItem}>
               Dirección de Partida: {item.addressStart.description}
             </Text>
