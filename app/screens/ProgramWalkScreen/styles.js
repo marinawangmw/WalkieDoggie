@@ -12,6 +12,12 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 20,
   },
+  subtitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
   data: {
     width: '100%',
     paddingVertical: 10,

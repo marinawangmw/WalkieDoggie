@@ -50,6 +50,8 @@ const ProgramWalkScreen = ({ route, navigation }) => {
   const [ownersToPickup, setOwnersToPickup] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [reservationsOrdered, setReservationsOrdered] = useState(null);
+  const [initialLocation, setInitialLocation] = useState(null);
 
   useEffect(() => {
     if (route.params) {
@@ -66,20 +68,25 @@ const ProgramWalkScreen = ({ route, navigation }) => {
         setStartAddress(address.description);
         setStartLat(address.lat);
         setStartLong(address.long);
+        const initLoc = {
+          latitude: parseFloat(address.lat),
+          longitude: parseFloat(address.long),
+        };
+        setInitialLocation(initLoc);
+
+        setReservationsOrdered(calculatePath(initLoc, reservations));
       }
     }
   }, [route]);
 
   const handleSubmit = async () => {
     setIsLoading(true);
-    const reservationIds = reservations.map((r) => r.id);
+    const reservationIds = reservationsOrdered.map((r) => r.id);
     const addressStart = {
       latitude: startLat,
       longitude: startLong,
       description: startAddress,
     };
-    //TODO: sacarlo de acá y meterlo donde corresponda
-    // calculatePath(addressStart, reservations);
 
     try {
       const res = await createPetWalk(startTime, addressStart, reservationIds);
@@ -105,6 +112,15 @@ const ProgramWalkScreen = ({ route, navigation }) => {
     setStartLat(userData.address.latitude);
     setStartLong(userData.address.longitude);
     setStartAddress(userData.address.description);
+    if (!startSameHome) {
+      const initLoc = {
+        latitude: parseFloat(userData.address.latitude),
+        longitude: parseFloat(userData.address.longitude),
+      };
+      setInitialLocation(initLoc);
+
+      setReservationsOrdered(calculatePath(initLoc, reservations));
+    }
   };
 
   const handleNavigatePlaceSearch = (key) => {
@@ -121,6 +137,9 @@ const ProgramWalkScreen = ({ route, navigation }) => {
     );
   };
 
+  const formatRange = (reservation) => {
+    return reservation.start_at + ' - ' + reservation.end_at;
+  };
   const onChangeTimePick = (_event, selectedTime) => {
     if (selectedTime) {
       setShowStartTime(false);
@@ -188,6 +207,7 @@ const ProgramWalkScreen = ({ route, navigation }) => {
               <Text style={styles.reservationItem}>
                 Fecha de paseo: {formatShowDateFromBE(item.reservationDate)}
               </Text>
+              <Text style={styles.reservationItem}>Franja horaria: {formatRange(item)}</Text>
               <Text style={styles.reservationItem}>Tiempo de paseo: {item.duration} minutos</Text>
               <Text style={styles.reservationItem}>
                 Dirección de Partida: {item.addressStart.description}
@@ -204,13 +224,7 @@ const ProgramWalkScreen = ({ route, navigation }) => {
   };
 
   const renderMapView = () => {
-    const initialLocation = {
-      latitude: parseFloat(startLat),
-      longitude: parseFloat(startLong),
-      description: startAddress,
-    };
-
-    const owners = reservations.map((res) => ({
+    const owners = reservationsOrdered.map((res) => ({
       latlng: {
         latitude: parseFloat(res.addressStart.latitude),
         longitude: parseFloat(res.addressStart.longitude),
@@ -231,10 +245,15 @@ const ProgramWalkScreen = ({ route, navigation }) => {
               reservations.length &&
               formatShowDateFromBE(reservations[0].reservationDate)}
           </Text>
+          <Text style={styles.subtitle}>
+            Franja horaria: {reservations && reservations.length && formatRange(reservations[0])}
+          </Text>
+
           {startTimePicker()}
           {startAddressInput()}
           {renderOwnersList()}
-          {reservations && reservations.length && startAddress && renderMapView()}
+
+          {reservationsOrdered && reservationsOrdered.length && startAddress && renderMapView()}
           <CustomButton buttonLabel="Crear" handleOnclick={handleSubmit} centered />
 
           {Boolean(errorMessage) && <Text style={styles.error}>{errorMessage}</Text>}

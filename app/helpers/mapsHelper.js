@@ -42,7 +42,6 @@ export const calculatePath = (initialLocation, reservations) => {
     destinationsOrdered.push(auxReservations[0]);
   }
 
-  console.log(destinationsOrdered);
   return destinationsOrdered;
 };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Platform, Dimensions, SafeAreaView } from 'react-native';
-import MapView, { Marker, AnimatedRegion, MarkerAnimated } from 'react-native-maps';
+import MapView, { Marker, AnimatedRegion, MarkerAnimated, Polyline } from 'react-native-maps';
 
 const MapViewWithOwners = ({ owners, initialLocation }) => {
   const { latitude, longitude, description } = initialLocation;
@@ -11,6 +11,7 @@ const MapViewWithOwners = ({ owners, initialLocation }) => {
     longitudeDelta: 0.2,
   });
 
+  const addresses = [initialLocation, ...owners.map((o) => o.latlng)];
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -29,6 +30,7 @@ const MapViewWithOwners = ({ owners, initialLocation }) => {
               description={marker.description}
             />
           ))}
+          <Polyline coordinates={addresses} strokeWidth={4} lineDashPattern={[1]} />
         </MapView>
       </View>
     </SafeAreaView>
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   map: {
-    width: Dimensions.get('window').width * 0.6,
-    height: Dimensions.get('window').height * 0.4,
+    width: Dimensions.get('window').width * 0.9,
+    height: Dimensions.get('window').height * 0.5,
   },
 });

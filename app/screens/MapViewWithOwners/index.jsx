@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Platform, Dimensions, SafeAreaView } from 'react-native';
-import MapView, { Marker, AnimatedRegion, MarkerAnimated } from 'react-native-maps';
+import MapView, { Marker, AnimatedRegion, MarkerAnimated, Polyline } from 'react-native-maps';
 
 const MapViewWithOwners = (props) => {
   const owners = props.route.params.owners || props.owners;
