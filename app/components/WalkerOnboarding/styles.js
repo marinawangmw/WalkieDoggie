@@ -40,6 +40,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F3F3EBCC',
   },
+  allowsTrackingView: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'flex-start',
+    marginVertical: 35,
+  },
+  allowsTrackingText: {
+    fontSize: 14,
+    marginTop: 12,
+  },
 });
 
 export default styles;

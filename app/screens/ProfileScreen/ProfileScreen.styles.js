@@ -78,6 +78,11 @@ export const styles = StyleSheet.create({
     color: '#364C63',
     fontSize: 16,
   },
+  allowsTrackingText: {
+    marginLeft: 10,
+    color: '#364C63',
+    fontSize: 15,
+  },
 });
 
 export const name = StyleSheet.create({

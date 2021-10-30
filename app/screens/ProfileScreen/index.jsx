@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, SafeAreaView, Image, ScrollView, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Switch,
+} from 'react-native';
 import Toast from 'react-native-toast-message';
 import LoadingScreen from 'screens/LoadingScreen';
 import { CustomButton, ProfileDataRow, TimeTable } from 'components';
@@ -19,6 +27,7 @@ import {
   priceIcon,
   resumeIcon,
   whatsappIcon,
+  locationIcon,
   // eslint-disable-next-line import/no-unresolved
 } from 'images';
 import Certifications from './Certifications';
@@ -39,7 +48,9 @@ const ProfileScreen = ({ navigation, route }) => {
   const [pets, setPets] = useState(null);
   const [changePricePerHour, setChangePricePerHour] = useState([]);
   const [changeCoverLetter, setChangeCoverLetter] = useState([]);
+  const [changeAllowsTracking, setChangeAllowsTracking] = useState(true);
 
+  const toggleSwitch = () => setChangeAllowsTracking((previousState) => !previousState);
   const { signOut } = React.useContext(AuthContext);
 
   useEffect(() => {
@@ -67,6 +78,7 @@ const ProfileScreen = ({ navigation, route }) => {
     setChangeCertifications(certificationsToSet);
     setChangePricePerHour(userData.price_per_hour);
     setChangeCoverLetter(userData.cover_letter);
+    setChangeAllowsTracking(userData.allows_tracking);
   };
 
   const fetchUserProfile = useCallback(async (id, rangesToSet, certificationsToSet) => {
@@ -220,12 +232,17 @@ const ProfileScreen = ({ navigation, route }) => {
       userProfileEdited.cover_letter = changeCoverLetter;
       userProfileEdited.ranges = changeRanges;
       userProfileEdited.certifications = changeCertifications;
+      userProfileEdited.allows_tracking = changeAllowsTracking;
 
       removeProps(userProfileEdited, ['id', 'last_login', 'email']);
 
       const response = await editWalker(userProfileEdited);
       showResultUpdateProfile(response);
     }
+  };
+  const showBoolAllowsTracking = () => {
+    if (changeAllowsTracking) return 'SI';
+    return 'NO';
   };
 
   const renderPets = () => {
@@ -340,6 +357,25 @@ const ProfileScreen = ({ navigation, route }) => {
               <Text style={styles.email}>{currentUserProfile.email}</Text>
             </View>
           </View>
+          {currentUserProfile.type === USER_TYPES.WALKER && (
+            <View style={styles.iconAndData}>
+              <Image source={locationIcon} style={styles.icon} tintColor="#364C63" />
+              <Text style={styles.allowsTrackingText}>
+                {fromHome
+                  ? 'Compartir ubicación en los paseos'
+                  : 'Comparte ubicación en los paseos: ' + showBoolAllowsTracking()}
+              </Text>
+
+              {fromHome && (
+                <Switch
+                  disabled={!fromHome}
+                  onValueChange={toggleSwitch}
+                  value={changeAllowsTracking}
+                />
+              )}
+            </View>
+          )}
+
           <View style={styles.iconAndData}>
             <TouchableOpacity onPress={chatWalker} disabled={fromHome}>
               <Image source={whatsappIcon} style={styles.icon} tintColor="#364C63" />
@@ -365,7 +401,7 @@ const ProfileScreen = ({ navigation, route }) => {
 
           <View style={styles.hr} />
 
-          {currentUserProfile.type === 'OWNER' ? renderPets() : renderWalkerSpecialData()}
+          {currentUserProfile.type === USER_TYPES.OWNER ? renderPets() : renderWalkerSpecialData()}
 
           <View style={styles.hr} />
 

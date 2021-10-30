@@ -21,8 +21,11 @@ import {
 } from './app/services/api/users/pushNotifications';
 import { USER_TYPES } from './app/utils/constants';
 import { theme } from './app/theme';
+<<<<<<< HEAD
 
 LogBox.ignoreAllLogs();
+=======
+>>>>>>> 7235fe5356ad002ead9a45bd4bd83684a36d01cd
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({

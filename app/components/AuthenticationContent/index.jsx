@@ -187,7 +187,7 @@ const AuthenticationContent = ({ error, navigation }) => {
           autoCapitalize="none"
         />
 
-        {hasAccount && (
+        {/* {hasAccount && (
           <TouchableOpacity onPress={togglePasswordVisibility}>
             {hidePassword ? (
               <SvgUri
@@ -205,7 +205,7 @@ const AuthenticationContent = ({ error, navigation }) => {
               />
             )}
           </TouchableOpacity>
-        )}
+        )} */}
       </View>
       {Boolean(passwordError) && (
         <Text style={styles.authentication__errorMsg}>{passwordError}</Text>
