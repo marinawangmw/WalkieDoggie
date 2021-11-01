@@ -7,10 +7,10 @@ export const numericValidation = (text, setter) => {
 export const formatReservationsDataForMapView = (data) => {
   return data.map((res) => ({
     latlng: {
-      latitude: parseFloat(res.addressStart.latitude),
-      longitude: parseFloat(res.addressStart.longitude),
+      latitude: parseFloat(res.address_start.latitude),
+      longitude: parseFloat(res.address_start.longitude),
     },
     title: `${res.owner.first_name} ${res.owner.last_name}`,
-    description: res.addressStart.description,
+    description: res.address_start.description,
   }));
 };

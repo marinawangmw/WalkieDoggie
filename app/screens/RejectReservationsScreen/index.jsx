@@ -50,16 +50,16 @@ const RejectReservationsScreen = ({ route, navigation }) => {
             <Text style={styles.reservationTitle}>{item.pet.name}</Text>
             <Text style={styles.reservationItem}>Dueño: {item.owner.first_name}</Text>
             <Text style={styles.reservationItem}>
-              Fecha de paseo: {formatShowDateFromBE(item.reservationDate)}
+              Fecha de paseo: {formatShowDateFromBE(item.reservation_date)}
             </Text>
             <Text style={styles.reservationItem}>
               Tiempo de paseo deseado: {item.duration} minutos
             </Text>
             <Text style={styles.reservationItem}>
-              Dirección de Partida: {item.addressStart.description}
+              Dirección de Partida: {item.address_start.description}
             </Text>
             <Text style={styles.reservationItem}>
-              Dirección de Entrega: {item.addressEnd.description}
+              Dirección de Entrega: {item.address_end.description}
             </Text>
             <Text style={styles.reservationItem}>Observaciones: {item.observations}</Text>
           </View>

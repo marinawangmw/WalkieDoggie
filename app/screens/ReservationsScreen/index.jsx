@@ -117,7 +117,7 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
       const differentFromFirst = aux.filter(
         (item) =>
           item.start_at !== selectedItems[0].start_at ||
-          item.reservationDate !== selectedItems[0].reservationDate,
+          item.reservation_date !== selectedItems[0].reservation_date,
       );
 
       if (differentFromFirst.length > 0) {
@@ -225,7 +225,7 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
             <Text style={styles.reservationItem}>Dueño: {item.owner.first_name}</Text>
             <Text style={styles.reservationItem}>Estado: {statusInSpanish(item.status)}</Text>
             <Text style={styles.reservationItem}>
-              Fecha de paseo: {formatShowDateFromBE(item.reservationDate)}
+              Fecha de paseo: {formatShowDateFromBE(item.reservation_date)}
             </Text>
             <Text style={styles.reservationItem}>
               Franja horaria de paseo:
@@ -235,10 +235,10 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
               Tiempo de paseo deseado: {item.duration} minutos
             </Text>
             <Text style={styles.reservationItem}>
-              Dirección de Partida: {item.addressStart.description}
+              Dirección de Partida: {item.address_start.description}
             </Text>
             <Text style={styles.reservationItem}>
-              Dirección de Entrega: {item.addressEnd.description}
+              Dirección de Entrega: {item.address_end.description}
             </Text>
             <Text style={styles.reservationItem}>Observaciones: {item.observations}</Text>
           </View>
@@ -268,7 +268,7 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
       <View style={styles.container}>
         <DatePicker date={date} setDate={setDate} label={dateFilterLabel} />
         {reservationStatusPicker()}
-        {timeRangePicker()}
+        {/* {timeRangePicker()} */}
         {showAllButton()}
 
         {checked && selectionButtons()}

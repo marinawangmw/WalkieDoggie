@@ -205,17 +205,17 @@ const ProgramWalkScreen = ({ route, navigation }) => {
               <Text style={styles.reservationTitle}>{item.pet.name}</Text>
               <Text style={styles.reservationItem}>Dueño: {item.owner.first_name}</Text>
               <Text style={styles.reservationItem}>
-                Fecha de paseo: {formatShowDateFromBE(item.reservationDate)}
+                Fecha de paseo: {formatShowDateFromBE(item.reservation_date)}
               </Text>
               <Text style={styles.reservationItem}>Franja horaria: {formatRange(item)}</Text>
               <Text style={styles.reservationItem}>
                 Tiempo de paseo deseado: {item.duration} minutos
               </Text>
               <Text style={styles.reservationItem}>
-                Dirección de Partida: {item.addressStart.description}
+                Dirección de Partida: {item.address_start.description}
               </Text>
               <Text style={styles.reservationItem}>
-                Dirección de Entrega: {item.addressEnd.description}
+                Dirección de Entrega: {item.address_end.description}
               </Text>
               <Text style={styles.reservationItem}>Observaciones: {item.observations}</Text>
             </View>
@@ -228,11 +228,11 @@ const ProgramWalkScreen = ({ route, navigation }) => {
   const renderMapView = () => {
     const owners = reservationsOrdered.map((res) => ({
       latlng: {
-        latitude: parseFloat(res.addressStart.latitude),
-        longitude: parseFloat(res.addressStart.longitude),
+        latitude: parseFloat(res.address_start.latitude),
+        longitude: parseFloat(res.address_start.longitude),
       },
       title: res.owner.first_name + ' ' + res.owner.last_name,
-      description: res.addressStart.description,
+      description: res.address_start.description,
     }));
     return <MapViewWithOwners initialLocation={initialLocation} owners={owners} />;
   };
@@ -245,7 +245,7 @@ const ProgramWalkScreen = ({ route, navigation }) => {
             {title}{' '}
             {reservations &&
               reservations.length &&
-              formatShowDateFromBE(reservations[0].reservationDate)}
+              formatShowDateFromBE(reservations[0].reservation_date)}
           </Text>
           <Text style={styles.subtitle}>
             Franja horaria: {reservations && reservations.length && formatRange(reservations[0])}
