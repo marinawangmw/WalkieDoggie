@@ -11,7 +11,6 @@ import {
   FindColoniesScreen,
   FindDayCaresScreen,
   FindSheltersScreen,
-  MapViewWithOwners,
 } from 'screens';
 import GooglePlaceSearcher from '../../screens/CreateReservationScreen/GooglePlaceSearcher';
 
@@ -90,11 +89,6 @@ const HomeStackNavigator = ({ route }) => {
           initialParams={{
             userProfile,
           }}
-        />
-        <Stack.Screen
-          name="mapView"
-          component={MapViewWithOwners}
-          options={{ headerShown: false }}
         />
       </Stack.Group>
     </Stack.Navigator>
