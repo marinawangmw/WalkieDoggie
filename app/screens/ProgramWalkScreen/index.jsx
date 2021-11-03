@@ -80,6 +80,30 @@ const ProgramWalkScreen = ({ route, navigation }) => {
   }, [route]);
 
   const handleSubmit = async () => {
+    // Se valida que se haya elegido un punto de partida
+
+    // Se valida que la hora de inicio esté comprendida dentro de la franja horaria
+    const localTime = startTime.toLocaleTimeString('es-AR');
+    const from = reservations[0].start_at;
+    const to = reservations[0].end_at;
+    if (localTime < from || localTime > to) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error al programar paseo',
+        text2: 'La hora de inicio debe estar comprendida dentro de la franja horaria estipulada.',
+      });
+      return;
+    }
+
+    if (!startLong || !startLat || !startAddress) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error al programar paseo',
+        text2: 'Seleccione un punto de partida',
+      });
+      return;
+    }
+
     setIsLoading(true);
     const reservationIds = reservationsOrdered.map((r) => r.id);
     const addressStart = {
@@ -203,7 +227,9 @@ const ProgramWalkScreen = ({ route, navigation }) => {
           <View style={styles.dataContainer}>
             <View style={styles.details}>
               <Text style={styles.reservationTitle}>{item.pet.name}</Text>
-              <Text style={styles.reservationItem}>Dueño: {item.owner.first_name}</Text>
+              <Text style={styles.reservationItem}>
+                Dueño: {item.owner.first_name} {item.owner.last_name}
+              </Text>
               <Text style={styles.reservationItem}>
                 Fecha de paseo: {formatShowDateFromBE(item.reservation_date)}
               </Text>

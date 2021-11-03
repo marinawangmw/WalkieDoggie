@@ -13,7 +13,7 @@ const statusFilterLabel = 'Filtro 2: Estado de reserva';
 const rangesFilterLabel = 'Filtro 3: Franjas horarias';
 const showAllButtonLabel = 'Mostrar todas las reservas';
 const chooseReservationsFromSameDateError =
-  'Por favor selecctione reservas de la misma fecha y mismo horario';
+  'Por favor seleccione reservas de la misma fecha y mismo horario';
 
 const ReservationsScreen = ({ navigation, userProfile }) => {
   const isFocused = useIsFocused();
@@ -151,28 +151,28 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
     );
   };
 
-  const timeRangePicker = () => {
-    return (
-      <View style={styles.data}>
-        <Text style={styles.dataTitle}>{rangesFilterLabel}</Text>
-        <Picker
-          style={styles.dataContainer}
-          selectedValue={selectedRangeId}
-          onValueChange={(itemValue) => filterDataAccordingToSelectedRange(itemValue)}
-        >
-          {Boolean(walkerRanges) &&
-            Boolean(walkerRanges.length) &&
-            walkerRanges.map((item, idx) => (
-              <Picker.Item
-                label={`De ${item.start_at} a ${item.end_at}`}
-                value={item.id}
-                key={idx}
-              />
-            ))}
-        </Picker>
-      </View>
-    );
-  };
+  // const timeRangePicker = () => {
+  //   return (
+  //     <View style={styles.data}>
+  //       <Text style={styles.dataTitle}>{rangesFilterLabel}</Text>
+  //       <Picker
+  //         style={styles.dataContainer}
+  //         selectedValue={selectedRangeId}
+  //         onValueChange={(itemValue) => filterDataAccordingToSelectedRange(itemValue)}
+  //       >
+  //         {Boolean(walkerRanges) &&
+  //           Boolean(walkerRanges.length) &&
+  //           walkerRanges.map((item, idx) => (
+  //             <Picker.Item
+  //               label={`De ${item.start_at} a ${item.end_at}`}
+  //               value={item.id}
+  //               key={idx}
+  //             />
+  //           ))}
+  //       </Picker>
+  //     </View>
+  //   );
+  // };
 
   const reservationStatusPicker = () => {
     return (
@@ -222,7 +222,9 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
 
           <View style={styles.details}>
             <Text style={styles.reservationTitle}>{item.pet.name}</Text>
-            <Text style={styles.reservationItem}>Dueño: {item.owner.first_name}</Text>
+            <Text style={styles.reservationItem}>
+              Dueño: {item.owner.first_name} {item.owner.last_name}
+            </Text>
             <Text style={styles.reservationItem}>Estado: {statusInSpanish(item.status)}</Text>
             <Text style={styles.reservationItem}>
               Fecha de paseo: {formatShowDateFromBE(item.reservation_date)}

@@ -17,6 +17,7 @@ import { calendar } from 'images';
 import { Picker } from '@react-native-community/picker';
 import { CustomButton } from 'components';
 import { createReservation } from 'services/api/rides/reservations';
+import { DAYS_OF_WEEK_ARR } from '../../utils/dates';
 
 const formatDate = (selectedDate, userVisible) => {
   const month =
@@ -57,14 +58,20 @@ const CreateReservationScreen = ({ route, navigation }) => {
   const [endAddress, setEndAddress] = useState(null);
   const [comments, setComments] = useState(null);
   const [walkerRanges, setWalkerRanges] = useState([]);
+  const [walkerRangesFiltered, setWalkerRangesFiltered] = useState([]);
+
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [walkerId, setWalkerId] = useState(null);
 
-  const { ranges, userProfile, walkerId } = route.params;
-
+  const { ranges, userProfile, walkerId: walkerSub } = route.params;
   useEffect(() => {
     if (ranges) {
       setWalkerRanges(ranges);
+      //Filtro ranges para la fecha por defecto
+      const dayWeekSelected = DAYS_OF_WEEK_ARR[date.getDay()];
+      const auxRanges = ranges.filter((r) => r.day_of_week === dayWeekSelected);
+      setWalkerRangesFiltered(auxRanges);
     }
   }, [ranges]);
 
@@ -89,6 +96,12 @@ const CreateReservationScreen = ({ route, navigation }) => {
       setPets(userProfile.pets);
     }
   }, [userProfile]);
+
+  useEffect(() => {
+    if (walkerSub) {
+      setWalkerId(walkerSub);
+    }
+  }, [walkerSub]);
 
   const onCheckStartSameHome = () => {
     setStartSameHome(!startSameHome);
@@ -173,7 +186,19 @@ const CreateReservationScreen = ({ route, navigation }) => {
   const onChange = (_event, selectedDate) => {
     setShow(false);
     const currentDate = selectedDate || date;
+
     setDate(currentDate);
+
+    //Filtrar ranges por día de la semana
+    const dayWeekSelected = DAYS_OF_WEEK_ARR[currentDate.getDay()];
+    const auxRanges = walkerRanges.filter((r) => r.day_of_week === dayWeekSelected);
+    setWalkerRangesFiltered(auxRanges);
+  };
+
+  const handleChangeDuration = (text) => {
+    if (/^\d+$/.test(text) || text === '') {
+      setDuration(text);
+    }
   };
 
   const renderContent = () => {
@@ -207,9 +232,9 @@ const CreateReservationScreen = ({ route, navigation }) => {
             selectedValue={selectedRange}
             onValueChange={(itemValue) => setSelectedRange(itemValue)}
           >
-            {Boolean(walkerRanges) &&
-              Boolean(walkerRanges.length) &&
-              walkerRanges.map((range) => (
+            {Boolean(walkerRangesFiltered) &&
+              Boolean(walkerRangesFiltered.length) &&
+              walkerRangesFiltered.map((range) => (
                 <Picker.Item
                   label={range.day_of_week + ' de ' + range.start_at + ' a ' + range.end_at}
                   value={range.id}
@@ -225,14 +250,15 @@ const CreateReservationScreen = ({ route, navigation }) => {
           <TextInput
             style={[styles.dataContainer, styles.durationInput]}
             value={duration}
-            onChangeText={setDuration}
+            onChangeText={handleChangeDuration}
+            keyboardType="numeric"
             placeholder="Ej.: 90"
           />
         </View>
 
-        {/* PET_ID -- multi selection */}
+        {/* PET_ID */}
         <View style={styles.data}>
-          <Text style={styles.dataTitle}>Seleccione para cual/es mascota/s</Text>
+          <Text style={styles.dataTitle}>Seleccione para cual mascota</Text>
           <Picker
             style={styles.dataContainer}
             selectedValue={selectedPetId}
