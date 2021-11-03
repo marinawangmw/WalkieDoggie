@@ -18,6 +18,7 @@ import { Picker } from '@react-native-community/picker';
 import { CustomButton } from 'components';
 import { createReservation } from 'services/api/rides/reservations';
 import { DAYS_OF_WEEK_ARR } from '../../utils/dates';
+import moment from 'moment';
 
 const formatDate = (selectedDate, userVisible) => {
   const month =
@@ -119,59 +120,67 @@ const CreateReservationScreen = ({ route, navigation }) => {
 
   const handleSubmit = async () => {
     if (
-      date &&
-      selectedRange &&
-      duration &&
-      selectedPetId &&
-      startAddress &&
-      startLat &&
-      startLong &&
-      endAddress &&
-      endLat &&
-      endLong &&
-      comments
+      !date ||
+      !selectedRange ||
+      !duration ||
+      !selectedPetId ||
+      !startAddress ||
+      !startLat ||
+      !startLong ||
+      !endAddress ||
+      !endLat ||
+      !endLong ||
+      !comments
     ) {
-      setIsLoading(true);
-      setErrorMessage('');
-      const formattedDate = formatDate(date, false);
-      const data = {
-        walk_date: formattedDate,
-        range_id: selectedRange,
-        duration,
-        pet_id: selectedPetId,
-        address_start: {
-          description: startAddress,
-          latitude: startLat,
-          longitude: startLong,
-        },
-        address_end: {
-          description: endAddress,
-          latitude: endLat,
-          longitude: endLong,
-        },
-        comments,
-      };
-      try {
-        const res = await createReservation(walkerId, data);
-        setIsLoading(false);
-        if (res.result) {
-          Toast.show({
-            type: 'success',
-            text1: 'Bien!',
-            text2:
-              'Se creó exitosamente la reserva por el paseo, pronto el paseador se contactará contigo.',
-          });
-          navigation.navigate('home');
-        } else {
-          setErrorMessage('Oops, algo anduvo mal');
-        }
-      } catch (error) {
-        setErrorMessage('Oops, algo anduvo mal');
-        console.log(error);
-      }
-    } else {
-      setIsLoading(false);
       setErrorMessage('Por favor complete todos los datos');
+      return;
+    }
+
+    //  Validamos que la duración en minutos no supere la duración total de la franja horaria
+    if (!validateDuration()) {
+      setErrorMessage(
+        'La duración total en minutos debe ser menor a la duración de la franja horaria seleccionada',
+      );
+      return;
+    }
+
+    setIsLoading(true);
+    setErrorMessage('');
+    const formattedDate = formatDate(date, false);
+    const data = {
+      walk_date: formattedDate,
+      range_id: selectedRange,
+      duration,
+      pet_id: selectedPetId,
+      address_start: {
+        description: startAddress,
+        latitude: startLat,
+        longitude: startLong,
+      },
+      address_end: {
+        description: endAddress,
+        latitude: endLat,
+        longitude: endLong,
+      },
+      comments,
+    };
+    try {
+      const res = await createReservation(walkerId, data);
+      setIsLoading(false);
+      if (res.result) {
+        Toast.show({
+          type: 'success',
+          text1: 'Bien!',
+          text2:
+            'Se creó exitosamente la reserva por el paseo, pronto el paseador se contactará contigo.',
+        });
+        navigation.navigate('home');
+      } else {
+        setErrorMessage('Oops, algo anduvo mal');
+      }
+    } catch (error) {
+      setErrorMessage('Oops, algo anduvo mal');
+      console.log(error);
     }
   };
 
@@ -199,6 +208,14 @@ const CreateReservationScreen = ({ route, navigation }) => {
     if (/^\d+$/.test(text) || text === '') {
       setDuration(text);
     }
+  };
+
+  const validateDuration = () => {
+    const range = walkerRangesFiltered.find((r) => r.id === selectedRange);
+    const startTime = moment(range.start_at, 'HH:mm:ss');
+    const endTime = moment(range.end_at, 'HH:mm:ss');
+    const rangeDuration = endTime.diff(startTime, 'minutes');
+    return duration <= rangeDuration;
   };
 
   const renderContent = () => {
