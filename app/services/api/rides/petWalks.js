@@ -70,7 +70,7 @@ export const handleReservationByOwner = async (reservation_id, status) => {
 /**
  *
  * @param {*} status
- * status must be one of PET_WALK_STATUS enum value
+ * status es un parámetro opcional, y en caso de mandarse, debe ser alguno de los valores del enum PET_WALK_STATUS
  * @returns
  */
 
