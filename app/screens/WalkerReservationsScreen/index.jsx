@@ -15,7 +15,7 @@ const showAllButtonLabel = 'Mostrar todas las reservas';
 const chooseReservationsFromSameDateError =
   'Por favor seleccione reservas de la misma fecha y mismo horario';
 
-const ReservationsScreen = ({ navigation, userProfile }) => {
+const WalkerReservationsScreen = ({ navigation, userProfile }) => {
   const isFocused = useIsFocused();
   const initialDate = useMemo(() => new Date(), []);
   const [date, setDate] = useState(initialDate);
@@ -151,28 +151,28 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
     );
   };
 
-  // const timeRangePicker = () => {
-  //   return (
-  //     <View style={styles.data}>
-  //       <Text style={styles.dataTitle}>{rangesFilterLabel}</Text>
-  //       <Picker
-  //         style={styles.dataContainer}
-  //         selectedValue={selectedRangeId}
-  //         onValueChange={(itemValue) => filterDataAccordingToSelectedRange(itemValue)}
-  //       >
-  //         {Boolean(walkerRanges) &&
-  //           Boolean(walkerRanges.length) &&
-  //           walkerRanges.map((item, idx) => (
-  //             <Picker.Item
-  //               label={`De ${item.start_at} a ${item.end_at}`}
-  //               value={item.id}
-  //               key={idx}
-  //             />
-  //           ))}
-  //       </Picker>
-  //     </View>
-  //   );
-  // };
+  const timeRangePicker = () => {
+    return (
+      <View style={styles.data}>
+        <Text style={styles.dataTitle}>{rangesFilterLabel}</Text>
+        <Picker
+          style={styles.dataContainer}
+          selectedValue={selectedRangeId}
+          onValueChange={(itemValue) => filterDataAccordingToSelectedRange(itemValue)}
+        >
+          {Boolean(walkerRanges) &&
+            Boolean(walkerRanges.length) &&
+            walkerRanges.map((item, idx) => (
+              <Picker.Item
+                label={`De ${item.start_at} a ${item.end_at}`}
+                value={item.id}
+                key={idx}
+              />
+            ))}
+        </Picker>
+      </View>
+    );
+  };
 
   const reservationStatusPicker = () => {
     return (
@@ -270,7 +270,7 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
       <View style={styles.container}>
         <DatePicker date={date} setDate={setDate} label={dateFilterLabel} />
         {reservationStatusPicker()}
-        {/* {timeRangePicker()} */}
+        {timeRangePicker()}
         {showAllButton()}
 
         {checked && selectionButtons()}
@@ -288,4 +288,4 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
   return <FlatList data={[]} renderItem={() => {}} ListHeaderComponent={renderContent()} />;
 };
 
-export default ReservationsScreen;
+export default WalkerReservationsScreen;

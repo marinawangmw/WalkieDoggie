@@ -1,47 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Modal } from 'react-native';
-import { CustomButton } from 'components';
+import React from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+
 // eslint-disable-next-line import/no-unresolved
 import { greetingIcon, rightArrowIcon } from 'images';
 
-const ConfirmBanner = ({ title, description, setHasPendingWalks }) => {
-  const [visible, setVisible] = useState(false);
-
-  const handleNext = () => {
-    setVisible(true);
-  };
-
-  const onClick = () => {
-    setVisible(!visible);
-    setHasPendingWalks(false);
-  };
-
-  const showModal = () => {
-    return (
-      <View>
-        <Modal
-          animationType="fade"
-          visible={visible}
-          onRequestClose={() => {
-            setVisible(!visible);
-          }}
-          transparent
-        >
-          <View style={styles.modal}>
-            <Text>datitos</Text>
-            <View style={styles.btnContainer}>
-              <CustomButton handleOnclick={onClick} buttonLabel="Confirmar" />
-              <CustomButton handleOnclick={onClick} buttonLabel="Rechazar" />
-            </View>
-          </View>
-        </Modal>
-      </View>
-    );
-  };
-
+const ConfirmBanner = ({ title, description, handleNext }) => {
   return (
     <View style={styles.container}>
-      {visible && showModal()}
       <TouchableOpacity onPress={handleNext} style={styles.banner}>
         <Image source={greetingIcon} style={styles.icon} />
         <View style={styles.body}>
@@ -99,24 +64,5 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 11,
-  },
-  modalContainer: {
-    backgroundColor: 'pink',
-  },
-  modal: {
-    padding: 15,
-    width: '90%',
-    height: '20%',
-    marginTop: '60%',
-    backgroundColor: 'white',
-    alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: '#f4b445',
-    borderWidth: 1,
-    borderRadius: 5,
-  },
-  btnContainer: {
-    flexDirection: 'row',
   },
 });
