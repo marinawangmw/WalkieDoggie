@@ -52,3 +52,9 @@ export const CENTER_TYPE = {
   SHELTER: 'SHELTER',
   DAY_CARE: 'DAY_CARE',
 };
+
+export const PET_WALK_STATUS = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  FINISHED: 'FINISHED',
+};
