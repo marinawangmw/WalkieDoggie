@@ -20,6 +20,7 @@ import MapViewWithOwners from 'components/MapViewWithOwners';
 import { createPetWalk } from 'services/api/rides/petWalks';
 import Toast from 'react-native-toast-message';
 import { calculatePath } from '../../helpers/mapsHelper';
+import moment from 'moment';
 
 const title = 'Programar paseo para el día ';
 const startTimeTitle = 'Seleccione un horario de inicio';
@@ -62,6 +63,16 @@ const ProgramWalkScreen = ({ route, navigation }) => {
         setOwnersToPickup(dataForMapView);
         setReservations(reservationsToProgram);
         setUserData(userProfile);
+        // Setear hora de inicio por defecto:
+        const initialDateTime = reservationsToProgram[0].reservation_date;
+        const dateTime = new Date('2021-10-20T12:00:00.00');
+        const d = initialDateTime.substring(6, 8);
+        const m = initialDateTime.substring(4, 6) - 1;
+        const y = initialDateTime.substring(0, 4);
+        dateTime.setDate(d);
+        dateTime.setMonth(m);
+        dateTime.setFullYear(y);
+        setStartTime(dateTime);
       }
 
       if (address) {
@@ -112,8 +123,9 @@ const ProgramWalkScreen = ({ route, navigation }) => {
       description: startAddress,
     };
 
+    const startTimeRequest = moment(startTime).utcOffset('-0300').format();
     try {
-      const res = await createPetWalk(startTime, addressStart, reservationIds);
+      const res = await createPetWalk(startTimeRequest, addressStart, reservationIds);
       setIsLoading(false);
       if (res.result) {
         Toast.show({
