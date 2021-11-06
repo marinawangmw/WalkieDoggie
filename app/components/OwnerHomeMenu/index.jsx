@@ -6,83 +6,16 @@ import HomeMenuItem from './HomeMenuItem';
 import ConfirmBanner from './ConfirmBanner';
 // eslint-disable-next-line import/no-unresolved
 import { walker, shelter, petBoarding, colonies } from 'images';
-import { getPetWalks } from 'services/api/rides/petWalks';
+import { getReservations } from 'services/api/rides/reservations';
+import { handleReservationByOwner } from 'services/api/rides/petWalks';
 import { RESERVATION_STATUS } from 'utils/constants';
+import LoadingScreen from 'screens/LoadingScreen';
 
-const fakeData = [
-  {
-    address_start: {
-      description: 'Avenida Nazca 444, Buenos Aires, Argentina',
-      id: 61,
-      latitude: '-34.62705399999999',
-      longitude: '-58.471435',
-    },
-    start_date: '2021-10-20T12:00:00.000Z',
-    status: 'PENDING',
-    walker: {
-      email: 'toto@gmail.com',
-      first_name: 'Tomas',
-      id: 6,
-      last_name: 'Janin',
-      phone: '1155691387',
-    },
-  },
-  {
-    address_start: {
-      description: 'Avenida Nazca 444, Buenos Aires, Argentina',
-      id: 62,
-      latitude: '-34.62705399999999',
-      longitude: '-58.471435',
-    },
-    start_date: '2021-10-20T12:00:00.000Z',
-    status: 'PENDING',
-    walker: {
-      email: 'toto@gmail.com',
-      first_name: 'Tomas',
-      id: 6,
-      last_name: 'Janin',
-      phone: '1155691387',
-    },
-  },
-  {
-    address_start: {
-      description: 'Avenida Nazca 444, Buenos Aires, Argentina',
-      id: 62,
-      latitude: '-34.62705399999999',
-      longitude: '-58.471435',
-    },
-    start_date: '2021-10-20T12:00:00.000Z',
-    status: 'PENDING',
-    walker: {
-      email: 'toto@gmail.com',
-      first_name: 'Tomas',
-      id: 6,
-      last_name: 'Janin',
-      phone: '1155691387',
-    },
-  },
-  {
-    address_start: {
-      description: 'Avenida Nazca 444, Buenos Aires, Argentina',
-      id: 62,
-      latitude: '-34.62705399999999',
-      longitude: '-58.471435',
-    },
-    start_date: '2021-10-20T12:00:00.000Z',
-    status: 'PENDING',
-    walker: {
-      email: 'toto@gmail.com',
-      first_name: 'Tomas',
-      id: 6,
-      last_name: 'Janin',
-      phone: '1155691387',
-    },
-  },
-];
 const OwnerHomeMenu = ({ navigation }) => {
   const [hasPendingWalks, setHasPendingWalks] = useState(false);
   const [pendingWalks, setPendingWalks] = useState(null);
   const [visible, setVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const homeOptions = [
     { title: 'Paseadores', icon: walker, navigateTo: 'findWalker' },
@@ -91,20 +24,26 @@ const OwnerHomeMenu = ({ navigation }) => {
     { title: 'Colonias', icon: colonies, navigateTo: 'findColonies' },
   ];
 
-  useEffect(() => {
-    const getReservationForOwner = async () => {
-      try {
-        const res = await getPetWalks(RESERVATION_STATUS.PENDING);
+  const getReservationForOwner = async () => {
+    try {
+      const res = await getReservations({ status: RESERVATION_STATUS.ACCEPTED_BY_WALKER });
 
-        if (res.result && res.data.length) {
+      if (res.result && res.data.length) {
+        const validResults = res.data.filter((r) => !!r.pet_walk.id);
+
+        if (validResults.length) {
           setHasPendingWalks(true);
-          setPendingWalks(res.data);
+          setPendingWalks(validResults);
+        } else {
+          setHasPendingWalks(false);
         }
-      } catch (e) {
-        console.log(e);
       }
-    };
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
+  useEffect(() => {
     getReservationForOwner();
   }, []);
 
@@ -112,12 +51,28 @@ const OwnerHomeMenu = ({ navigation }) => {
     setVisible(true);
   };
 
-  const onAccept = () => {
-    setVisible(!visible);
+  const onAccept = async (reservationId) => {
+    try {
+      setIsLoading(true);
+      await handleReservationByOwner(reservationId, RESERVATION_STATUS.ACCEPTED_BY_OWNER);
+      await getReservationForOwner();
+      setIsLoading(false);
+      setVisible(!visible);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  const onReject = () => {
-    setVisible(!visible);
+  const onReject = async (reservationId) => {
+    try {
+      setIsLoading(true);
+      await handleReservationByOwner(reservationId, RESERVATION_STATUS.REJECTED_BY_OWNER);
+      await getReservationForOwner();
+      setIsLoading(false);
+      setVisible(!visible);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const toggleModalVisible = () => {
@@ -137,9 +92,9 @@ const OwnerHomeMenu = ({ navigation }) => {
             {walk.walker.first_name} {walk.walker.last_name}
           </Text>
           <Text> programó un paseo para el día </Text>
-          <Text style={styles.bold}> {formatDate(walk.start_date.slice(0, 10))}</Text>
+          <Text style={styles.bold}> {formatDate(walk.pet_walk.start_date.slice(0, 10))}</Text>
           <Text> a las </Text>
-          <Text style={styles.bold}>{walk.start_date.slice(11, 16)}hs</Text>
+          <Text style={styles.bold}>{walk.pet_walk.start_date.slice(11, 16)}hs</Text>
           <Text>. Pasará a buscar a su/s mascota/s en la dirección </Text>
           <Text style={styles.bold}>{walk.address_start.description}</Text>
           <Text> Cualquier inquietud puede comunicarse con el paseador llamando al </Text>
@@ -147,8 +102,8 @@ const OwnerHomeMenu = ({ navigation }) => {
         </Text>
 
         <View style={styles.btnContainer}>
-          <CustomButton handleOnclick={() => onAccept()} buttonLabel="Confirmar" />
-          <CustomButton handleOnclick={() => onReject()} buttonLabel="Rechazar" />
+          <CustomButton handleOnclick={() => onAccept(walk.id)} buttonLabel="Confirmar" />
+          <CustomButton handleOnclick={() => onReject(walk.id)} buttonLabel="Rechazar" />
         </View>
       </View>
     );
@@ -168,7 +123,7 @@ const OwnerHomeMenu = ({ navigation }) => {
           animationOut={'fadeIn'}
         >
           <Pressable onPress={toggleModalVisible}>
-            <Text style={{ color: 'white', fontSize: 25, alignSelf: 'flex-end' }}>x</Text>
+            <Text style={styles.closeBtn}>x</Text>
           </Pressable>
           {pendingWalks.length > 2 ? (
             <ScrollView contentContainerStyle={styles.modal}>
@@ -181,6 +136,10 @@ const OwnerHomeMenu = ({ navigation }) => {
       </View>
     );
   };
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   return (
     <View style={styles.container}>
@@ -243,6 +202,11 @@ const styles = StyleSheet.create({
   },
   bold: {
     fontWeight: '700',
+  },
+  closeBtn: {
+    color: 'white',
+    fontSize: 25,
+    alignSelf: 'flex-end',
   },
 });
 export default OwnerHomeMenu;

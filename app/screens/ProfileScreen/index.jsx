@@ -1,16 +1,25 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Image, SafeAreaView, ScrollView, Switch, Text, TouchableOpacity, View,} from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Toast from 'react-native-toast-message';
 import LoadingScreen from 'screens/LoadingScreen';
-import {CustomButton, ProfileDataRow, TimeTable} from 'components';
-import {editOwner, editWalker, getProfile} from 'services/api/users/profile';
-import {editPet} from 'services/api/users/pets';
+import { CustomButton, ProfileDataRow, TimeTable } from 'components';
+import { editOwner, editWalker, getProfile } from 'services/api/users/profile';
+import { editPet } from 'services/api/users/pets';
 
-import {AuthContext} from 'utils/authContext';
-import {USER_TYPES} from 'utils/constants';
-import {removeProps} from 'helpers/objectHelper';
-import {name, personal, styles} from './ProfileScreen.styles';
+import { AuthContext } from 'utils/authContext';
+import { USER_TYPES } from 'utils/constants';
+import { removeProps } from 'helpers/objectHelper';
+import { styles, name, personal } from './ProfileScreen.styles';
 
+// eslint-disable-next-line import/no-unresolved
 import {
   addressIcon,
   calendarIcon,
@@ -22,8 +31,7 @@ import {
   whatsappIcon,
 } from 'images';
 import Certifications from './Certifications';
-import {openWhatsappChat} from '../../services/externalApps/whatsapp';
-import {getAchievementsById} from '../../utils/achievements';
+import { openWhatsappChat } from 'services/externalApps/whatsapp';
 
 const ProfileScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);

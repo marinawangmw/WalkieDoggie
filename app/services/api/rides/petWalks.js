@@ -54,6 +54,7 @@ export const rejectReservations = async (reservation_ids) => {
 export const handleReservationByOwner = async (reservation_id, status) => {
   // status must be one of: RESERVATION_STATUS.ACCEPTED_BY OWNER or RESERVATION_STATUS.REJECTED_BY_OWNER
   const owner_id = await getCurrentUserId();
+  console.log('hi', owner_id, reservation_id);
   const data = {
     status,
   };
