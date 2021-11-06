@@ -11,16 +11,6 @@ import { handleReservationByOwner } from 'services/api/rides/petWalks';
 import { RESERVATION_STATUS } from 'utils/constants';
 import LoadingScreen from 'screens/LoadingScreen';
 import * as Notifications from 'expo-notifications';
-
-// This refers to the function defined earlier in this guide, in Push Notifications Set Up
-// import { registerForPushNotificationsAsync } from '../../../App';
-
-// Notifications.setNotificationHandler({
-//   handleNotification: async () => ({
-//     shouldShowAlert: true,
-//     shouldPlaySound: true,
-//   }),
-// });
 import moment from 'moment';
 
 const OwnerHomeMenu = ({ navigation }) => {
@@ -29,18 +19,12 @@ const OwnerHomeMenu = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleNotificationResponse = useCallback((response) => {
-    console.log('hi');
+  const handleNotificationResponse = useCallback(() => {
     getReservationForOwner();
   }, []);
 
   useEffect(() => {
-    // registerForPushNotificationsAsync();
-    console.log('useEffect');
-    Notifications.addNotificationReceivedListener((notification) => {
-      console.log('PROCEDA ', notification);
-    });
-
+    Notifications.addNotificationReceivedListener(handleNotificationResponse);
     Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
   }, [handleNotificationResponse]);
 
