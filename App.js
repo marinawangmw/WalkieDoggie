@@ -147,7 +147,7 @@ export default function App() {
   );
 }
 
-async function registerForPushNotificationsAsync() {
+const registerForPushNotificationsAsync = async () => {
   let token;
   if (Constants.isDevice) {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -175,4 +175,4 @@ async function registerForPushNotificationsAsync() {
   }
 
   return token;
-}
+};

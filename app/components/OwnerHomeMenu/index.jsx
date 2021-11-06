@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, ScrollView, Text, Pressable } from 'react-native';
 import Modal from 'react-native-modal';
 import { CustomButton } from 'components';
@@ -10,12 +10,38 @@ import { getReservations } from 'services/api/rides/reservations';
 import { handleReservationByOwner } from 'services/api/rides/petWalks';
 import { RESERVATION_STATUS } from 'utils/constants';
 import LoadingScreen from 'screens/LoadingScreen';
+import * as Notifications from 'expo-notifications';
+
+// This refers to the function defined earlier in this guide, in Push Notifications Set Up
+// import { registerForPushNotificationsAsync } from '../../../App';
+
+// Notifications.setNotificationHandler({
+//   handleNotification: async () => ({
+//     shouldShowAlert: true,
+//     shouldPlaySound: true,
+//   }),
+// });
 
 const OwnerHomeMenu = ({ navigation }) => {
   const [hasPendingWalks, setHasPendingWalks] = useState(false);
   const [pendingWalks, setPendingWalks] = useState(null);
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleNotificationResponse = useCallback((response) => {
+    console.log('hi');
+    getReservationForOwner();
+  }, []);
+
+  useEffect(() => {
+    // registerForPushNotificationsAsync();
+    console.log('useEffect');
+    Notifications.addNotificationReceivedListener((notification) => {
+      console.log('PROCEDA ', notification);
+    });
+
+    Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
+  }, [handleNotificationResponse]);
 
   const homeOptions = [
     { title: 'Paseadores', icon: walker, navigateTo: 'findWalker' },
