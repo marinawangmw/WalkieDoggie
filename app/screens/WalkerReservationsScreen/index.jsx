@@ -270,7 +270,7 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
       <View style={styles.container}>
         <DatePicker date={date} setDate={setDate} label={dateFilterLabel} />
         {reservationStatusPicker()}
-        {timeRangePicker()}
+        {/* {timeRangePicker()} */}
         {showAllButton()}
 
         {checked && selectionButtons()}
