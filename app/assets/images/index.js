@@ -37,3 +37,6 @@ export { default as imageIcon } from './image-icon.png';
 export { default as locationIcon } from './location.png';
 export { default as greetingIcon } from './greeting.png';
 export { default as rightArrowIcon } from './right-arrow.png';
+export { default as achievementIcon } from './achievement.png';
+export { default as achievement2Icon } from './achievement2.png';
+export { default as achievement3Icon } from './achievement3.png';
