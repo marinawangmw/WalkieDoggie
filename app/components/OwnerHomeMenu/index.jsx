@@ -10,6 +10,7 @@ import { getReservations } from 'services/api/rides/reservations';
 import { handleReservationByOwner } from 'services/api/rides/petWalks';
 import { RESERVATION_STATUS } from 'utils/constants';
 import LoadingScreen from 'screens/LoadingScreen';
+import moment from 'moment';
 
 const OwnerHomeMenu = ({ navigation }) => {
   const [hasPendingWalks, setHasPendingWalks] = useState(false);
@@ -80,7 +81,14 @@ const OwnerHomeMenu = ({ navigation }) => {
   };
 
   const formatDate = (dateString) => {
-    return dateString.slice(8, 10) + dateString.slice(4, 8) + dateString.slice(0, 4);
+    console.log(dateString);
+    const momentDate = moment(dateString).utcOffset('-0300');
+    return momentDate.format('DD-MM-YYYY');
+  };
+
+  const formatTime = (dateString) => {
+    const momentTime = moment(dateString).utcOffset('-0300');
+    return momentTime.format('HH:mm');
   };
 
   const card = (walk, idx) => {
@@ -92,9 +100,9 @@ const OwnerHomeMenu = ({ navigation }) => {
             {walk.walker.first_name} {walk.walker.last_name}
           </Text>
           <Text> programó un paseo para el día </Text>
-          <Text style={styles.bold}> {formatDate(walk.pet_walk.start_date.slice(0, 10))}</Text>
+          <Text style={styles.bold}> {formatDate(walk.pet_walk.start_date)}</Text>
           <Text> a las </Text>
-          <Text style={styles.bold}>{walk.pet_walk.start_date.slice(11, 16)}hs</Text>
+          <Text style={styles.bold}>{formatTime(walk.pet_walk.start_date)}hs</Text>
           <Text>. Pasará a buscar a su/s mascota/s en la dirección </Text>
           <Text style={styles.bold}>{walk.address_start.description}</Text>
           <Text> Cualquier inquietud puede comunicarse con el paseador llamando al </Text>
