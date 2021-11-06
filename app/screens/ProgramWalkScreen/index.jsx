@@ -77,7 +77,7 @@ const ProgramWalkScreen = ({ route, navigation }) => {
         setReservationsOrdered(calculatePath(initLoc, reservations));
       }
     }
-  }, [route]);
+  }, [route, reservations]);
 
   const handleSubmit = async () => {
     // Se valida que se haya elegido un punto de partida
