@@ -12,6 +12,7 @@ import { RESERVATION_STATUS } from 'utils/constants';
 import LoadingScreen from 'screens/LoadingScreen';
 import * as Notifications from 'expo-notifications';
 import moment from 'moment';
+import { NOTIFICATION_TYPES } from '../../utils/constants';
 
 const OwnerHomeMenu = ({ navigation }) => {
   const [hasPendingWalks, setHasPendingWalks] = useState(false);
@@ -19,8 +20,14 @@ const OwnerHomeMenu = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleNotificationResponse = useCallback(() => {
-    getReservationForOwner();
+  const handleNotificationResponse = useCallback((notification) => {
+    const { type } = notification.request.content.data;
+    if (type === NOTIFICATION_TYPES.NEW_PET_WALK) {
+      getReservationForOwner();
+    } else if (type === NOTIFICATION_TYPES.OWNER_PET_WALK_STARTED) {
+      // Comenzó un nuevo paseo
+      // TODO: ir a la pantalla del paseo desde la perspectiva del dueño
+    }
   }, []);
 
   useEffect(() => {
@@ -91,7 +98,6 @@ const OwnerHomeMenu = ({ navigation }) => {
   };
 
   const formatDate = (dateString) => {
-    console.log(dateString);
     const momentDate = moment(dateString).utcOffset('-0300');
     return momentDate.format('DD-MM-YYYY');
   };
@@ -110,12 +116,14 @@ const OwnerHomeMenu = ({ navigation }) => {
             {walk.walker.first_name} {walk.walker.last_name}
           </Text>
           <Text> programó un paseo para el día </Text>
-          <Text style={styles.bold}> {formatDate(walk.pet_walk.start_date)}</Text>
+          <Text style={styles.bold}>{formatDate(walk.pet_walk.start_date)}</Text>
           <Text> a las </Text>
           <Text style={styles.bold}>{formatTime(walk.pet_walk.start_date)}hs</Text>
-          <Text>. Pasará a buscar a su/s mascota/s en la dirección </Text>
-          <Text style={styles.bold}>{walk.address_start.description}</Text>
-          <Text> Cualquier inquietud puede comunicarse con el paseador llamando al </Text>
+          <Text>. Pasará a buscar a tu mascota en la dirección </Text>
+          <Text style={styles.bold}>
+            {walk.address_start.description}.{'\n\n'}
+          </Text>
+          <Text>Cualquier inquietud puede comunicarse con el paseador llamando al </Text>
           <Text style={styles.bold}>{walk.walker.phone}</Text>
         </Text>
 

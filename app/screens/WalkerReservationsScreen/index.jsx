@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { View, Text, FlatList, CheckBox, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { Picker } from '@react-native-community/picker';
@@ -7,6 +7,8 @@ import { DatePicker, CustomButton } from 'components';
 import { formatDate } from 'components/DatePicker';
 import { styles } from './styles';
 import { ReservationStatusSpanish, RESERVATION_STATUS, dayOfTheWeekSpanish } from 'utils/constants';
+import * as Notifications from 'expo-notifications';
+import { NOTIFICATION_TYPES } from '../../utils/constants';
 
 const dateFilterLabel = 'Filtro 1: Fecha de paseo';
 const statusFilterLabel = 'Filtro 2: Estado de reserva';
@@ -28,6 +30,29 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const checked = useMemo(() => checkedStatus.some((item) => !!item), [checkedStatus]);
+
+  const handleNotificationResponse = useCallback(async (notification) => {
+    const { type } = notification.request.content.data;
+    if (type === NOTIFICATION_TYPES.NEW_RESERVATION) {
+      setIsLoading(true);
+      setStatus(RESERVATION_STATUS.PENDING);
+      const res = await getReservations({ status: RESERVATION_STATUS.PENDING });
+      if (res.result) {
+        setData(res.data);
+        const initializeCheckedStatusWithNulls = new Array(res.data.length).fill(null);
+        setCheckedStatus(initializeCheckedStatusWithNulls);
+      }
+      setIsLoading(false);
+    } else if (type === NOTIFICATION_TYPES.WALKER_PET_WALK_STARTED) {
+      // Comenzó un nuevo paseo
+      // TODO: redirigir a la pantalla de paseo en curso desde la perspectiva del paseador
+    }
+  }, []);
+
+  useEffect(() => {
+    Notifications.addNotificationReceivedListener(handleNotificationResponse);
+    Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
+  }, [handleNotificationResponse]);
 
   //get ranges according to date day of the week
   useEffect(() => {
