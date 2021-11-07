@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { View, Text, FlatList, CheckBox, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { Picker } from '@react-native-community/picker';
@@ -28,6 +28,8 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
   const [selectedRangeId, setSelectedRangeId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   const checked = useMemo(() => checkedStatus.some((item) => !!item), [checkedStatus]);
 
@@ -50,8 +52,20 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
   }, []);
 
   useEffect(() => {
-    Notifications.addNotificationReceivedListener(handleNotificationResponse);
-    Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
+    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
+      console.log('Notification received', notification);
+      handleNotificationResponse(notification);
+    });
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(
+      (notification) => {
+        console.log('Notification tapped or interacted', notification);
+        handleNotificationResponse(notification);
+      },
+    );
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, [handleNotificationResponse]);
 
   //get ranges according to date day of the week

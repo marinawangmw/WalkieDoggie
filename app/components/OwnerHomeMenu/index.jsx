@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, StyleSheet, ScrollView, Text, Pressable } from 'react-native';
 import Modal from 'react-native-modal';
 import { CustomButton } from 'components';
@@ -19,6 +19,8 @@ const OwnerHomeMenu = ({ navigation }) => {
   const [pendingWalks, setPendingWalks] = useState(null);
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   const handleNotificationResponse = useCallback((notification) => {
     const { type } = notification.request.content.data;
@@ -31,8 +33,20 @@ const OwnerHomeMenu = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    Notifications.addNotificationReceivedListener(handleNotificationResponse);
-    Notifications.addNotificationResponseReceivedListener(handleNotificationResponse);
+    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
+      console.log('Notification received', notification);
+      handleNotificationResponse(notification);
+    });
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(
+      (notification) => {
+        console.log('Notification tapped or interacted', notification);
+        handleNotificationResponse(notification);
+      },
+    );
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, [handleNotificationResponse]);
 
   const homeOptions = [
@@ -128,8 +142,8 @@ const OwnerHomeMenu = ({ navigation }) => {
         </Text>
 
         <View style={styles.btnContainer}>
-          <CustomButton handleOnclick={() => onAccept(walk.id)} buttonLabel="Confirmar" />
           <CustomButton handleOnclick={() => onReject(walk.id)} buttonLabel="Rechazar" />
+          <CustomButton handleOnclick={() => onAccept(walk.id)} buttonLabel="Confirmar" />
         </View>
       </View>
     );
