@@ -66,3 +66,33 @@ export const handleReservationByOwner = async (reservation_id, status) => {
     .then((dataResponse) => ({ result: true, data: dataResponse }))
     .catch((error) => ({ result: false, data: error.metadata }));
 };
+
+/**
+ *
+ * @param {*} status
+ * status es un parámetro opcional, y en caso de mandarse, debe ser alguno de los valores del enum PET_WALK_STATUS
+ * @returns
+ */
+
+export const getPetWalks = async (status) => {
+  const user_id = await getCurrentUserId();
+  const config = {
+    method: HTTP_METHOD.GET,
+    url: `users/${user_id}/pet-walks`,
+    params: { status },
+  };
+  return privateRequest(config)
+    .then((data) => ({ result: true, data }))
+    .catch((error) => ({ result: false, data: error.metadata }));
+};
+
+export const getPetWalkDetail = async (pet_walk_id) => {
+  const user_id = await getCurrentUserId();
+  const config = {
+    method: HTTP_METHOD.GET,
+    url: `users/${user_id}/pet-walks/${pet_walk_id}`,
+  };
+  return privateRequest(config)
+    .then((data) => ({ result: true, data }))
+    .catch((error) => ({ result: false, data: error.metadata }));
+};

@@ -110,27 +110,27 @@ export default function App() {
       //----------------------------PUSH NOTIFICATIONS --------------------------------------------
 
       // This listener is fired whenever a notification is received while the app is foregrounded
-      notificationListener.current = Notifications.addNotificationReceivedListener(
-        (notification) => {
-          console.log(notification);
-        },
-      );
+      // notificationListener.current = Notifications.addNotificationReceivedListener(
+      //   (notification) => {
+      //     // console.log(notification);
+      //   },
+      // );
 
-      // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-      responseListener.current = Notifications.addNotificationResponseReceivedListener(
-        (response) => {
-          console.log(response);
-        },
-      );
+      // // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+      // responseListener.current = Notifications.addNotificationResponseReceivedListener(
+      //   (response) => {
+      //     console.log(response);
+      //   },
+      // );
       setIsLoading(false);
     };
 
     initUserTokens();
 
-    return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
+    // return () => {
+    //   Notifications.removeNotificationSubscription(notificationListener.current);
+    //   Notifications.removeNotificationSubscription(responseListener.current);
+    // };
   }, []);
 
   if (isLoading) {
@@ -147,7 +147,7 @@ export default function App() {
   );
 }
 
-async function registerForPushNotificationsAsync() {
+const registerForPushNotificationsAsync = async () => {
   let token;
   if (Constants.isDevice) {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -175,4 +175,4 @@ async function registerForPushNotificationsAsync() {
   }
 
   return token;
-}
+};

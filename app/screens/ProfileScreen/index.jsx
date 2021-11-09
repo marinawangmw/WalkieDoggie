@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  SafeAreaView,
   Image,
+  SafeAreaView,
   ScrollView,
-  TouchableOpacity,
   Switch,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import LoadingScreen from 'screens/LoadingScreen';
 import { CustomButton, ProfileDataRow, TimeTable } from 'components';
-import { getProfile, editOwner, editWalker } from 'services/api/users/profile';
+import { editOwner, editWalker, getProfile } from 'services/api/users/profile';
 import { editPet } from 'services/api/users/pets';
 
 import { AuthContext } from 'utils/authContext';
@@ -19,19 +19,19 @@ import { USER_TYPES } from 'utils/constants';
 import { removeProps } from 'helpers/objectHelper';
 import { styles, name, personal } from './ProfileScreen.styles';
 
+// eslint-disable-next-line import/no-unresolved
 import {
   addressIcon,
-  profileIcon,
   calendarIcon,
   certificationIcon,
+  locationIcon,
   priceIcon,
+  profileIcon,
   resumeIcon,
   whatsappIcon,
-  locationIcon,
-  // eslint-disable-next-line import/no-unresolved
 } from 'images';
 import Certifications from './Certifications';
-import { openWhatsappChat } from '../../services/externalApps/whatsapp';
+import { openWhatsappChat } from 'services/externalApps/whatsapp';
 
 const ProfileScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
@@ -49,6 +49,7 @@ const ProfileScreen = ({ navigation, route }) => {
   const [changePricePerHour, setChangePricePerHour] = useState([]);
   const [changeCoverLetter, setChangeCoverLetter] = useState([]);
   const [changeAllowsTracking, setChangeAllowsTracking] = useState(true);
+  const [achievements, setAchievements] = useState([]);
 
   const toggleSwitch = () => setChangeAllowsTracking((previousState) => !previousState);
   const { signOut } = React.useContext(AuthContext);
@@ -79,6 +80,7 @@ const ProfileScreen = ({ navigation, route }) => {
     setChangePricePerHour(userData.price_per_hour);
     setChangeCoverLetter(userData.cover_letter);
     setChangeAllowsTracking(userData.allows_tracking);
+    setAchievements(userData.achievements);
   };
 
   const fetchUserProfile = useCallback(async (id, rangesToSet, certificationsToSet) => {
@@ -241,7 +243,9 @@ const ProfileScreen = ({ navigation, route }) => {
     }
   };
   const showBoolAllowsTracking = () => {
-    if (changeAllowsTracking) return 'SI';
+    if (changeAllowsTracking) {
+      return 'SI';
+    }
     return 'NO';
   };
 
@@ -264,6 +268,25 @@ const ProfileScreen = ({ navigation, route }) => {
         ))}
       </View>
     );
+  };
+
+  const renderAchievements = () => {
+    let items = [];
+
+    achievements.forEach((achievement, index) => {
+      items.push(
+        <View style={styles.achievementItem}>
+          <Image
+            source={getAchievementsById(achievement.id)}
+            key={'image-' + index}
+            style={styles.achievementsIcons}
+          />
+          <Text style={styles.achievementsLabel}>{achievement.description}</Text>
+        </View>,
+      );
+    });
+
+    return <View style={styles.iconAchievement}>{items}</View>;
   };
 
   const renderWalkerSpecialData = () => {
@@ -357,23 +380,30 @@ const ProfileScreen = ({ navigation, route }) => {
               <Text style={styles.email}>{currentUserProfile.email}</Text>
             </View>
           </View>
-          {currentUserProfile.type === USER_TYPES.WALKER && (
-            <View style={styles.iconAndData}>
-              <Image source={locationIcon} style={styles.icon} tintColor="#364C63" />
-              <Text style={styles.allowsTrackingText}>
-                {fromHome
-                  ? 'Compartir ubicación en los paseos'
-                  : 'Comparte ubicación en los paseos: ' + showBoolAllowsTracking()}
-              </Text>
 
-              {fromHome && (
-                <Switch
-                  disabled={!fromHome}
-                  onValueChange={toggleSwitch}
-                  value={changeAllowsTracking}
-                />
-              )}
-            </View>
+          {currentUserProfile.type === USER_TYPES.WALKER && (
+            <>
+              <View style={styles.iconAndData}>
+                {achievements && achievements.length > 0 && renderAchievements()}
+              </View>
+
+              <View style={styles.iconAndData}>
+                <Image source={locationIcon} style={styles.icon} tintColor="#364C63" />
+                <Text style={styles.allowsTrackingText}>
+                  {fromHome
+                    ? 'Compartir ubicación en los paseos'
+                    : 'Comparte ubicación en los paseos: ' + showBoolAllowsTracking()}
+                </Text>
+
+                {fromHome && (
+                  <Switch
+                    disabled={!fromHome}
+                    onValueChange={toggleSwitch}
+                    value={changeAllowsTracking}
+                  />
+                )}
+              </View>
+            </>
           )}
 
           <View style={styles.iconAndData}>

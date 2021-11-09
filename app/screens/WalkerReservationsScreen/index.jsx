@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { View, Text, FlatList, CheckBox, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { Picker } from '@react-native-community/picker';
@@ -7,15 +7,17 @@ import { DatePicker, CustomButton } from 'components';
 import { formatDate } from 'components/DatePicker';
 import { styles } from './styles';
 import { ReservationStatusSpanish, RESERVATION_STATUS, dayOfTheWeekSpanish } from 'utils/constants';
+import * as Notifications from 'expo-notifications';
+import { NOTIFICATION_TYPES } from '../../utils/constants';
 
 const dateFilterLabel = 'Filtro 1: Fecha de paseo';
 const statusFilterLabel = 'Filtro 2: Estado de reserva';
 const rangesFilterLabel = 'Filtro 3: Franjas horarias';
 const showAllButtonLabel = 'Mostrar todas las reservas';
 const chooseReservationsFromSameDateError =
-  'Por favor selecctione reservas de la misma fecha y mismo horario';
+  'Por favor seleccione reservas de la misma fecha y mismo horario';
 
-const ReservationsScreen = ({ navigation, userProfile }) => {
+const WalkerReservationsScreen = ({ navigation, userProfile }) => {
   const isFocused = useIsFocused();
   const initialDate = useMemo(() => new Date(), []);
   const [date, setDate] = useState(initialDate);
@@ -26,8 +28,45 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
   const [selectedRangeId, setSelectedRangeId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   const checked = useMemo(() => checkedStatus.some((item) => !!item), [checkedStatus]);
+
+  const handleNotificationResponse = useCallback(async (notification) => {
+    const { type } = notification.request.content.data;
+    if (type === NOTIFICATION_TYPES.NEW_RESERVATION) {
+      setIsLoading(true);
+      setStatus(RESERVATION_STATUS.PENDING);
+      const res = await getReservations({ status: RESERVATION_STATUS.PENDING });
+      if (res.result) {
+        setData(res.data);
+        const initializeCheckedStatusWithNulls = new Array(res.data.length).fill(null);
+        setCheckedStatus(initializeCheckedStatusWithNulls);
+      }
+      setIsLoading(false);
+    } else if (type === NOTIFICATION_TYPES.WALKER_PET_WALK_STARTED) {
+      // Comenzó un nuevo paseo
+      // TODO: redirigir a la pantalla de paseo en curso desde la perspectiva del paseador
+    }
+  }, []);
+
+  useEffect(() => {
+    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
+      console.log('Notification received', notification);
+      handleNotificationResponse(notification);
+    });
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(
+      (notification) => {
+        console.log('Notification tapped or interacted', notification);
+        handleNotificationResponse(notification);
+      },
+    );
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, [handleNotificationResponse]);
 
   //get ranges according to date day of the week
   useEffect(() => {
@@ -117,7 +156,7 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
       const differentFromFirst = aux.filter(
         (item) =>
           item.start_at !== selectedItems[0].start_at ||
-          item.reservationDate !== selectedItems[0].reservationDate,
+          item.reservation_date !== selectedItems[0].reservation_date,
       );
 
       if (differentFromFirst.length > 0) {
@@ -222,10 +261,12 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
 
           <View style={styles.details}>
             <Text style={styles.reservationTitle}>{item.pet.name}</Text>
-            <Text style={styles.reservationItem}>Dueño: {item.owner.first_name}</Text>
+            <Text style={styles.reservationItem}>
+              Dueño: {item.owner.first_name} {item.owner.last_name}
+            </Text>
             <Text style={styles.reservationItem}>Estado: {statusInSpanish(item.status)}</Text>
             <Text style={styles.reservationItem}>
-              Fecha de paseo: {formatShowDateFromBE(item.reservationDate)}
+              Fecha de paseo: {formatShowDateFromBE(item.reservation_date)}
             </Text>
             <Text style={styles.reservationItem}>
               Franja horaria de paseo:
@@ -235,10 +276,10 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
               Tiempo de paseo deseado: {item.duration} minutos
             </Text>
             <Text style={styles.reservationItem}>
-              Dirección de Partida: {item.addressStart.description}
+              Dirección de Partida: {item.address_start.description}
             </Text>
             <Text style={styles.reservationItem}>
-              Dirección de Entrega: {item.addressEnd.description}
+              Dirección de Entrega: {item.address_end.description}
             </Text>
             <Text style={styles.reservationItem}>Observaciones: {item.observations}</Text>
           </View>
@@ -268,7 +309,7 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
       <View style={styles.container}>
         <DatePicker date={date} setDate={setDate} label={dateFilterLabel} />
         {reservationStatusPicker()}
-        {timeRangePicker()}
+        {/* {timeRangePicker()} */}
         {showAllButton()}
 
         {checked && selectionButtons()}
@@ -286,4 +327,4 @@ const ReservationsScreen = ({ navigation, userProfile }) => {
   return <FlatList data={[]} renderItem={() => {}} ListHeaderComponent={renderContent()} />;
 };
 
-export default ReservationsScreen;
+export default WalkerReservationsScreen;

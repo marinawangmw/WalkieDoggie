@@ -9,7 +9,7 @@ const HomeMenuItem = ({ menuItem, navigation }) => {
   };
   return (
     <TouchableOpacity onPress={handleNavigate} style={styles.container}>
-      <Image source={menuItem.icon} style={{ height: 80, width: 80 }} />
+      <Image source={menuItem.icon} style={{ height: 60, width: 60 }} />
       <Text style={styles.title}>{menuItem.title}</Text>
     </TouchableOpacity>
   );
@@ -17,18 +17,20 @@ const HomeMenuItem = ({ menuItem, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
     margin: 10,
     backgroundColor: 'white',
     borderRadius: 8,
     elevation: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 120,
+    width: 120,
   },
   title: {
     color: '#364C63',
     textAlign: 'center',
     paddingTop: 15,
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: '700',
   },
 });

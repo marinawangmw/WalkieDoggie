@@ -7,20 +7,16 @@ import { calendar } from 'images';
 const defaultLabel = 'Elija una fecha';
 
 export const formatDate = (selectedDate, userVisible) => {
-  const month =
-    selectedDate.getMonth().toString().length === 1
-      ? '0' + selectedDate.getMonth().toString()
-      : selectedDate.getMonth().toString();
-  const day =
-    selectedDate.getDate().toString().length === 1
-      ? '0' + selectedDate.getDate().toString()
-      : selectedDate.getDate().toString();
+  const month = selectedDate.getMonth() + 1;
+  const day = selectedDate.getDate();
+  const monthStr = month.toString().length === 1 ? '0' + month.toString() : month.toString();
+  const dayStr = day.toString().length === 1 ? '0' + day.toString() : day.toString();
 
   if (userVisible) {
-    return day + '-' + month + '-' + selectedDate.getFullYear().toString();
+    return dayStr + '-' + monthStr + '-' + selectedDate.getFullYear().toString();
   }
 
-  return selectedDate.getFullYear().toString() + month + day;
+  return selectedDate.getFullYear().toString() + monthStr + dayStr;
 };
 
 const DatePicker = ({ date, setDate, label = defaultLabel }) => {

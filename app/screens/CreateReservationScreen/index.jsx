@@ -17,22 +17,20 @@ import { calendar } from 'images';
 import { Picker } from '@react-native-community/picker';
 import { CustomButton } from 'components';
 import { createReservation } from 'services/api/rides/reservations';
+import { DAYS_OF_WEEK_ARR } from '../../utils/dates';
+import moment from 'moment';
 
 const formatDate = (selectedDate, userVisible) => {
-  const month =
-    selectedDate.getMonth().toString().length === 1
-      ? '0' + selectedDate.getMonth().toString()
-      : selectedDate.getMonth().toString();
-  const day =
-    selectedDate.getDate().toString().length === 1
-      ? '0' + selectedDate.getDate().toString()
-      : selectedDate.getDate().toString();
+  const month = selectedDate.getMonth() + 1;
+  const day = selectedDate.getDate();
+  const monthStr = month.toString().length === 1 ? '0' + month.toString() : month.toString();
+  const dayStr = day.toString().length === 1 ? '0' + day.toString() : day.toString();
 
   if (userVisible) {
-    return selectedDate.getFullYear().toString() + '-' + month + '-' + day;
+    return selectedDate.getFullYear().toString() + '-' + monthStr + '-' + dayStr;
   }
 
-  return selectedDate.getFullYear().toString() + month + day;
+  return selectedDate.getFullYear().toString() + monthStr + dayStr;
 };
 
 const address_start = 'ADDRESS_START';
@@ -57,14 +55,20 @@ const CreateReservationScreen = ({ route, navigation }) => {
   const [endAddress, setEndAddress] = useState(null);
   const [comments, setComments] = useState(null);
   const [walkerRanges, setWalkerRanges] = useState([]);
+  const [walkerRangesFiltered, setWalkerRangesFiltered] = useState([]);
+
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [walkerId, setWalkerId] = useState(null);
 
-  const { ranges, userProfile, walkerId } = route.params;
-
+  const { ranges, userProfile, walkerId: walkerSub } = route.params;
   useEffect(() => {
     if (ranges) {
       setWalkerRanges(ranges);
+      //Filtro ranges para la fecha por defecto
+      const dayWeekSelected = DAYS_OF_WEEK_ARR[date.getDay()];
+      const auxRanges = ranges.filter((r) => r.day_of_week === dayWeekSelected);
+      setWalkerRangesFiltered(auxRanges);
     }
   }, [ranges]);
 
@@ -90,6 +94,12 @@ const CreateReservationScreen = ({ route, navigation }) => {
     }
   }, [userProfile]);
 
+  useEffect(() => {
+    if (walkerSub) {
+      setWalkerId(walkerSub);
+    }
+  }, [walkerSub]);
+
   const onCheckStartSameHome = () => {
     setStartSameHome(!startSameHome);
     setStartLat(userProfile.address.latitude);
@@ -106,59 +116,67 @@ const CreateReservationScreen = ({ route, navigation }) => {
 
   const handleSubmit = async () => {
     if (
-      date &&
-      selectedRange &&
-      duration &&
-      selectedPetId &&
-      startAddress &&
-      startLat &&
-      startLong &&
-      endAddress &&
-      endLat &&
-      endLong &&
-      comments
+      !date ||
+      !selectedRange ||
+      !duration ||
+      !selectedPetId ||
+      !startAddress ||
+      !startLat ||
+      !startLong ||
+      !endAddress ||
+      !endLat ||
+      !endLong ||
+      !comments
     ) {
-      setIsLoading(true);
-      setErrorMessage('');
-      const formattedDate = formatDate(date, false);
-      const data = {
-        walk_date: formattedDate,
-        range_id: selectedRange,
-        duration,
-        pet_id: selectedPetId,
-        address_start: {
-          description: startAddress,
-          latitude: startLat,
-          longitude: startLong,
-        },
-        address_end: {
-          description: endAddress,
-          latitude: endLat,
-          longitude: endLong,
-        },
-        comments,
-      };
-      try {
-        const res = await createReservation(walkerId, data);
-        setIsLoading(false);
-        if (res.result) {
-          Toast.show({
-            type: 'success',
-            text1: 'Bien!',
-            text2:
-              'Se creó exitosamente la reserva por el paseo, pronto el paseador se contactará contigo.',
-          });
-          navigation.navigate('home');
-        } else {
-          setErrorMessage('Oops, algo anduvo mal');
-        }
-      } catch (error) {
-        setErrorMessage('Oops, algo anduvo mal');
-        console.log(error);
-      }
-    } else {
-      setIsLoading(false);
       setErrorMessage('Por favor complete todos los datos');
+      return;
+    }
+
+    //  Validamos que la duración en minutos no supere la duración total de la franja horaria
+    if (!validateDuration()) {
+      setErrorMessage(
+        'La duración total en minutos debe ser menor a la duración de la franja horaria seleccionada',
+      );
+      return;
+    }
+
+    setIsLoading(true);
+    setErrorMessage('');
+    const formattedDate = formatDate(date, false);
+    const data = {
+      walk_date: formattedDate,
+      range_id: selectedRange,
+      duration,
+      pet_id: selectedPetId,
+      address_start: {
+        description: startAddress,
+        latitude: startLat,
+        longitude: startLong,
+      },
+      address_end: {
+        description: endAddress,
+        latitude: endLat,
+        longitude: endLong,
+      },
+      comments,
+    };
+    try {
+      const res = await createReservation(walkerId, data);
+      setIsLoading(false);
+      if (res.result) {
+        Toast.show({
+          type: 'success',
+          text1: 'Bien!',
+          text2:
+            'Se creó exitosamente la reserva por el paseo, pronto el paseador se contactará contigo.',
+        });
+        navigation.navigate('home');
+      } else {
+        setErrorMessage('Oops, algo anduvo mal');
+      }
+    } catch (error) {
+      setErrorMessage('Oops, algo anduvo mal');
+      console.log(error);
     }
   };
 
@@ -173,7 +191,27 @@ const CreateReservationScreen = ({ route, navigation }) => {
   const onChange = (_event, selectedDate) => {
     setShow(false);
     const currentDate = selectedDate || date;
+
     setDate(currentDate);
+
+    //Filtrar ranges por día de la semana
+    const dayWeekSelected = DAYS_OF_WEEK_ARR[currentDate.getDay()];
+    const auxRanges = walkerRanges.filter((r) => r.day_of_week === dayWeekSelected);
+    setWalkerRangesFiltered(auxRanges);
+  };
+
+  const handleChangeDuration = (text) => {
+    if (/^\d+$/.test(text) || text === '') {
+      setDuration(text);
+    }
+  };
+
+  const validateDuration = () => {
+    const range = walkerRangesFiltered.find((r) => r.id === selectedRange);
+    const startTime = moment(range.start_at, 'HH:mm:ss');
+    const endTime = moment(range.end_at, 'HH:mm:ss');
+    const rangeDuration = endTime.diff(startTime, 'minutes');
+    return duration <= rangeDuration;
   };
 
   const renderContent = () => {
@@ -207,9 +245,9 @@ const CreateReservationScreen = ({ route, navigation }) => {
             selectedValue={selectedRange}
             onValueChange={(itemValue) => setSelectedRange(itemValue)}
           >
-            {Boolean(walkerRanges) &&
-              Boolean(walkerRanges.length) &&
-              walkerRanges.map((range) => (
+            {Boolean(walkerRangesFiltered) &&
+              Boolean(walkerRangesFiltered.length) &&
+              walkerRangesFiltered.map((range) => (
                 <Picker.Item
                   label={range.day_of_week + ' de ' + range.start_at + ' a ' + range.end_at}
                   value={range.id}
@@ -225,14 +263,15 @@ const CreateReservationScreen = ({ route, navigation }) => {
           <TextInput
             style={[styles.dataContainer, styles.durationInput]}
             value={duration}
-            onChangeText={setDuration}
+            onChangeText={handleChangeDuration}
+            keyboardType="numeric"
             placeholder="Ej.: 90"
           />
         </View>
 
-        {/* PET_ID -- multi selection */}
+        {/* PET_ID */}
         <View style={styles.data}>
-          <Text style={styles.dataTitle}>Seleccione para cual/es mascota/s</Text>
+          <Text style={styles.dataTitle}>Seleccione para cual mascota</Text>
           <Picker
             style={styles.dataContainer}
             selectedValue={selectedPetId}

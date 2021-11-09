@@ -35,7 +35,7 @@ export const calculatePath = (initialLocation, reservations) => {
     const index = getNearestLocation(origin, auxReservations);
     const nearestDestination = auxReservations.splice(index, 1)[0];
     destinationsOrdered.push(nearestDestination);
-    origin = nearestDestination.addressStart;
+    origin = nearestDestination.address_start;
   }
 
   if (auxReservations.length === 1) {
@@ -46,12 +46,10 @@ export const calculatePath = (initialLocation, reservations) => {
 };
 
 const getNearestLocation = (origin, auxReservations) => {
-  const addresses = auxReservations.map((r) => r.addressStart);
+  const addresses = auxReservations.map((r) => r.address_start);
   let min = 9999999999999;
   let i;
   for (const [idx, dest] of addresses.entries()) {
-    // console.log('origin', origin);
-    // console.log('dest', dest);
     const coordinate1 = {
       lat1: parseFloat(origin.latitude),
       lon1: parseFloat(origin.longitude),

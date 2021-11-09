@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Button } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { FindResultsList } from 'components/FindComplaints';
 import { getComplaints } from 'services/api/complaints/complaints';
 
 const FindComplaintsScreen = ({ navigation }) => {
+  const isFocused = useIsFocused();
+
   const handleNavigateCreateComplaint = () => {
     navigation.navigate('createComplaint');
   };
@@ -26,7 +29,7 @@ const FindComplaintsScreen = ({ navigation }) => {
     };
 
     getComplaintsData();
-  });
+  }, [isFocused]);
 
   if (complaintsData) {
     return (

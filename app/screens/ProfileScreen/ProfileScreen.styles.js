@@ -35,6 +35,13 @@ export const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingVertical: 8,
   },
+  achievementItem: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  iconAchievement: {
+    flexDirection: 'column',
+  },
   btn: {
     alignItems: 'center',
   },
@@ -83,6 +90,20 @@ export const styles = StyleSheet.create({
     color: '#364C63',
     fontSize: 15,
   },
+  achievementsText: {
+    color: '#364C63',
+    fontSize: 20,
+  },
+  achievementsIcons: {
+    marginLeft: 5,
+    height: 30,
+    width: 30,
+    resizeMode: 'cover',
+  },
+  achievementsLabel: {
+    marginLeft: 10,
+    color: '#364C63',
+  }
 });
 
 export const name = StyleSheet.create({
