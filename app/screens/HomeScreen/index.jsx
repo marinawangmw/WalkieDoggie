@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { OwnerHomeMenu } from 'components';
-import { WalkerReservationsScreen } from 'screens';
+import { WalkerHomeScreen } from 'screens';
 import styles from './styles';
 
 const HomeScreen = ({ navigation, route }) => {
@@ -12,7 +12,7 @@ const HomeScreen = ({ navigation, route }) => {
   };
 
   const renderWalkerHome = () => {
-    return <WalkerReservationsScreen navigation={navigation} userProfile={userProfile} />;
+    return <WalkerHomeScreen navigation={navigation} userProfile={userProfile} />;
   };
 
   if (userProfile) {

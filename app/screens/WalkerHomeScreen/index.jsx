@@ -17,7 +17,7 @@ const showAllButtonLabel = 'Mostrar todas las reservas';
 const chooseReservationsFromSameDateError =
   'Por favor seleccione reservas de la misma fecha y mismo horario';
 
-const WalkerReservationsScreen = ({ navigation, userProfile }) => {
+const WalkerHomeScreen = ({ navigation, userProfile }) => {
   const isFocused = useIsFocused();
   const initialDate = useMemo(() => new Date(), []);
   const [date, setDate] = useState(initialDate);
@@ -327,4 +327,4 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
   return <FlatList data={[]} renderItem={() => {}} ListHeaderComponent={renderContent()} />;
 };
 
-export default WalkerReservationsScreen;
+export default WalkerHomeScreen;
