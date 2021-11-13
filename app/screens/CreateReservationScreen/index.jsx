@@ -298,7 +298,7 @@ const CreateReservationScreen = ({ route, navigation }) => {
           </View>
           <TouchableOpacity
             style={styles.dataContainer}
-            onPress={() => handleNavigatePlaceSearch(address_end)}
+            onPress={() => handleNavigatePlaceSearch(address_start)}
             disabled={startSameHome}
           >
             <Text style={styles.dataContent}>
