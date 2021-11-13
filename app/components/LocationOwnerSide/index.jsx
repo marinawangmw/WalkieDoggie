@@ -56,6 +56,7 @@ export default class LocationOwnerSideComponent extends React.Component {
 
     pubnub.addListener({
       message: function (obj) {
+        console.log(obj.message);
         const { latitude, longitude } = obj.message;
         const newCoordinate = { latitude, longitude };
         self.state.coordinate = newCoordinate;

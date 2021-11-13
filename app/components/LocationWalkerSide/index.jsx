@@ -70,7 +70,7 @@ export default class LocationWalkerSideComponent extends React.Component {
   watchLocation = async () => {
     this.suscription = await Location.watchPositionAsync(
       {
-        distanceInterval: 10,
+        distanceInterval: 3,
         accuracy: Location.Accuracy.Highest,
         timeInterval: 3000,
       },
