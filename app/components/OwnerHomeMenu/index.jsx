@@ -37,12 +37,12 @@ const OwnerHomeMenu = ({ navigation }) => {
 
   useEffect(() => {
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      console.log('Notification received', notification);
+      // console.log('Notification received', notification);
       handleNotificationResponse(notification);
     });
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       (notification) => {
-        console.log('Notification tapped or interacted', notification);
+        // console.log('Notification tapped or interacted', notification);
         handleNotificationResponse(notification);
       },
     );
@@ -71,7 +71,11 @@ const OwnerHomeMenu = ({ navigation }) => {
           setPendingWalks(validResults);
         } else {
           setHasPendingWalks(false);
+          setPendingWalks(res.data);
         }
+      } else {
+        setHasPendingWalks(false);
+        setPendingWalks(res.data);
       }
     } catch (e) {
       console.log(e);
