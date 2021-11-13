@@ -53,7 +53,7 @@ export const refreshToken = async () => {
 
 export const privateRequest = async (config) => {
   const accessToken = await getAccessTokenStorage();
-  // console.log(config);
+  console.log(config);
   const mergeConfig = {
     ...config,
     headers: { ...config.headers, Authorization: accessToken },

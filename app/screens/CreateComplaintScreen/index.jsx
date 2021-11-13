@@ -75,7 +75,7 @@ const CreateComplaintScreen = ({ navigation, route }) => {
       Toast.show({
         type: 'success',
         text1: 'Yey!',
-        text2: 'Los denuncia fue creada correctamente',
+        text2: 'La denuncia fue creada correctamente',
       });
 
       handleNavigateFindComplaints();

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeStackNavigator from './HomeStackNavigator';
-import ComplaintsStackNavigator from './ComplaintsStackNavigator';
+import PaymentStackNavigator from './PaymentStackNavigator';
 import ProfileStackNavigator from './ProfileStackNavigator';
 import { TabIcon } from 'components';
 import { LoadingScreen } from 'screens';
@@ -61,9 +61,9 @@ const HomeTabNavigator = () => {
         />
 
         <Tabs.Screen
-          name="ComplaintsScreen"
-          component={ComplaintsStackNavigator}
-          options={{ headerShown: false, tabBarLabel: 'Denuncias' }}
+          name="PaymentScreen"
+          component={PaymentStackNavigator}
+          options={{ headerShown: false, tabBarLabel: 'Pago' }}
           initialParams={{
             userProfile,
           }}
