@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, StyleSheet, ScrollView, Text, Pressable } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, Pressable, Button } from 'react-native';
 import Modal from 'react-native-modal';
 import { CustomButton, CurrentWalkBanner } from 'components';
 import HomeMenuItem from './HomeMenuItem';
@@ -181,6 +181,10 @@ const OwnerHomeMenu = ({ navigation }) => {
     return <LoadingScreen />;
   }
 
+  const goToCurrentPetWalk = () => {
+    navigation.navigate('currentOwnerPetWalk', {});
+  };
+
   return (
     <View style={styles.container}>
       {visible && showModal()}
@@ -194,6 +198,7 @@ const OwnerHomeMenu = ({ navigation }) => {
           />
         )}
       </View>
+      <Button onPress={() => goToCurrentPetWalk()} title="Prueba" />
       <View style={styles.iconsContainer}>
         {homeOptions.map((option, idx) => (
           <HomeMenuItem menuItem={option} navigation={navigation} key={idx} />

@@ -21,6 +21,7 @@ import {
 } from './app/services/api/users/pushNotifications';
 import { USER_TYPES } from './app/utils/constants';
 import { theme } from './app/theme';
+import * as Location from 'expo-location';
 
 LogBox.ignoreAllLogs();
 
@@ -104,6 +105,8 @@ export default function App() {
   useEffect(() => {
     const initUserTokens = async () => {
       setIsLoading(true);
+      await Location.requestBackgroundPermissionsAsync();
+      await Location.requestForegroundPermissionsAsync();
       const token = await getAccessTokenStorage('access_token');
       setUserToken(token);
 

@@ -1,5 +1,13 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
-import { View, Text, FlatList, CheckBox, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  CheckBox,
+  TouchableOpacity,
+  ActivityIndicator,
+  Button,
+} from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { Picker } from '@react-native-community/picker';
 import { getReservations } from 'services/api/rides/reservations';
@@ -217,6 +225,10 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
     );
   };
 
+  const goToCurrentPetWalk = () => {
+    navigation.navigate('currentWalkerPetWalk', {});
+  };
+
   const reservationStatusPicker = () => {
     return (
       <View style={styles.data}>
@@ -311,7 +323,10 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
   const renderContent = () => {
     return (
       <View style={styles.container}>
+        <Button onPress={() => goToCurrentPetWalk()} title="Prueba" />
+
         {hasPetWalkStarted && <CurrentWalkBanner walker />}
+
         <DatePicker date={date} setDate={setDate} label={dateFilterLabel} />
         {reservationStatusPicker()}
         {/* {timeRangePicker()} */}
