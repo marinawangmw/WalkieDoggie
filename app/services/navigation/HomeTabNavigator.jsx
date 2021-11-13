@@ -5,7 +5,7 @@ import HomeStackNavigator from './HomeStackNavigator';
 import ComplaintsStackNavigator from './ComplaintsStackNavigator';
 import ProfileStackNavigator from './ProfileStackNavigator';
 import { TabIcon } from 'components';
-import { LoadingScreen } from 'screens';
+import { LoadingScreen, ChatScreen } from 'screens';
 import { getCurrentUserId } from 'utils/storage';
 import { getProfile } from 'services/api/users/profile';
 
@@ -59,6 +59,7 @@ const HomeTabNavigator = () => {
             userProfile,
           }}
         />
+        <Tabs.Screen name="ChatScreen" component={ChatScreen} options={{ headerShown: false }} />
 
         <Tabs.Screen
           name="ComplaintsScreen"

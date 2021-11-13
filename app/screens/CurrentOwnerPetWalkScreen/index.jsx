@@ -4,21 +4,23 @@ import LocationOwnerSideComponent from '../../components/LocationOwnerSide';
 import { getPetWalkDetail } from '../../services/api/rides/petWalks';
 
 const CurrentOwnerPetWalkScreen = ({ route, navigation }) => {
+  const { petWalkId } = route.params;
   const [petWalkData, setPetWalkData] = useState(null);
   const [addressStart, setAddressStart] = useState(null);
 
   useEffect(() => {
-    const getPetWalkData = async () => {
-      // TODO: reemplazar 82 por el id del paseo en curso correspondiente
-      const response = await getPetWalkDetail(82);
+    const getPetWalkData = async (id) => {
+      const response = await getPetWalkDetail(id);
       if (response.result) {
         setPetWalkData(response.data);
         setAddressStart(response.data.address_start);
       }
     };
 
-    getPetWalkData();
-  }, []);
+    if (petWalkId) {
+      getPetWalkData(petWalkId);
+    }
+  }, [petWalkId]);
 
   return (
     <View style={styles.container}>

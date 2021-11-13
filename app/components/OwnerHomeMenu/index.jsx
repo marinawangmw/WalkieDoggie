@@ -20,14 +20,17 @@ const OwnerHomeMenu = ({ navigation }) => {
   const [hasPetWalkStarted, setHasPetWalkStarted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPetWalkId, setCurrentPetWalkId] = useState(null);
   const notificationListener = useRef();
   const responseListener = useRef();
 
   const handleNotificationResponse = useCallback((notification) => {
-    const { type } = notification.request.content.data;
+    const { type, petWalkId } = notification.request.content.data;
+
     if (type === NOTIFICATION_TYPES.NEW_PET_WALK) {
       getReservationForOwner();
     } else if (type === NOTIFICATION_TYPES.OWNER_PET_WALK_STARTED) {
+      setCurrentPetWalkId(petWalkId);
       setHasPetWalkStarted(true);
     }
   }, []);
@@ -182,14 +185,14 @@ const OwnerHomeMenu = ({ navigation }) => {
   }
 
   const goToCurrentPetWalk = () => {
-    navigation.navigate('currentOwnerPetWalk', {});
+    navigation.navigate('currentOwnerPetWalk', { petWalkId: currentPetWalkId });
   };
 
   return (
     <View style={styles.container}>
       {visible && showModal()}
       <View style={styles.banners}>
-        {hasPetWalkStarted && <CurrentWalkBanner />}
+        {hasPetWalkStarted && <CurrentWalkBanner handleNext={goToCurrentPetWalk} />}
         {hasPendingWalks && (
           <ConfirmBanner
             title="Paseos pendientes de confirmación"
@@ -198,7 +201,6 @@ const OwnerHomeMenu = ({ navigation }) => {
           />
         )}
       </View>
-      <Button onPress={() => goToCurrentPetWalk()} title="Prueba" />
       <View style={styles.iconsContainer}>
         {homeOptions.map((option, idx) => (
           <HomeMenuItem menuItem={option} navigation={navigation} key={idx} />

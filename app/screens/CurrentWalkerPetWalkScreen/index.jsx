@@ -1,24 +1,26 @@
 import { View, Text, StyleSheet } from 'react-native';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getPetWalkDetail } from '../../services/api/rides/petWalks';
 import LocationWalkerSideComponent from '../../components/LocationWalkerSide';
 
 const CurrentWalkerPetWalkScreen = ({ route, navigation }) => {
+  const { petWalkId } = route.params;
   const [petWalkData, setPetWalkData] = useState(null);
   const [addressStart, setAddressStart] = useState(null);
 
   useEffect(() => {
-    const getPetWalkData = async () => {
-      // TODO: reemplazar 82 por el id del paseo en curso correspondiente
-      const response = await getPetWalkDetail(82);
+    const getPetWalkData = async (id) => {
+      const response = await getPetWalkDetail(id);
       if (response.result) {
         setPetWalkData(response.data);
         setAddressStart(response.data.address_start);
       }
     };
 
-    getPetWalkData();
-  }, []);
+    if (petWalkId) {
+      getPetWalkData(petWalkId);
+    }
+  }, [petWalkId]);
 
   return (
     <View style={styles.container}>

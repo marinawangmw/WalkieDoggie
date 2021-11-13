@@ -39,15 +39,17 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
   const [walkerRanges, setWalkerRanges] = useState([]);
   const [selectedRangeId, setSelectedRangeId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasPetWalkStarted, setHasPetWalkStarted] = useState(true);
+  const [hasPetWalkStarted, setHasPetWalkStarted] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [currentPetWalkId, setCurrentPetWalkId] = useState(null);
   const notificationListener = useRef();
   const responseListener = useRef();
 
   const checked = useMemo(() => checkedStatus.some((item) => !!item), [checkedStatus]);
 
   const handleNotificationResponse = useCallback(async (notification) => {
-    const { type } = notification.request.content.data;
+    const { type, petWalkId } = notification.request.content.data;
+
     if (type === NOTIFICATION_TYPES.NEW_RESERVATION) {
       setIsLoading(true);
       setStatus(RESERVATION_STATUS.PENDING);
@@ -59,6 +61,7 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
       }
       setIsLoading(false);
     } else if (type === NOTIFICATION_TYPES.WALKER_PET_WALK_STARTED) {
+      setCurrentPetWalkId(petWalkId);
       setHasPetWalkStarted(true);
     }
   }, []);
@@ -226,7 +229,7 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
   };
 
   const goToCurrentPetWalk = () => {
-    navigation.navigate('currentWalkerPetWalk', {});
+    navigation.navigate('currentWalkerPetWalk', { petWalkId: currentPetWalkId });
   };
 
   const reservationStatusPicker = () => {
@@ -323,9 +326,7 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
   const renderContent = () => {
     return (
       <View style={styles.container}>
-        <Button onPress={() => goToCurrentPetWalk()} title="Prueba" />
-
-        {hasPetWalkStarted && <CurrentWalkBanner walker />}
+        {hasPetWalkStarted && <CurrentWalkBanner handleNext={goToCurrentPetWalk} />}
 
         <DatePicker date={date} setDate={setDate} label={dateFilterLabel} />
         {reservationStatusPicker()}

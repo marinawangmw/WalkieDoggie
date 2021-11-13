@@ -4,9 +4,7 @@ import { styles } from './styles';
 // eslint-disable-next-line import/no-unresolved
 import { rightArrowIcon, petWalkIcon } from 'images';
 
-const CurrentWalkBanner = () => {
-  const handleNext = () => {};
-
+const CurrentWalkBanner = ({ handleNext }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleNext} style={styles.banner}>
