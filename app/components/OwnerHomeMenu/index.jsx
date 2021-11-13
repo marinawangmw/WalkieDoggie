@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, StyleSheet, ScrollView, Text, Pressable } from 'react-native';
 import Modal from 'react-native-modal';
-import { CustomButton } from 'components';
+import { CustomButton, CurrentWalkBanner } from 'components';
 import HomeMenuItem from './HomeMenuItem';
 import ConfirmBanner from './ConfirmBanner';
 // eslint-disable-next-line import/no-unresolved
@@ -17,6 +17,7 @@ import { NOTIFICATION_TYPES } from '../../utils/constants';
 const OwnerHomeMenu = ({ navigation }) => {
   const [hasPendingWalks, setHasPendingWalks] = useState(false);
   const [pendingWalks, setPendingWalks] = useState(null);
+  const [hasPetWalkStarted, setHasPetWalkStarted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const notificationListener = useRef();
@@ -27,8 +28,7 @@ const OwnerHomeMenu = ({ navigation }) => {
     if (type === NOTIFICATION_TYPES.NEW_PET_WALK) {
       getReservationForOwner();
     } else if (type === NOTIFICATION_TYPES.OWNER_PET_WALK_STARTED) {
-      // Comenzó un nuevo paseo
-      // TODO: ir a la pantalla del paseo desde la perspectiva del dueño
+      setHasPetWalkStarted(true);
     }
   }, []);
 
@@ -184,13 +184,16 @@ const OwnerHomeMenu = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {visible && showModal()}
-      {hasPendingWalks && (
-        <ConfirmBanner
-          title="Paseos pendientes de confirmación"
-          description="¡Hola! Estos son los paseos programados que requieren tu confirmación"
-          handleNext={handleNext}
-        />
-      )}
+      <View style={styles.banners}>
+        {hasPetWalkStarted && <CurrentWalkBanner />}
+        {hasPendingWalks && (
+          <ConfirmBanner
+            title="Paseos pendientes de confirmación"
+            description="¡Hola! Estos son los paseos programados que requieren tu confirmación"
+            handleNext={handleNext}
+          />
+        )}
+      </View>
       <View style={styles.iconsContainer}>
         {homeOptions.map((option, idx) => (
           <HomeMenuItem menuItem={option} navigation={navigation} key={idx} />
@@ -205,6 +208,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  banners: {
+    position: 'absolute',
+    top: 0,
+    width: '100%',
   },
   iconsContainer: {
     flexWrap: 'wrap',

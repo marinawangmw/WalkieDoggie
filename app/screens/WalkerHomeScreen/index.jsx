@@ -3,12 +3,16 @@ import { View, Text, FlatList, CheckBox, TouchableOpacity, ActivityIndicator } f
 import { useIsFocused } from '@react-navigation/native';
 import { Picker } from '@react-native-community/picker';
 import { getReservations } from 'services/api/rides/reservations';
-import { DatePicker, CustomButton } from 'components';
+import { DatePicker, CustomButton, CurrentWalkBanner } from 'components';
 import { formatDate } from 'components/DatePicker';
 import { styles } from './styles';
-import { ReservationStatusSpanish, RESERVATION_STATUS, dayOfTheWeekSpanish } from 'utils/constants';
+import {
+  ReservationStatusSpanish,
+  RESERVATION_STATUS,
+  dayOfTheWeekSpanish,
+  NOTIFICATION_TYPES,
+} from 'utils/constants';
 import * as Notifications from 'expo-notifications';
-import { NOTIFICATION_TYPES } from '../../utils/constants';
 
 const dateFilterLabel = 'Filtro 1: Fecha de paseo';
 const statusFilterLabel = 'Filtro 2: Estado de reserva';
@@ -27,6 +31,7 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
   const [walkerRanges, setWalkerRanges] = useState([]);
   const [selectedRangeId, setSelectedRangeId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasPetWalkStarted, setHasPetWalkStarted] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -46,8 +51,7 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
       }
       setIsLoading(false);
     } else if (type === NOTIFICATION_TYPES.WALKER_PET_WALK_STARTED) {
-      // Comenzó un nuevo paseo
-      // TODO: redirigir a la pantalla de paseo en curso desde la perspectiva del paseador
+      setHasPetWalkStarted(true);
     }
   }, []);
 
@@ -307,6 +311,7 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
   const renderContent = () => {
     return (
       <View style={styles.container}>
+        {hasPetWalkStarted && <CurrentWalkBanner walker />}
         <DatePicker date={date} setDate={setDate} label={dateFilterLabel} />
         {reservationStatusPicker()}
         {/* {timeRangePicker()} */}

@@ -25,12 +25,11 @@ export default ConfirmBanner;
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    top: 0,
     width: '100%',
   },
   banner: {
     margin: 20,
+    marginTop: 5,
     paddingHorizontal: 10,
     paddingVertical: 10,
     backgroundColor: 'white',
