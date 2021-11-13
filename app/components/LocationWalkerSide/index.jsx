@@ -70,7 +70,7 @@ export default class LocationWalkerSideComponent extends React.Component {
   watchLocation = async () => {
     this.suscription = await Location.watchPositionAsync(
       {
-        distanceInterval: 5,
+        distanceInterval: 10,
         accuracy: Location.Accuracy.Highest,
         timeInterval: 3000,
       },
@@ -124,7 +124,6 @@ export default class LocationWalkerSideComponent extends React.Component {
                 this.marker = marker;
               }}
               coordinate={this.state.coordinate}
-              description={'sdsd'}
             />
           </MapView>
         </View>
