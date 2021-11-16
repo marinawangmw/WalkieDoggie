@@ -24,7 +24,14 @@
         "foregroundImage": "./app/assets/images/adaptive-icon.png",
         "backgroundColor": "#F3F3EB"
       },
-      "package": "com.ulukacher.WalkieDoggie"
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyB91ZIPiKccyyrJknxrLWxe3_AzfNtI6No"
+        }
+      },
+      "package": "com.ulukacher.WalkieDoggie",
+      "versionCode": 1
+
     },
     "web": {
       "favicon": "./app/assets/images/favicon.png"
