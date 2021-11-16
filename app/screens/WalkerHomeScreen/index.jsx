@@ -30,6 +30,8 @@ const chooseReservationsFromSameDateError =
   'Por favor seleccione reservas de la misma fecha y mismo horario';
 
 const WalkerHomeScreen = ({ navigation, userProfile }) => {
+  const allReservationsStatus = ReservationStatusSpanish.find((r) => r.id === 'ALL').id;
+
   const isFocused = useIsFocused();
   const initialDate = useMemo(() => new Date(), []);
   const [date, setDate] = useState(initialDate);
@@ -40,6 +42,8 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
   const [selectedRangeId, setSelectedRangeId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasPetWalkStarted, setHasPetWalkStarted] = useState(false);
+  const [showAllReservations, setShowAllReservations] = useState(false);
+
   const [errorMessage, setErrorMessage] = useState(null);
   const [currentPetWalkId, setCurrentPetWalkId] = useState(null);
   const notificationListener = useRef();
@@ -52,8 +56,9 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
 
     if (type === NOTIFICATION_TYPES.NEW_RESERVATION) {
       setIsLoading(true);
-      setStatus(RESERVATION_STATUS.PENDING);
-      const res = await getReservations({ status: RESERVATION_STATUS.PENDING });
+      setShowAllReservations(true);
+      setStatus('ALL');
+      const res = await getReservations();
       if (res.result) {
         setData(res.data);
         const initializeCheckedStatusWithNulls = new Array(res.data.length).fill(null);
@@ -109,13 +114,14 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
     };
 
     const filterDate = formatDate(date);
-
-    if (status) {
-      getData({ status, date: filterDate });
-    } else {
-      getData({ date: filterDate });
+    if (!showAllReservations) {
+      if (status && status !== 'ALL') {
+        getData({ status, date: filterDate });
+      } else {
+        getData({ date: filterDate });
+      }
     }
-  }, [status, date, isFocused]);
+  }, [status, date, isFocused, showAllReservations]);
 
   const statusInSpanish = (currentStatus) => {
     const statusObject = ReservationStatusSpanish.find((item) => item.id === currentStatus);
@@ -136,8 +142,9 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
     setIsLoading(true);
     const res = await getReservations();
     setIsLoading(false);
+    setShowAllReservations(true);
 
-    setStatus(ReservationStatusSpanish[6].id);
+    setStatus(allReservationsStatus);
     if (res.result) {
       setData(res.data);
       const initializeCheckedStatusWithNulls = new Array(res.data.length).fill(null);
@@ -239,7 +246,10 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
         <Picker
           style={styles.dataContainer}
           selectedValue={status}
-          onValueChange={(itemValue) => setStatus(itemValue)}
+          onValueChange={(itemValue) => {
+            setStatus(itemValue);
+            setShowAllReservations(false);
+          }}
         >
           {Boolean(ReservationStatusSpanish) &&
             Boolean(ReservationStatusSpanish.length) &&
@@ -328,7 +338,12 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
       <View style={styles.container}>
         {hasPetWalkStarted && <CurrentWalkBanner handleNext={goToCurrentPetWalk} />}
 
-        <DatePicker date={date} setDate={setDate} label={dateFilterLabel} />
+        <DatePicker
+          date={date}
+          setDate={setDate}
+          setShowAllReservations={setShowAllReservations}
+          label={dateFilterLabel}
+        />
         {reservationStatusPicker()}
         {/* {timeRangePicker()} */}
         {showAllButton()}

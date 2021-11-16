@@ -19,13 +19,14 @@ export const formatDate = (selectedDate, userVisible) => {
   return selectedDate.getFullYear().toString() + monthStr + dayStr;
 };
 
-const DatePicker = ({ date, setDate, label = defaultLabel }) => {
+const DatePicker = ({ date, setDate, label = defaultLabel, setShowAllReservations }) => {
   const [show, setShow] = useState(false);
 
   const onChange = (_event, selectedDate) => {
     setShow(false);
     const currentDate = selectedDate || date;
     setDate(currentDate);
+    setShowAllReservations(false);
   };
 
   return (
