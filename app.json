@@ -13,13 +13,12 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/images/adaptive-icon.png",
         "backgroundColor": "#F3F3EB"
@@ -31,7 +30,6 @@
       },
       "package": "com.ulukacher.WalkieDoggie",
       "versionCode": 1
-
     },
     "web": {
       "favicon": "./app/assets/images/favicon.png"
