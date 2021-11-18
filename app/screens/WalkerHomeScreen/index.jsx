@@ -73,13 +73,13 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
 
   useEffect(() => {
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      console.log('Notification received', notification);
-      handleNotificationResponse(notification);
+      // console.log('Notification received', notification);
+      handleNotificationResponse(notification, 'foreground');
     });
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       (notification) => {
-        console.log('Notification tapped or interacted', notification);
-        handleNotificationResponse(notification);
+        // console.log('Notification tapped or interacted', notification);
+        handleNotificationResponse(notification.notification, 'tap');
       },
     );
     return () => {
