@@ -33,6 +33,9 @@
     },
     "web": {
       "favicon": "./app/assets/images/favicon.png"
+    },
+    "notification": {
+      "icon": "./app/assets/images/icon.png"
     }
   }
 }

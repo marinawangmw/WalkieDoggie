@@ -54,7 +54,7 @@ export default class LocationWalkerSideComponent extends React.Component {
         latitude: this.state.latitude,
         longitude: this.state.longitude,
       };
-      console.log('Proceed to write Pubnub message', new Date(), message);
+      // console.log('Proceed to write Pubnub message', new Date(), message);
 
       pubnub.publish({
         message,
