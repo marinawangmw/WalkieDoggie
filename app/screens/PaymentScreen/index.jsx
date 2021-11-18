@@ -1,62 +1,67 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  View,
-  Text,
-  SafeAreaView,
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
-import { getPayment } from 'services/api/payment/payment';
+import { View, Text, SafeAreaView, Image, ScrollView, StyleSheet } from 'react-native';
 import { CustomButton } from 'components';
+import { getProfile } from '../../services/api/users/profile';
 
 const PaymentScreen = ({ route, navigation }) => {
-  const handleNavigateReview = () => {
-    navigation.navigate('review');
+  const handleRegisterPaymentAndNavigateReview = () => {
+    const { petWalkId } = route.params;
+
+    navigation.navigate('review', { petWalkId, changeFirstName, changeLastName });
   };
 
-  const [changeCenter, setChangeCenter] = useState(null);
-  const [changeName, setChangeName] = useState('');
-  const [changePhone, setChangePhone] = useState('');
-  const [changeDescription, setChangeDescription] = useState('');
+  const [changeFirstName, setChangeFirstName] = useState('');
+  const [changeLastName, setChangeLastName] = useState('');
+  const [changePricePerHour, setChangePricePerHour] = useState(0);
+  const [changeDuration, setChangeDuration] = useState(0);
 
   const [imageIcon, setImageIcon] = useState(null);
 
-  const fetchCenter = useCallback(async (id) => {
+  const fetchUserProfile = useCallback(async (id) => {
     try {
-      const response = await getPayment(id);
-      if (response.result) {
-        const center = response.data;
-        setChangeCenter(center);
-        setChangeName(center.name);
-        setChangePhone(center.phone);
-        setChangeDescription(center.description);
+      console.log('id: ', id);
+      const userProfile = await getProfile(id);
+
+      if (userProfile.result) {
+        const profile = userProfile.data;
+
+        setChangeFirstName(profile.first_name);
+        setChangeLastName(profile.last_name);
+        setChangePricePerHour(profile.price_per_hour);
+        setChangeDuration(90);
       }
     } catch (e) {
-      console.log('get center error: ', e);
+      console.log('get walker profile error: ', e);
     }
   }, []);
 
   useEffect(() => {
-    const centerId = 1;
+    const { petWalkId } = route.params;
     const image = 26;
 
-    fetchCenter(centerId);
+    fetchUserProfile(petWalkId);
     setImageIcon(image);
-  }, [route.params, fetchCenter]);
+  }, [route.params, fetchUserProfile]);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container}>
         <Image source={imageIcon} style={styles.picture} />
-        <Text style={styles.centerName}> {changeName}</Text>
-        <Text style={styles.centerPhone}> El total a pagar es ${changeDescription}</Text>
-      </ScrollView>
 
-      <View style={styles.btn}>
-        <CustomButton buttonLabel="Ya pagué" handleOnclick={handleNavigateReview} />
-      </View>
+        <Text style={styles.walkerName}> {changeFirstName + ' ' + changeLastName}</Text>
+        <Text style={styles.walkerPricePerHour}> Precio por hora: ${changePricePerHour}</Text>
+        <Text style={styles.walkerDuration}> Duración: {changeDuration} minutos</Text>
+        <Text style={styles.walkerPrice}>
+          Total a pagar: ${(changePricePerHour * changeDuration) / 60}
+        </Text>
+
+        <View style={styles.btn}>
+          <CustomButton
+            buttonLabel="Ya pagué"
+            handleOnclick={handleRegisterPaymentAndNavigateReview}
+          />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -87,7 +92,6 @@ export const styles = StyleSheet.create({
     paddingLeft: 20,
     marginTop: 15,
   },
-
   nameContainer: {
     flexDirection: 'row',
   },
@@ -96,7 +100,6 @@ export const styles = StyleSheet.create({
     width: 20,
     resizeMode: 'cover',
   },
-
   btn: {
     alignItems: 'center',
   },
@@ -121,15 +124,27 @@ export const styles = StyleSheet.create({
     borderBottomColor: '#bfbfbf',
     borderBottomWidth: 1,
   },
-  centerPhone: {
+  walkerPricePerHour: {
     color: 'black',
-    paddingLeft: 15,
+    alignSelf: 'center',
     fontSize: 16,
   },
-  centerName: {
+  walkerDuration: {
     color: 'black',
-    paddingLeft: 15,
-    fontSize: 20,
-    paddingBottom: 15,
+    alignSelf: 'center',
+    fontSize: 16,
+    paddingBottom: 70,
+  },
+  walkerPrice: {
+    color: 'black',
+    alignSelf: 'center',
+    fontSize: 30,
+    paddingBottom: 25,
+  },
+  walkerName: {
+    color: 'black',
+    alignSelf: 'center',
+    fontSize: 24,
+    paddingBottom: 70,
   },
 });

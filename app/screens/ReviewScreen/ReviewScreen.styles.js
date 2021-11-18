@@ -9,7 +9,8 @@ export const styles = StyleSheet.create({
   picture: {
     height: 90,
     width: 90,
-    borderRadius: 100,
+    alignSelf: 'center',
+    marginBottom: 15,
   },
   personal: {
     flex: 1,
@@ -99,8 +100,17 @@ export const styles = StyleSheet.create({
     fontSize: 24,
     paddingBottom: 15,
   },
+  starContainer: {
+    paddingBottom: 50,
+  },
   authentication__errorMsg: {
     color: 'red',
+    marginBottom: 20,
+  },
+  opinion: {
+    color: 'black',
+    paddingLeft: 15,
+    fontSize: 16,
   },
 });
 

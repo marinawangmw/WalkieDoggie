@@ -103,7 +103,19 @@ export const styles = StyleSheet.create({
   achievementsLabel: {
     marginLeft: 10,
     color: '#364C63',
-  }
+  },
+  scoreContainer: {
+    marginTop: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    marginRight: 10,
+  },
+  scoreIcon: {
+    height: 15,
+    width: 15,
+  },
 });
 
 export const name = StyleSheet.create({

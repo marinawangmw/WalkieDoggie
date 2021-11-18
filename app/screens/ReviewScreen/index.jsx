@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, SafeAreaView, Image, ScrollView, Linking, TextInput } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, SafeAreaView, Image, ScrollView, TextInput } from 'react-native';
 import { styles } from './ReviewScreen.styles';
 
 import Toast from 'react-native-toast-message';
 import StarRating from 'react-native-star-rating';
 import { CustomButton } from '../../components';
-import { createReview } from '../../services/api/payment/payment';
+import { createReview } from '../../services/api/review/review';
 
 const ReviewScreen = ({ navigation, route }) => {
   const handleNavigateFindComplaints = () => {
@@ -18,11 +18,11 @@ const ReviewScreen = ({ navigation, route }) => {
 
       review.score = changeStarValue;
       review.description = changeOpinion;
+      review.petWalkId = changePetWalkId;
 
       const response = await createReview(review);
       showResultCreateComplaint(response);
     }
-    console.log('calificacion final: ', changeStarValue);
   };
 
   const showResultCreateComplaint = (response) => {
@@ -43,9 +43,11 @@ const ReviewScreen = ({ navigation, route }) => {
     }
   };
 
-  const [changeOpinion, setChangeOpinion] = useState('');
-  const [changeCreationDate, setChangeCreationDate] = useState('');
   const [changeStarValue, setChangeStarValue] = useState(1);
+  const [changeOpinion, setChangeOpinion] = useState('');
+  const [changeFirstName, setChangeFirstName] = useState('');
+  const [changeLastName, setChangeLastName] = useState('');
+  const [changePetWalkId, setChangePetWalkId] = useState(0);
   const [changeFiles, setChangeFiles] = useState([]);
   const [descriptionError, setDescriptionError] = useState('');
 
@@ -64,7 +66,11 @@ const ReviewScreen = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    //const { userData } = route.params;
+    const { petWalkId, changeFirstName, changeLastName } = route.params;
+
+    setChangePetWalkId(petWalkId);
+    setChangeFirstName(changeFirstName);
+    setChangeLastName(changeLastName);
   }, [route.params]);
 
   const validateDescription = (text) => {
@@ -85,9 +91,11 @@ const ReviewScreen = ({ navigation, route }) => {
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container}>
         <Image source={26} style={styles.picture} />
-        <Text style={styles.reviewName}> ¡Calificá a {changeCreationDate}!</Text>
+
+        <Text style={styles.reviewName}>¡Calificá a {changeFirstName + ' ' + changeLastName}!</Text>
 
         <StarRating
+          containerStyle={styles.starContainer}
           disabled={false}
           maxStars={5}
           starSize={50}
@@ -97,9 +105,8 @@ const ReviewScreen = ({ navigation, route }) => {
           selectedStar={ratingCompleted}
         />
 
-        <Text style={styles.complaintDescription}>
-          {' '}
-          Contanos tu experiencia con {changeCreationDate}
+        <Text style={styles.opinion}>
+          Contanos tu experiencia con {changeFirstName}
         </Text>
 
         <TextInput

@@ -5,14 +5,16 @@ import CreateFiles from 'screens/CreateComplaintScreen/Files';
 
 const Stack = createNativeStackNavigator();
 
-const PaymentStackNavigator = ({ route }) => {
-  const { userProfile } = route.params;
+const PaymentStackNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="payment"
         component={PaymentScreen}
         options={{ title: 'Pago', headerBackTitle: '' }}
+        initialParams={{
+          petWalkId: 42,
+        }}
       />
       <Stack.Screen
         name="review"

@@ -23,6 +23,7 @@ const FindWalkerScreen = ({ navigation }) => {
 
         if (walkers && walkers.data.walkers.length) {
           setWalkersData(walkers.data.walkers);
+          console.log("walkers: ", walkers.data.walkers);
         }
       } catch (e) {
         console.log(e);

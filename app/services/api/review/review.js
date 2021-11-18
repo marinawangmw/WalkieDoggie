@@ -1,11 +1,11 @@
 import { HTTP_METHOD, privateRequest } from '../axiosConfig';
 
-export const createPayment = (params) => {
+export const createReview = (params) => {
   const { score, description, petWalkId } = params;
 
   const config = {
     method: HTTP_METHOD.POST,
-    url: `pet-walks/${petWalkId}/payment`,
+    url: `pet-walks/${petWalkId}/reviews`,
     data: {
       score,
       description,
