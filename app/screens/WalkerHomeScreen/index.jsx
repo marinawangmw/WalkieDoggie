@@ -91,7 +91,10 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
   useEffect(() => {
     const getPetWalksInProgress = async () => {
       const res = await getPetWalks(PET_WALK_STATUS.IN_PROGRESS);
-      console.log(res);
+      if (res.result && res.data.length) {
+        setHasPetWalkStarted(true);
+        setCurrentPetWalkId(res.data[0].id);
+      }
     };
 
     getPetWalksInProgress();
