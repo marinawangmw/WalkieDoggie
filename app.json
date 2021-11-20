@@ -37,7 +37,7 @@
     },
     "notification": {
       "icon": "./app/assets/images/pushIcon.png",
-      "color:": "#F3B340"
+      "color": "#F3B340"
     }
   }
 }
