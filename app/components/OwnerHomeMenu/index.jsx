@@ -56,13 +56,10 @@ const OwnerHomeMenu = ({ navigation }) => {
     const getPetWalksInProgress = async () => {
       const res = await getPetWalks(PET_WALK_STATUS.IN_PROGRESS);
 
-      setHasPetWalkStarted(true);
-      setCurrentPetWalkId(101);
-
-      // if (res.result && res.data.length) {
-      //   setHasPetWalkStarted(true);
-      //   setCurrentPetWalkId(res.data[0].id);
-      // }
+      if (res.result && res.data.length) {
+        setHasPetWalkStarted(true);
+        setCurrentPetWalkId(res.data[0].id);
+      }
     };
 
     getPetWalksInProgress();

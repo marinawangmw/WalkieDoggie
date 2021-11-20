@@ -29,7 +29,8 @@
         }
       },
       "package": "com.ulukacher.WalkieDoggie",
-      "versionCode": 1
+      "versionCode": 1,
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./app/assets/images/favicon.png"

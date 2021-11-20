@@ -68,6 +68,11 @@ const CurrentOwnerPetWalkScreen = ({ route, navigation }) => {
           )}
           {dataRow('Duración del paseo', ownerReservation.duration, clock)}
           {dataRow('Precio del paseo', '$ ' + ownerReservation.total_price, priceIcon)}
+          {dataRow(
+            'Código a mostrarle al paseador cuando finalice tu paseo',
+            ownerReservation.code,
+            priceIcon,
+          )}
         </View>
       );
     }
