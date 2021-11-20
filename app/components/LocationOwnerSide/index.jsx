@@ -23,7 +23,7 @@ let CHANNEL = 'location_walker';
 export default class LocationOwnerSideComponent extends React.Component {
   constructor(props) {
     super(props);
-    const { addressStart, petWalkId, walker, ownerAddressStart } = props;
+    const { addressStart, petWalkId, walker, ownerMarkers } = props;
     const initialWalkerLatitude = parseFloat(addressStart.latitude);
     const initialWalkerLongitude = parseFloat(addressStart.longitude);
 
@@ -41,7 +41,7 @@ export default class LocationOwnerSideComponent extends React.Component {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       }),
-      ownerAddressStart,
+      ownerMarkers,
     };
   }
 
@@ -106,15 +106,16 @@ export default class LocationOwnerSideComponent extends React.Component {
               description={this.state.markerDescription}
               coordinate={this.state.coordinate}
             />
-            <Marker
-              coordinate={{
-                latitude: parseFloat(this.state.ownerAddressStart.latitude),
-                longitude: parseFloat(this.state.ownerAddressStart.longitude),
-              }}
-              title="Yo"
-              description={this.state.ownerAddressStart.description}
-              pinColor={'green'}
-            />
+
+            {this.state.ownerMarkers.map((marker, index) => (
+              <Marker
+                key={index}
+                coordinate={marker.latlng}
+                title={marker.title}
+                description={marker.description}
+                pinColor={'green'}
+              />
+            ))}
           </MapView>
         </View>
       </SafeAreaView>

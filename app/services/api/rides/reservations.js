@@ -39,12 +39,12 @@ export const createReservation = (walker_id, data) => {
  * @returns
  */
 export const getReservations = async (params = {}) => {
-  const { status, date } = params;
-  const walker_id = await getCurrentUserId();
+  const { status, date, pet_walk_id } = params;
+  const user_id = await getCurrentUserId();
   const config = {
     method: HTTP_METHOD.GET,
-    url: `users/${walker_id}/reservations`,
-    params: { status, date },
+    url: `users/${user_id}/reservations`,
+    params: { status, date, pet_walk_id },
   };
   return privateRequest(config)
     .then((data) => ({ result: true, data }))

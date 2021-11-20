@@ -336,6 +336,10 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
   const renderContent = () => {
     return (
       <View style={styles.container}>
+        {/* <Button
+          onPress={() => navigation.navigate('currentWalkerPetWalk', { petWalkId: 101 })}
+          title="Prueba"
+        /> */}
         {hasPetWalkStarted && <CurrentWalkBanner handleNext={goToCurrentPetWalk} />}
 
         <DatePicker

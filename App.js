@@ -22,6 +22,9 @@ import {
 import { USER_TYPES } from './app/utils/constants';
 import { theme } from './app/theme';
 import * as Location from 'expo-location';
+import * as TaskManager from 'expo-task-manager';
+
+const TASK_NAME = 'background_task';
 
 LogBox.ignoreAllLogs();
 
@@ -135,6 +138,26 @@ export default function App() {
     //   Notifications.removeNotificationSubscription(responseListener.current);
     // };
   }, []);
+
+  TaskManager.defineTask(TASK_NAME, ({ data, error }) => {
+    if (error) {
+      // Error occurred - check `error.message` for more details.
+      return;
+    }
+    if (data) {
+      const { locations } = data;
+      // do something with the locations captured in the background
+      console.log(locations);
+      // Alert.alert('Entró');
+      // pubnub.publish({
+      //   channel: CHANNEL,
+      //   message: {
+      //     latitude: this.state.latitude,
+      //     longitude: this.state.longitude,
+      //   },
+      // });
+    }
+  });
 
   if (isLoading) {
     return <LoadingScreen logo />;

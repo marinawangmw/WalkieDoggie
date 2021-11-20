@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Platform, Dimensions, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Platform, Dimensions, SafeAreaView, Alert } from 'react-native';
 import MapView, { Marker, AnimatedRegion, MarkerAnimated } from 'react-native-maps';
 import PubNub from 'pubnub';
 import * as Location from 'expo-location';
+import * as TaskManager from 'expo-task-manager';
 
 // eslint-disable-next-line import/no-unresolved
 import { PUBNUB_PUBLISH_KEY, PUBNUB_SUBSCRIBE_KEY } from 'react-native-dotenv';
@@ -20,6 +21,10 @@ const pubnub = new PubNub({
 });
 
 let CHANNEL = 'location_walker';
+const DISTANCE_INTERVAL = 3;
+const TIME_INTERVAL = 3000;
+
+const TASK_NAME = 'background_task';
 
 export default class LocationWalkerSideComponent extends React.Component {
   constructor(props) {
@@ -44,8 +49,14 @@ export default class LocationWalkerSideComponent extends React.Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.watchLocation();
+
+    // await Location.startLocationUpdatesAsync(TASK_NAME, {
+    //   accuracy: Location.Accuracy.Highest,
+    //   timeInterval: TIME_INTERVAL,
+    //   distanceInterval: 1,
+    // });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -70,11 +81,12 @@ export default class LocationWalkerSideComponent extends React.Component {
   }
 
   watchLocation = async () => {
+    //Foreground subscription
     this.suscription = await Location.watchPositionAsync(
       {
-        distanceInterval: 3,
+        distanceInterval: DISTANCE_INTERVAL,
         accuracy: Location.Accuracy.Highest,
-        timeInterval: 3000,
+        timeInterval: TIME_INTERVAL,
       },
       (position) => {
         const { latitude, longitude } = position.coords;
@@ -83,15 +95,6 @@ export default class LocationWalkerSideComponent extends React.Component {
           latitude,
           longitude,
         };
-
-        // if (Platform.OS === 'android') {
-        //   if (this.marker) {
-        //     console.log('change marker to', newCoordinate);
-        //     this.marker.animateMarkerToCoordinate(newCoordinate, 500); // 500 is the duration to animate the marker
-        //   }
-        // } else {
-        //   coordinate.timing(newCoordinate).start();
-        // }
 
         this.state.coordinate = newCoordinate;
 
@@ -151,3 +154,23 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height * 0.5,
   },
 });
+
+// TaskManager.defineTask(TASK_NAME, ({ data, error }) => {
+//   if (error) {
+//     // Error occurred - check `error.message` for more details.
+//     return;
+//   }
+//   if (data) {
+//     const { locations } = data;
+//     // do something with the locations captured in the background
+//     console.log(locations);
+//     // Alert.alert('Entró');
+//     // pubnub.publish({
+//     //   channel: CHANNEL,
+//     //   message: {
+//     //     latitude: this.state.latitude,
+//     //     longitude: this.state.longitude,
+//     //   },
+//     // });
+//   }
+// });
