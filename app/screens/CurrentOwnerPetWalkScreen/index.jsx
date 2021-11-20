@@ -109,7 +109,7 @@ export default CurrentOwnerPetWalkScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 50,
+    marginTop: 15,
   },
   titles: {
     fontSize: 16,
