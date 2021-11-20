@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, StyleSheet, ScrollView, Text, Pressable, Button } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, Pressable } from 'react-native';
 import Modal from 'react-native-modal';
 import { CustomButton, CurrentWalkBanner } from 'components';
 import HomeMenuItem from './HomeMenuItem';
