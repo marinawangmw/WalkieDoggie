@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Dimensions, SafeAreaView } from 'react-native';
-import MapView, { AnimatedRegion, MarkerAnimated } from 'react-native-maps';
+import MapView, { AnimatedRegion, MarkerAnimated, Marker } from 'react-native-maps';
 import PubNub from 'pubnub';
 
 // eslint-disable-next-line import/no-unresolved
@@ -23,7 +23,7 @@ let CHANNEL = 'location_walker';
 export default class LocationOwnerSideComponent extends React.Component {
   constructor(props) {
     super(props);
-    const { addressStart, petWalkId, walker } = props;
+    const { addressStart, petWalkId, walker, ownerAddressStart } = props;
     const initialWalkerLatitude = parseFloat(addressStart.latitude);
     const initialWalkerLongitude = parseFloat(addressStart.longitude);
 
@@ -32,13 +32,16 @@ export default class LocationOwnerSideComponent extends React.Component {
     this.state = {
       latitude: initialWalkerLatitude,
       longitude: initialWalkerLongitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA,
       markerDescription: `Paseador: ${walker.first_name} ${walker.last_name}`,
       coordinate: new AnimatedRegion({
         latitude: initialWalkerLatitude,
         longitude: initialWalkerLongitude,
-        latitudeDelta: 0,
-        longitudeDelta: 0,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA,
       }),
+      ownerAddressStart,
     };
   }
 
@@ -56,9 +59,12 @@ export default class LocationOwnerSideComponent extends React.Component {
 
     pubnub.addListener({
       message: function (obj) {
-        console.log(obj.message);
+        // console.log(obj.message);
         const { latitude, longitude } = obj.message;
-        const newCoordinate = { latitude, longitude };
+        const newCoordinate = {
+          latitude,
+          longitude,
+        };
         self.state.coordinate = newCoordinate;
 
         self.setState({
@@ -72,9 +78,14 @@ export default class LocationOwnerSideComponent extends React.Component {
   getMapRegion = () => ({
     latitude: this.state.latitude,
     longitude: this.state.longitude,
-    latitudeDelta: LATITUDE_DELTA,
-    longitudeDelta: LONGITUDE_DELTA,
+    latitudeDelta: this.state.latitudeDelta,
+    longitudeDelta: this.state.longitudeDelta,
   });
+
+  onChangeRegion = (region) => {
+    this.state.latitudeDelta = region.latitudeDelta;
+    this.state.longitudeDelta = region.longitudeDelta;
+  };
 
   render() {
     return (
@@ -86,6 +97,7 @@ export default class LocationOwnerSideComponent extends React.Component {
             followUserLocation
             loadingEnabled
             region={this.getMapRegion()}
+            onRegionChange={this.onChangeRegion}
           >
             <MarkerAnimated
               ref={(marker) => {
@@ -93,6 +105,15 @@ export default class LocationOwnerSideComponent extends React.Component {
               }}
               description={this.state.markerDescription}
               coordinate={this.state.coordinate}
+            />
+            <Marker
+              coordinate={{
+                latitude: parseFloat(this.state.ownerAddressStart.latitude),
+                longitude: parseFloat(this.state.ownerAddressStart.longitude),
+              }}
+              title="Yo"
+              description={this.state.ownerAddressStart.description}
+              pinColor={'green'}
             />
           </MapView>
         </View>

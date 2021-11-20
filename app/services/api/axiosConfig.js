@@ -25,6 +25,7 @@ const axiosInstance = axios.create({
 });
 
 export const publicRequest = async (config) => {
+  // console.log(config);
   return axiosInstance.request(config);
 };
 

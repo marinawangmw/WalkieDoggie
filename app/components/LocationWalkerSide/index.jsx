@@ -33,6 +33,8 @@ export default class LocationWalkerSideComponent extends React.Component {
     this.state = {
       latitude: initialWalkerLatitude,
       longitude: initialWalkerLongitude,
+      latitudeDelta: LATITUDE_DELTA,
+      longitudeDelta: LONGITUDE_DELTA,
       coordinate: new AnimatedRegion({
         latitude: initialWalkerLatitude,
         longitude: initialWalkerLongitude,
@@ -52,7 +54,7 @@ export default class LocationWalkerSideComponent extends React.Component {
         latitude: this.state.latitude,
         longitude: this.state.longitude,
       };
-      console.log('Proceed to write Pubnub message', new Date(), message);
+      // console.log('Proceed to write Pubnub message', new Date(), message);
 
       pubnub.publish({
         message,
@@ -104,9 +106,14 @@ export default class LocationWalkerSideComponent extends React.Component {
   getMapRegion = () => ({
     latitude: this.state.latitude,
     longitude: this.state.longitude,
-    latitudeDelta: LATITUDE_DELTA,
-    longitudeDelta: LONGITUDE_DELTA,
+    latitudeDelta: this.state.latitudeDelta,
+    longitudeDelta: this.state.longitudeDelta,
   });
+
+  onChangeRegion = (region) => {
+    this.state.latitudeDelta = region.latitudeDelta;
+    this.state.longitudeDelta = region.longitudeDelta;
+  };
 
   render() {
     return (
@@ -118,6 +125,7 @@ export default class LocationWalkerSideComponent extends React.Component {
             followUserLocation
             loadingEnabled
             region={this.getMapRegion()}
+            onRegionChange={this.onChangeRegion}
           >
             <MarkerAnimated
               ref={(marker) => {

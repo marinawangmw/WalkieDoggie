@@ -24,7 +24,8 @@ const OwnerHomeMenu = ({ navigation }) => {
   const notificationListener = useRef();
   const responseListener = useRef();
 
-  const handleNotificationResponse = useCallback((notification) => {
+  const handleNotificationResponse = useCallback((notification, event) => {
+    // console.log(event, notification);
     const { type, petWalkId } = notification.request.content.data;
 
     if (type === NOTIFICATION_TYPES.NEW_PET_WALK) {
@@ -38,12 +39,12 @@ const OwnerHomeMenu = ({ navigation }) => {
   useEffect(() => {
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
       // console.log('Notification received', notification);
-      handleNotificationResponse(notification);
+      handleNotificationResponse(notification, 'foreground');
     });
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       (notification) => {
         // console.log('Notification tapped or interacted', notification);
-        handleNotificationResponse(notification);
+        handleNotificationResponse(notification.notification, 'tap');
       },
     );
     return () => {
@@ -194,6 +195,10 @@ const OwnerHomeMenu = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* <Button
+        onPress={() => navigation.navigate('currentOwnerPetWalk', { petWalkId: 101 })}
+        title="Prueba"
+      /> */}
       {visible && showModal()}
       <View style={styles.banners}>
         {hasPetWalkStarted && <CurrentWalkBanner handleNext={goToCurrentPetWalk} />}

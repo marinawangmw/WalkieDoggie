@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "171484967760",
+    "project_id": "proyecto-final-331321",
+    "storage_bucket": "proyecto-final-331321.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:171484967760:android:fb19abf32a0f3fed3a3255",
+        "android_client_info": {
+          "package_name": "com.ulukacher.WalkieDoggie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "171484967760-o0hiarbsc91qenengv88thff9n9gcu32.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ulukacher.WalkieDoggie",
+            "certificate_hash": "d5542d08718174a9e6ca55343edd32bc5990959c"
+          }
+        },
+        {
+          "client_id": "171484967760-jpn9ij6sjro2auu87d4kvv86surh2tk2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB91ZIPiKccyyrJknxrLWxe3_AzfNtI6No"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "171484967760-jpn9ij6sjro2auu87d4kvv86surh2tk2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
