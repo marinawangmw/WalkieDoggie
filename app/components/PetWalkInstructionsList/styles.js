@@ -20,7 +20,5 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
-  content: {
-    flex: 1,
-  },
+  content: {},
 });

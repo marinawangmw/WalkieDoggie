@@ -19,8 +19,10 @@ import {
   RESERVATION_STATUS,
   dayOfTheWeekSpanish,
   NOTIFICATION_TYPES,
+  PET_WALK_STATUS,
 } from 'utils/constants';
 import * as Notifications from 'expo-notifications';
+import { getPetWalks } from 'services/api/rides/petWalks';
 
 const dateFilterLabel = 'Filtro 1: Fecha de paseo';
 const statusFilterLabel = 'Filtro 2: Estado de reserva';
@@ -73,12 +75,10 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
 
   useEffect(() => {
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      // console.log('Notification received', notification);
       handleNotificationResponse(notification, 'foreground');
     });
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       (notification) => {
-        // console.log('Notification tapped or interacted', notification);
         handleNotificationResponse(notification.notification, 'tap');
       },
     );
@@ -87,6 +87,15 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, [handleNotificationResponse]);
+
+  useEffect(() => {
+    const getPetWalksInProgress = async () => {
+      const res = await getPetWalks(PET_WALK_STATUS.IN_PROGRESS);
+      console.log(res);
+    };
+
+    getPetWalksInProgress();
+  }, []);
 
   //get ranges according to date day of the week
   useEffect(() => {

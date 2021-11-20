@@ -7,12 +7,11 @@ import ConfirmBanner from './ConfirmBanner';
 // eslint-disable-next-line import/no-unresolved
 import { walker, shelter, petBoarding, colonies } from 'images';
 import { getReservations } from 'services/api/rides/reservations';
-import { handleReservationByOwner } from 'services/api/rides/petWalks';
-import { RESERVATION_STATUS } from 'utils/constants';
+import { handleReservationByOwner, getPetWalks } from 'services/api/rides/petWalks';
+import { RESERVATION_STATUS, NOTIFICATION_TYPES, PET_WALK_STATUS } from 'utils/constants';
 import LoadingScreen from 'screens/LoadingScreen';
 import * as Notifications from 'expo-notifications';
 import moment from 'moment';
-import { NOTIFICATION_TYPES } from '../../utils/constants';
 
 const OwnerHomeMenu = ({ navigation }) => {
   const [hasPendingWalks, setHasPendingWalks] = useState(false);
@@ -52,6 +51,22 @@ const OwnerHomeMenu = ({ navigation }) => {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, [handleNotificationResponse]);
+
+  useEffect(() => {
+    const getPetWalksInProgress = async () => {
+      const res = await getPetWalks(PET_WALK_STATUS.IN_PROGRESS);
+
+      setHasPetWalkStarted(true);
+      setCurrentPetWalkId(101);
+
+      // if (res.result && res.data.length) {
+      //   setHasPetWalkStarted(true);
+      //   setCurrentPetWalkId(res.data[0].id);
+      // }
+    };
+
+    getPetWalksInProgress();
+  }, []);
 
   const homeOptions = [
     { title: 'Paseadores', icon: walker, navigateTo: 'findWalker' },
