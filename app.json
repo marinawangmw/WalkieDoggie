@@ -36,7 +36,8 @@
       "favicon": "./app/assets/images/favicon.png"
     },
     "notification": {
-      "icon": "./app/assets/images/pushIcon.png"
+      "icon": "./app/assets/images/pushIcon.png",
+      "color:": "#F3B340"
     }
   }
 }
