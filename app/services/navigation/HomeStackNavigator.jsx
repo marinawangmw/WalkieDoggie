@@ -96,7 +96,7 @@ const HomeStackNavigator = ({ route }) => {
       <Stack.Screen
         name="currentOwnerPetWalk"
         component={CurrentOwnerPetWalkScreen}
-        options={{ headerShown: false }}
+        options={{ title: 'Paseo en curso' }}
       />
       <Stack.Screen
         name="currentWalkerPetWalk"
