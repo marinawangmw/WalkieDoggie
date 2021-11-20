@@ -5,7 +5,7 @@ import { getPetWalkDetail } from 'services/api/rides/petWalks';
 import { getReservations } from 'services/api/rides/reservations';
 import { RESERVATION_STATUS } from 'utils/constants';
 // eslint-disable-next-line import/no-unresolved
-import { profileIcon, user, clock, priceIcon } from 'images';
+import { profileIcon, user, clock, priceIcon, lockIcon } from 'images';
 import _ from 'lodash';
 
 const CurrentOwnerPetWalkScreen = ({ route, navigation }) => {
@@ -68,6 +68,11 @@ const CurrentOwnerPetWalkScreen = ({ route, navigation }) => {
           )}
           {dataRow('Duración del paseo', ownerReservation.duration, clock)}
           {dataRow('Precio del paseo', '$ ' + ownerReservation.total_price, priceIcon)}
+          {dataRow(
+            'Código a mostrarle al paseador cuando finalice tu paseo',
+            ownerReservation.code,
+            lockIcon,
+          )}
         </View>
       );
     }

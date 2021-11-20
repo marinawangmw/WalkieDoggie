@@ -1,3 +1,5 @@
+import { fromPairs } from 'lodash';
+
 export { default as adaptiveIcon } from './adaptive-icon.png';
 export { default as favicon } from './favicon.png';
 export { default as logoIcon } from './home-icon.png';
@@ -41,3 +43,4 @@ export { default as achievementIcon } from './achievement.png';
 export { default as achievement2Icon } from './achievement2.png';
 export { default as achievement3Icon } from './achievement3.png';
 export { default as petWalkIcon } from './pet-walk.png';
+export { default as lockIcon } from './lock.png';
