@@ -1,17 +1,19 @@
 import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import LocationOwnerSideComponent from 'components/LocationOwnerSide';
 import { getPetWalkDetail } from 'services/api/rides/petWalks';
 import { getReservations } from 'services/api/rides/reservations';
 import { RESERVATION_STATUS } from 'utils/constants';
 // eslint-disable-next-line import/no-unresolved
 import { profileIcon, user, clock, priceIcon } from 'images';
+import _ from 'lodash';
 
 const CurrentOwnerPetWalkScreen = ({ route, navigation }) => {
   const { petWalkId } = route.params;
   const [petWalkData, setPetWalkData] = useState(null);
   const [addressStart, setAddressStart] = useState(null);
   const [ownerReservation, setOwnerReservation] = useState(null);
+  const [ownerMarkers, setOwnerMarkers] = useState(null);
 
   useEffect(() => {
     const getPetWalkData = async (id) => {
@@ -21,12 +23,16 @@ const CurrentOwnerPetWalkScreen = ({ route, navigation }) => {
       if (response.result) {
         const reservationResponse = await getReservations({
           status: RESERVATION_STATUS.ACCEPTED_BY_OWNER,
+          pet_walk_id: id,
         });
 
         if (reservationResponse.result) {
-          const reservation = reservationResponse.data.find((r) => r.pet_walk.id === id);
+          const reservation = reservationResponse.data[0];
           setOwnerReservation(reservation);
-          console.log('reservation', reservation);
+
+          // Chequeo si el punto de partida es el mismo que el de recogida
+          const buildedOwnerMarkers = buildOwnerMarkers(reservation);
+          setOwnerMarkers(buildedOwnerMarkers);
         }
 
         setPetWalkData(response.data);
@@ -70,12 +76,12 @@ const CurrentOwnerPetWalkScreen = ({ route, navigation }) => {
   const renderMap = () => {
     return (
       <>
-        {addressStart && ownerReservation && (
+        {addressStart && ownerReservation && ownerMarkers && (
           <LocationOwnerSideComponent
             addressStart={addressStart}
             petWalkId={petWalkData.id}
             walker={petWalkData.walker}
-            ownerAddressStart={ownerReservation.address_start}
+            ownerMarkers={ownerMarkers}
           />
         )}
       </>
@@ -93,27 +99,6 @@ const CurrentOwnerPetWalkScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* {petWalkData && (
-        <View>
-          <Text style={styles.titles}>
-            Tenés un paseo en curso con: {petWalkData.walker.first_name}{' '}
-            {petWalkData.walker.last_name}
-          </Text>
-
-          <Text style={styles.titles}>
-            Podes seguir la ubicación de tu mascota en tiempo real!!
-          </Text>
-        </View>
-      )}
-
-      {ownerReservation && (
-        <View>
-          <Text>Mascota: {ownerReservation.pet.name}</Text>
-          <Text>Duración aprox. del paseo: {ownerReservation.duration}</Text>
-
-          <Text>Precio del paseo: ${ownerReservation.total_price}</Text>
-        </View>
-      )} */}
       <FlatList data={[]} renderItem={() => {}} ListHeaderComponent={renderContent} />
     </View>
   );
@@ -124,7 +109,7 @@ export default CurrentOwnerPetWalkScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 50,
+    marginTop: 15,
   },
   titles: {
     fontSize: 16,
@@ -161,3 +146,42 @@ const styles = StyleSheet.create({
     color: '#3d3d3d',
   },
 });
+
+const buildOwnerMarkers = (reservation) => {
+  const { address_start, address_end } = reservation;
+
+  let ownerMarkers = [];
+  if (_.isEqual(address_start, address_end)) {
+    ownerMarkers = [
+      {
+        latlng: {
+          latitude: parseFloat(address_start.latitude),
+          longitude: parseFloat(address_start.longitude),
+        },
+        title: 'Yo',
+        description: address_start.description,
+      },
+    ];
+  } else {
+    ownerMarkers = [
+      {
+        latlng: {
+          latitude: parseFloat(address_start.latitude),
+          longitude: parseFloat(address_start.longitude),
+        },
+        title: 'Punto de recodiga',
+        description: address_start.description,
+      },
+      {
+        latlng: {
+          latitude: parseFloat(address_end.latitude),
+          longitude: parseFloat(address_end.longitude),
+        },
+        title: 'Punto de entrega',
+        description: address_end.description,
+      },
+    ];
+  }
+
+  return ownerMarkers;
+};

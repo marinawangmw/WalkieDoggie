@@ -93,11 +93,7 @@ const HomeStackNavigator = ({ route }) => {
           }}
         />
       </Stack.Group>
-      <Stack.Screen
-        name="currentOwnerPetWalk"
-        component={CurrentOwnerPetWalkScreen}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="currentOwnerPetWalk" component={CurrentOwnerPetWalkScreen} />
       <Stack.Screen
         name="currentWalkerPetWalk"
         component={CurrentWalkerPetWalkScreen}
