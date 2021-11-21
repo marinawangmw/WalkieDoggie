@@ -54,7 +54,6 @@ export default function App() {
           if (res.result) {
             setUserToken(res.data);
             registerForPushNotificationsAsync().then((newPushToken) => {
-              console.log(newPushToken);
               setStorageItem('push_token', newPushToken);
               addPushTokenToUser(newPushToken);
             });
@@ -80,6 +79,10 @@ export default function App() {
 
           if (resSignIn.result && resOB.result) {
             setUserToken(resSignIn.data);
+            registerForPushNotificationsAsync().then((newPushToken) => {
+              setStorageItem('push_token', newPushToken);
+              addPushTokenToUser(newPushToken);
+            });
           }
           setIsLoading(false);
         } catch (e) {

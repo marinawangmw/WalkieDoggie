@@ -7,6 +7,7 @@ const CurrentWalkerPetWalkScreen = ({ route, navigation }) => {
   const { petWalkId } = route.params;
   const [petWalkData, setPetWalkData] = useState(null);
   const [addressStart, setAddressStart] = useState(null);
+  const [walkerAllowsTracking, setWalkerAllowsTracking] = useState(true);
 
   useEffect(() => {
     const getPetWalkData = async (id) => {
@@ -14,6 +15,7 @@ const CurrentWalkerPetWalkScreen = ({ route, navigation }) => {
       if (response.result) {
         setPetWalkData(response.data);
         setAddressStart(response.data.address_start);
+        setWalkerAllowsTracking(response.data.walker.allows_tracking);
       }
     };
 
@@ -24,7 +26,8 @@ const CurrentWalkerPetWalkScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      {addressStart && (
+      {!walkerAllowsTracking && <Text>Tenés la ubicación en tiempo real desactivada!</Text>}
+      {addressStart && walkerAllowsTracking && (
         <LocationWalkerSideComponent addressStart={addressStart} petWalkId={petWalkData.id} />
       )}
     </View>

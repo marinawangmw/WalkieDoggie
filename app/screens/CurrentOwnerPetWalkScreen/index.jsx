@@ -14,6 +14,7 @@ const CurrentOwnerPetWalkScreen = ({ route, navigation }) => {
   const [addressStart, setAddressStart] = useState(null);
   const [ownerReservation, setOwnerReservation] = useState(null);
   const [ownerMarkers, setOwnerMarkers] = useState(null);
+  const [walkerAllowsTracking, setWalkerAllowsTracking] = useState(false);
 
   useEffect(() => {
     const getPetWalkData = async (id) => {
@@ -34,6 +35,8 @@ const CurrentOwnerPetWalkScreen = ({ route, navigation }) => {
           const buildedOwnerMarkers = buildOwnerMarkers(reservation);
           setOwnerMarkers(buildedOwnerMarkers);
         }
+
+        setWalkerAllowsTracking(response.data.walker.allows_tracking);
 
         setPetWalkData(response.data);
         setAddressStart(response.data.address_start);
@@ -81,7 +84,7 @@ const CurrentOwnerPetWalkScreen = ({ route, navigation }) => {
   const renderMap = () => {
     return (
       <>
-        {addressStart && ownerReservation && ownerMarkers && (
+        {addressStart && ownerReservation && ownerMarkers && walkerAllowsTracking && (
           <LocationOwnerSideComponent
             addressStart={addressStart}
             petWalkId={petWalkData.id}
@@ -153,6 +156,7 @@ const styles = StyleSheet.create({
 });
 
 const buildOwnerMarkers = (reservation) => {
+  console.log(reservation);
   const { address_start, address_end } = reservation;
 
   let ownerMarkers = [];
