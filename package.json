@@ -54,6 +54,7 @@
     "react-native-multiple-select": "^0.5.7",
     "react-native-safe-area-view": "^1.1.1",
     "react-native-screens": "^3.4.0",
+    "react-native-star-rating": "^1.1.0",
     "react-native-svg": "^12.1.1",
     "react-native-svg-uri": "^1.2.3",
     "react-native-swiper": "^1.6.0",

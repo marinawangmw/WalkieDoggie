@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, FlatList, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 // eslint-disable-next-line import/no-unresolved
-import { inactiveStar, star, user } from 'images';
+import { user } from 'images';
+import StarRating from 'react-native-star-rating';
 
 const FindResultsList = ({ result, navigation }) => {
   const handleNavigateProfile = (userId) => {
@@ -9,20 +10,16 @@ const FindResultsList = ({ result, navigation }) => {
   };
 
   const renderScores = (scores) => {
-    if (scores) {
-      return (
-        <View style={styles.scoreContainer}>
-          <View style={styles.iconContainer}>
-            <Image source={star} style={styles.scoreIcon} />
-          </View>
-          <Text>{scores}</Text>
-        </View>
-      );
-    }
-
     return (
-      <View style={styles.iconContainer}>
-        <Image source={inactiveStar} style={[styles.scoreIcon, { tintColor: '#757575' }]} />
+      <View style={styles.scoreContainer}>
+        <StarRating
+          disabled={true}
+          maxStars={5}
+          starSize={20}
+          emptyStarColor="#000000"
+          fullStarColor="#E5DD00"
+          rating={scores}
+        />
       </View>
     );
   };

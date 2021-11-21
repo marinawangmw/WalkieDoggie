@@ -33,6 +33,8 @@ import {
 } from 'images';
 import Certifications from './Certifications';
 import { openWhatsappChat } from 'services/externalApps/whatsapp';
+import { getAchievementsById } from '../../utils/achievements';
+import StarRating from 'react-native-star-rating';
 
 const ProfileScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
@@ -47,6 +49,8 @@ const ProfileScreen = ({ navigation, route }) => {
   const [changeRanges, setChangeRanges] = useState([]);
   const [changeCertifications, setChangeCertifications] = useState([]);
   const [pets, setPets] = useState(null);
+  const [changeScore, setChangeScore] = useState(null);
+  const [changeReviewsAmount, setChangeReviewsAmount] = useState(null);
   const [changePricePerHour, setChangePricePerHour] = useState([]);
   const [changeCoverLetter, setChangeCoverLetter] = useState([]);
   const [changeAllowsTracking, setChangeAllowsTracking] = useState(true);
@@ -76,6 +80,8 @@ const ProfileScreen = ({ navigation, route }) => {
     setChangeLastName(userData.last_name);
     setChangePhone(userData.phone);
     setChangeAddress(userData.address.description);
+    setChangeScore(userData.score);
+    setChangeReviewsAmount(userData.reviewsAmount);
     setChangeRanges(rangesToSet);
     setChangeCertifications(certificationsToSet);
     setChangePricePerHour(userData.price_per_hour);
@@ -177,6 +183,10 @@ const ProfileScreen = ({ navigation, route }) => {
 
   const handleNavigatePetDetails = (pet, idx) => {
     navigation.navigate('petDetail', { pet, handleEditPets, idx, saveInformationPet });
+  };
+
+  const handleNavigateReviews = () => {
+    navigation.navigate('walkerReviews', { walkerId: currentUserProfile.id });
   };
 
   const handleNavigateRanges = () => {
@@ -349,6 +359,27 @@ const ProfileScreen = ({ navigation, route }) => {
     return <LoadingScreen />;
   }
 
+  const renderScores = () => {
+    return (
+      <TouchableOpacity onPress={handleNavigateReviews} style={styles.scoreContainer}>
+        <View>
+          <StarRating
+            disabled={true}
+            maxStars={5}
+            starSize={25}
+            emptyStarColor="#000000"
+            fullStarColor="#E5DD00"
+            rating={changeScore}
+          />
+
+          {(!changeReviewsAmount || changeReviewsAmount === 0) && <Text>Aún no hay opiniones</Text>}
+          {changeReviewsAmount === 1 && <Text>{changeReviewsAmount} opinión</Text>}
+          {changeReviewsAmount > 1 && <Text>{changeReviewsAmount} opiniones</Text>}
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   if (currentUserProfile) {
     return (
       <SafeAreaView style={[styles.container, !fromHome && { marginVertical: 0 }]}>
@@ -379,6 +410,8 @@ const ProfileScreen = ({ navigation, route }) => {
               </View>
 
               <Text style={styles.email}>{currentUserProfile.email}</Text>
+
+              {currentUserProfile.type === USER_TYPES.WALKER && <>{renderScores()}</>}
             </View>
           </View>
 

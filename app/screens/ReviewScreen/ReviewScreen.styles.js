@@ -4,12 +4,13 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,
-    marginVertical: 30,
+    marginVertical: 10,
   },
   picture: {
     height: 90,
     width: 90,
-    borderRadius: 100,
+    alignSelf: 'center',
+    marginBottom: 15,
   },
   personal: {
     flex: 1,
@@ -34,13 +35,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 20,
     paddingVertical: 8,
-  },
-  achievementItem: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  iconAchievement: {
-    flexDirection: 'column',
   },
   btn: {
     alignItems: 'center',
@@ -83,38 +77,40 @@ export const styles = StyleSheet.create({
   petName: {
     paddingLeft: 20,
     color: '#364C63',
+    fontSize: 18,
+  },
+  message: {
+    padding: 20,
+    margin: 10,
+    color: 'black',
+    borderWidth: 1,
+    backgroundColor: '#fff',
+    textAlign: 'left',
+    borderColor: '#f4d7a3',
+    borderRadius: 10,
+  },
+  complaintDescription: {
+    color: 'black',
+    paddingLeft: 15,
     fontSize: 16,
   },
-  allowsTrackingText: {
-    marginLeft: 10,
-    color: '#364C63',
-    fontSize: 15,
+  reviewName: {
+    color: 'black',
+    paddingLeft: 15,
+    fontSize: 24,
+    paddingBottom: 15,
   },
-  achievementsText: {
-    color: '#364C63',
-    fontSize: 20,
+  starContainer: {
+    paddingBottom: 50,
   },
-  achievementsIcons: {
-    marginLeft: 5,
-    height: 30,
-    width: 30,
-    resizeMode: 'cover',
+  authentication__errorMsg: {
+    color: 'red',
+    marginBottom: 20,
   },
-  achievementsLabel: {
-    marginLeft: 10,
-    color: '#364C63',
-  },
-  scoreContainer: {
-    marginTop: 5,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconContainer: {
-    marginRight: 10,
-  },
-  scoreIcon: {
-    height: 15,
-    width: 15,
+  opinion: {
+    color: 'black',
+    paddingLeft: 15,
+    fontSize: 16,
   },
 });
 

@@ -12,9 +12,10 @@ import {
   FindDayCaresScreen,
   FindSheltersScreen,
 } from 'screens';
-import GooglePlaceSearcher from '../../screens/CreateReservationScreen/GooglePlaceSearcher';
-import CurrentOwnerPetWalkScreen from '../../screens/CurrentOwnerPetWalkScreen';
-import CurrentWalkerPetWalkScreen from '../../screens/CurrentWalkerPetWalkScreen';
+import GooglePlaceSearcher from 'screens/CreateReservationScreen/GooglePlaceSearcher';
+import WalkerReviewsScreen from 'screens/ProfileScreen/reviews';
+import CurrentOwnerPetWalkScreen from 'screens/CurrentOwnerPetWalkScreen';
+import CurrentWalkerPetWalkScreen from 'screens/CurrentWalkerPetWalkScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -91,6 +92,11 @@ const HomeStackNavigator = ({ route }) => {
           initialParams={{
             userProfile,
           }}
+        />
+        <Stack.Screen
+          name="walkerReviews"
+          component={WalkerReviewsScreen}
+          options={{ title: 'Calificaciones' }}
         />
       </Stack.Group>
       <Stack.Screen
