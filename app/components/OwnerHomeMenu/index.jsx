@@ -32,21 +32,24 @@ const OwnerHomeMenu = ({ navigation }) => {
   const notificationListener = useRef();
   const responseListener = useRef();
 
-  const handleNotificationResponse = useCallback((notification, event) => {
-    const { type, petWalkId } = notification.request.content.data;
+  const handleNotificationResponse = useCallback(
+    (notification, event) => {
+      const { type, petWalkId } = notification.request.content.data;
 
-    if (type === NOTIFICATION_TYPES.NEW_PET_WALK) {
-      getReservationForOwner();
-    } else if (type === NOTIFICATION_TYPES.OWNER_PET_WALK_STARTED) {
-      setCurrentPetWalkId(petWalkId);
-      setHasPetWalkStarted(true);
-    } else if (type === NOTIFICATION_TYPES.PET_WALK_FINISHED) {
-      // Ir a la pantalla de pago
-      // setHasPetWalkStarted(false);
-      // setHasPendingReviewWalks(true);
-      navigation.navigate('paymentScreen', { petWalkId: currentPetWalkId });
-    }
-  }, []);
+      if (type === NOTIFICATION_TYPES.NEW_PET_WALK) {
+        getReservationForOwner();
+      } else if (type === NOTIFICATION_TYPES.OWNER_PET_WALK_STARTED) {
+        setCurrentPetWalkId(petWalkId);
+        setHasPetWalkStarted(true);
+      } else if (type === NOTIFICATION_TYPES.PET_WALK_FINISHED) {
+        // Ir a la pantalla de pago
+        // setHasPetWalkStarted(false);
+        // setHasPendingReviewWalks(true);
+        navigation.navigate('paymentScreen', { petWalkId: currentPetWalkId });
+      }
+    },
+    [currentPetWalkId, navigation],
+  );
 
   useEffect(() => {
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
@@ -112,7 +115,7 @@ const OwnerHomeMenu = ({ navigation }) => {
 
       if (res.result && res.data.length) {
         const validResults = res.data.filter((r) => !!r.pet_walk.id);
-        console.log('length:', validResults.length);
+
         if (validResults.length) {
           setHasPendingReviewWalks(true);
           setPendingReviewWalks(validResults);
