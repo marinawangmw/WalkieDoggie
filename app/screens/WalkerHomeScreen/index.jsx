@@ -1,13 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  CheckBox,
-  TouchableOpacity,
-  ActivityIndicator,
-  Button,
-} from 'react-native';
+import { View, Text, FlatList, CheckBox, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { Picker } from '@react-native-community/picker';
 import { getReservations } from 'services/api/rides/reservations';
