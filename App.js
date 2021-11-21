@@ -111,8 +111,8 @@ export default function App() {
   useEffect(() => {
     const initUserTokens = async () => {
       setIsLoading(true);
-      await Location.requestBackgroundPermissionsAsync();
-      await Location.requestForegroundPermissionsAsync();
+      //await Location.requestBackgroundPermissionsAsync();
+      //await Location.requestForegroundPermissionsAsync();
       const token = await getAccessTokenStorage('access_token');
       setUserToken(token);
 

@@ -15,7 +15,11 @@ import moment from 'moment';
 // eslint-disable-next-line import/no-unresolved
 import { greetingIcon, calificationIcon } from 'images';
 
+import { useIsFocused } from '@react-navigation/native';
+
 const OwnerHomeMenu = ({ navigation }) => {
+  const isFocused = useIsFocused();
+
   const [hasPendingWalks, setHasPendingWalks] = useState(false);
   const [pendingWalks, setPendingWalks] = useState(null);
   const [hasPetWalkStarted, setHasPetWalkStarted] = useState(false);
@@ -108,7 +112,7 @@ const OwnerHomeMenu = ({ navigation }) => {
 
       if (res.result && res.data.length) {
         const validResults = res.data.filter((r) => !!r.pet_walk.id);
-
+        console.log('length:', validResults.length);
         if (validResults.length) {
           setHasPendingReviewWalks(true);
           setPendingReviewWalks(validResults);
@@ -128,7 +132,7 @@ const OwnerHomeMenu = ({ navigation }) => {
   useEffect(() => {
     getReservationForOwner();
     getPendingReviewWalks();
-  }, []);
+  }, [isFocused]);
 
   const handleNext = () => {
     setVisible(true);
@@ -236,7 +240,9 @@ const OwnerHomeMenu = ({ navigation }) => {
     navigation.navigate('currentOwnerPetWalk', { petWalkId: currentPetWalkId });
   };
 
-  const handleNextPendingReview = () => {};
+  const handleNextPendingReview = () => {
+    navigation.navigate('paymentScreen', { petWalkId: pendingReviewWalks[0].pet_walk.id });
+  };
 
   return (
     <View style={styles.container}>

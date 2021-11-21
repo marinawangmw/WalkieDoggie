@@ -8,7 +8,9 @@ import { CustomButton } from '../../components';
 import { createReview } from '../../services/api/review/review';
 
 const ReviewScreen = ({ navigation, route }) => {
-  const handleNavigateFindComplaints = () => {
+  const { setHasPendingReviewWalks } = route.params;
+
+  const handleNavigateHome = () => {
     navigation.navigate('home');
   };
 
@@ -21,11 +23,11 @@ const ReviewScreen = ({ navigation, route }) => {
       review.petWalkId = changePetWalkId;
 
       const response = await createReview(review);
-      showResultCreateComplaint(response);
+      showResultCreateReview(response);
     }
   };
 
-  const showResultCreateComplaint = (response) => {
+  const showResultCreateReview = (response) => {
     if (!response.result) {
       Toast.show({
         type: 'error',
@@ -39,7 +41,7 @@ const ReviewScreen = ({ navigation, route }) => {
         text2: 'La calificación fue realizada correctamente',
       });
 
-      handleNavigateFindComplaints();
+      handleNavigateHome();
     }
   };
 
@@ -66,9 +68,9 @@ const ReviewScreen = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    const { petWalkId, changeFirstName, changeLastName } = route.params;
+    const { changePetWalkId, changeFirstName, changeLastName } = route.params;
 
-    setChangePetWalkId(petWalkId);
+    setChangePetWalkId(changePetWalkId);
     setChangeFirstName(changeFirstName);
     setChangeLastName(changeLastName);
   }, [route.params]);

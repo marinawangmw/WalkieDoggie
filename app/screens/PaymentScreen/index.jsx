@@ -6,11 +6,10 @@ import { RESERVATION_STATUS } from '../../utils/constants';
 
 const PaymentScreen = ({ route, navigation }) => {
   const handleRegisterPaymentAndNavigateReview = () => {
-    const { petWalkId } = route.params;
-
-    navigation.navigate('review', { petWalkId, changeFirstName, changeLastName });
+    navigation.navigate('reviewScreen', { changePetWalkId, changeFirstName, changeLastName });
   };
 
+  const [changePetWalkId, setChangePetWalkId] = useState('');
   const [changeFirstName, setChangeFirstName] = useState('');
   const [changeLastName, setChangeLastName] = useState('');
   const [changeTotalPrice, setChangeTotalPrice] = useState(0);
@@ -39,6 +38,8 @@ const PaymentScreen = ({ route, navigation }) => {
   useEffect(() => {
     const { petWalkId } = route.params;
     const image = 26;
+
+    setChangePetWalkId(petWalkId);
 
     fetchPetWalk(petWalkId);
     setImageIcon(image);

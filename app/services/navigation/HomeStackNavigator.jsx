@@ -17,6 +17,7 @@ import WalkerReviewsScreen from 'screens/ProfileScreen/reviews';
 import CurrentOwnerPetWalkScreen from 'screens/CurrentOwnerPetWalkScreen';
 import CurrentWalkerPetWalkScreen from 'screens/CurrentWalkerPetWalkScreen';
 import PaymentScreen from '../../screens/PaymentScreen';
+import {ReviewScreen} from "../../screens";
 
 const Stack = createNativeStackNavigator();
 
@@ -115,6 +116,12 @@ const HomeStackNavigator = ({ route }) => {
         name="paymentScreen"
         component={PaymentScreen}
         options={{ title: 'Pago del paseo' }}
+      />
+
+      <Stack.Screen
+        name="reviewScreen"
+        component={ReviewScreen}
+        options={{ title: 'Calificación del paseo' }}
       />
     </Stack.Navigator>
   );
