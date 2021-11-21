@@ -95,9 +95,6 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
       if (res.result && res.data.length) {
         setHasPetWalkStarted(true);
         setCurrentPetWalkId(res.data[0].id);
-      } else {
-        setHasPetWalkStarted(true);
-        setCurrentPetWalkId(101);
       }
     };
 

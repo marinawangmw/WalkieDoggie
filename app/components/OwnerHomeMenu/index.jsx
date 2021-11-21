@@ -36,6 +36,11 @@ const OwnerHomeMenu = ({ navigation }) => {
     } else if (type === NOTIFICATION_TYPES.OWNER_PET_WALK_STARTED) {
       setCurrentPetWalkId(petWalkId);
       setHasPetWalkStarted(true);
+    } else if (type === NOTIFICATION_TYPES.PET_WALK_FINISHED) {
+      // Ir a la pantalla de pago
+      // setHasPetWalkStarted(false);
+      // setHasPendingReviewWalks(true);
+      navigation.navigate('paymentScreen', { petWalkId: currentPetWalkId });
     }
   }, []);
 

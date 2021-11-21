@@ -33,7 +33,6 @@ import {
 } from 'images';
 import Certifications from './Certifications';
 import { openWhatsappChat } from 'services/externalApps/whatsapp';
-import { getAchievementsById } from '../../utils/achievements';
 import StarRating from 'react-native-star-rating';
 
 const ProfileScreen = ({ navigation, route }) => {

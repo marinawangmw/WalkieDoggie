@@ -16,6 +16,7 @@ import GooglePlaceSearcher from 'screens/CreateReservationScreen/GooglePlaceSear
 import WalkerReviewsScreen from 'screens/ProfileScreen/reviews';
 import CurrentOwnerPetWalkScreen from 'screens/CurrentOwnerPetWalkScreen';
 import CurrentWalkerPetWalkScreen from 'screens/CurrentWalkerPetWalkScreen';
+import PaymentScreen from '../../screens/PaymentScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -108,6 +109,12 @@ const HomeStackNavigator = ({ route }) => {
         name="currentWalkerPetWalk"
         component={CurrentWalkerPetWalkScreen}
         options={{ title: 'Tu paseo en curso' }}
+      />
+
+      <Stack.Screen
+        name="paymentScreen"
+        component={PaymentScreen}
+        options={{ title: 'Pago del paseo' }}
       />
     </Stack.Navigator>
   );
