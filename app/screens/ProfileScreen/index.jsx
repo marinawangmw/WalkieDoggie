@@ -49,6 +49,7 @@ const ProfileScreen = ({ navigation, route }) => {
   const [changeCertifications, setChangeCertifications] = useState([]);
   const [pets, setPets] = useState(null);
   const [changeScore, setChangeScore] = useState(null);
+  const [changeReviewsAmount, setChangeReviewsAmount] = useState(null);
   const [changePricePerHour, setChangePricePerHour] = useState([]);
   const [changeCoverLetter, setChangeCoverLetter] = useState([]);
   const [changeAllowsTracking, setChangeAllowsTracking] = useState(true);
@@ -79,6 +80,7 @@ const ProfileScreen = ({ navigation, route }) => {
     setChangePhone(userData.phone);
     setChangeAddress(userData.address.description);
     setChangeScore(userData.score);
+    setChangeReviewsAmount(userData.reviewsAmount);
     setChangeRanges(rangesToSet);
     setChangeCertifications(certificationsToSet);
     setChangePricePerHour(userData.price_per_hour);
@@ -180,6 +182,10 @@ const ProfileScreen = ({ navigation, route }) => {
 
   const handleNavigatePetDetails = (pet, idx) => {
     navigation.navigate('petDetail', { pet, handleEditPets, idx, saveInformationPet });
+  };
+
+  const handleNavigateReviews = () => {
+    navigation.navigate('walkerReviews', { walkerId: currentUserProfile.id });
   };
 
   const handleNavigateRanges = () => {
@@ -354,16 +360,22 @@ const ProfileScreen = ({ navigation, route }) => {
 
   const renderScores = () => {
     return (
-      <View style={styles.scoreContainer}>
-        <StarRating
-          disabled={true}
-          maxStars={5}
-          starSize={25}
-          emptyStarColor="#000000"
-          fullStarColor="#E5DD00"
-          rating={changeScore}
-        />
-      </View>
+      <TouchableOpacity onPress={handleNavigateReviews} style={styles.scoreContainer}>
+        <View>
+          <StarRating
+            disabled={true}
+            maxStars={5}
+            starSize={25}
+            emptyStarColor="#000000"
+            fullStarColor="#E5DD00"
+            rating={changeScore}
+          />
+
+          {(!changeReviewsAmount || changeReviewsAmount === 0) && <Text>Aún no hay opiniones</Text>}
+          {changeReviewsAmount === 1 && <Text>{changeReviewsAmount} opinión</Text>}
+          {changeReviewsAmount > 1 && <Text>{changeReviewsAmount} opiniones</Text>}
+        </View>
+      </TouchableOpacity>
     );
   };
 
@@ -398,7 +410,7 @@ const ProfileScreen = ({ navigation, route }) => {
 
               <Text style={styles.email}>{currentUserProfile.email}</Text>
 
-              {renderScores()}
+              {currentUserProfile.type === USER_TYPES.WALKER && <>{renderScores()}</>}
             </View>
           </View>
 

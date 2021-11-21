@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, SafeAreaView, Image, ScrollView, StyleSheet } from 'react-native';
 import { CustomButton } from 'components';
-import { getProfile } from '../../services/api/users/profile';
+import { getReservations } from '../../services/api/rides/reservations';
+import { RESERVATION_STATUS } from '../../utils/constants';
 
 const PaymentScreen = ({ route, navigation }) => {
   const handleRegisterPaymentAndNavigateReview = () => {
@@ -12,23 +13,23 @@ const PaymentScreen = ({ route, navigation }) => {
 
   const [changeFirstName, setChangeFirstName] = useState('');
   const [changeLastName, setChangeLastName] = useState('');
-  const [changePricePerHour, setChangePricePerHour] = useState(0);
-  const [changeDuration, setChangeDuration] = useState(0);
+  const [changeTotalPrice, setChangeTotalPrice] = useState(0);
 
   const [imageIcon, setImageIcon] = useState(null);
 
-  const fetchUserProfile = useCallback(async (id) => {
+  const fetchPetWalk = useCallback(async (id) => {
     try {
-      console.log('id: ', id);
-      const userProfile = await getProfile(id);
+      const reservationResponse = await getReservations({
+        status: RESERVATION_STATUS.PENDING_REVIEW,
+        pet_walk_id: id,
+      });
 
-      if (userProfile.result) {
-        const profile = userProfile.data;
+      if (reservationResponse.result) {
+        const reservation = reservationResponse.data[0];
 
-        setChangeFirstName(profile.first_name);
-        setChangeLastName(profile.last_name);
-        setChangePricePerHour(profile.price_per_hour);
-        setChangeDuration(90);
+        setChangeFirstName(reservation.walker.first_name);
+        setChangeLastName(reservation.walker.last_name);
+        setChangeTotalPrice(reservation.total_price);
       }
     } catch (e) {
       console.log('get walker profile error: ', e);
@@ -39,9 +40,9 @@ const PaymentScreen = ({ route, navigation }) => {
     const { petWalkId } = route.params;
     const image = 26;
 
-    fetchUserProfile(petWalkId);
+    fetchPetWalk(petWalkId);
     setImageIcon(image);
-  }, [route.params, fetchUserProfile]);
+  }, [route.params, fetchPetWalk]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -49,11 +50,7 @@ const PaymentScreen = ({ route, navigation }) => {
         <Image source={imageIcon} style={styles.picture} />
 
         <Text style={styles.walkerName}> {changeFirstName + ' ' + changeLastName}</Text>
-        <Text style={styles.walkerPricePerHour}> Precio por hora: ${changePricePerHour}</Text>
-        <Text style={styles.walkerDuration}> Duración: {changeDuration} minutos</Text>
-        <Text style={styles.walkerPrice}>
-          Total a pagar: ${(changePricePerHour * changeDuration) / 60}
-        </Text>
+        <Text style={styles.walkerPrice}>Total a pagar: ${changeTotalPrice}</Text>
 
         <View style={styles.btn}>
           <CustomButton

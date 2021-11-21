@@ -13,6 +13,7 @@ import {
   FindSheltersScreen,
 } from 'screens';
 import GooglePlaceSearcher from '../../screens/CreateReservationScreen/GooglePlaceSearcher';
+import WalkerReviewsScreen from '../../screens/ProfileScreen/reviews';
 
 const Stack = createNativeStackNavigator();
 
@@ -89,6 +90,11 @@ const HomeStackNavigator = ({ route }) => {
           initialParams={{
             userProfile,
           }}
+        />
+        <Stack.Screen
+          name="walkerReviews"
+          component={WalkerReviewsScreen}
+          options={{ title: 'Calificaciones' }}
         />
       </Stack.Group>
     </Stack.Navigator>
