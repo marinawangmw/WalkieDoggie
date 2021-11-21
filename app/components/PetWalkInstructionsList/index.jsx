@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -58,14 +58,22 @@ const PetWalkInstructionsList = ({
     }
   }, [data]);
 
+  const handleFinishPetWalk = useCallback(async () => {
+    const res = await finishPetWalk(petWalkId);
+
+    if (res.result) {
+      setHasPetWalkStarted(false);
+      navigation.goBack();
+    }
+  }, [navigation, setHasPetWalkStarted, petWalkId]);
+
   useEffect(() => {
     const undoneData = leaveData.filter((item) => !item.originalData.done);
 
     if (leaveData.length && !undoneData.length) {
-      setHasPetWalkStarted(false);
-      navigation.goBack();
+      handleFinishPetWalk();
     }
-  }, [leaveData, navigation, setHasPetWalkStarted]);
+  }, [leaveData, handleFinishPetWalk]);
 
   const SECTIONS = useMemo(
     () => [
