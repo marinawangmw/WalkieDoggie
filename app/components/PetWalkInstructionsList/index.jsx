@@ -28,7 +28,7 @@ const PetWalkInstructionsList = ({
   const [showModal, setShowModal] = useState(false);
   const [pickupData, setPickupData] = useState([]);
   const [leaveData, setLeaveData] = useState([]);
-  const [activeSections, setActiveSections] = useState([0]);
+  const [activeSections, setActiveSections] = useState([0, 1]);
   const [codeInput, setCodeInput] = useState(null);
   const [currentInstruction, setCurrentInstruction] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -67,13 +67,6 @@ const PetWalkInstructionsList = ({
     }
   }, [leaveData, navigation, setHasPetWalkStarted]);
 
-  useEffect(() => {
-    const undoneData = pickupData.filter((item) => !item.originalData.done);
-    if (!undoneData.length) {
-      setActiveSections([1]);
-    }
-  }, [pickupData]);
-
   const SECTIONS = useMemo(
     () => [
       { title: 'Buscar a las mascotas', content: pickupData },
@@ -99,23 +92,12 @@ const PetWalkInstructionsList = ({
         } else if (res.data.errorData.internal_code === 'not_found') {
           setIsLoading(false);
           setErrorMessage('El codigo ingresado no es correcto');
-
-          Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: 'El codigo ingresado no es correcto',
-          });
         } else if (res.data.errorData.internal_code === 'forbidden') {
           console.log(res);
           setIsLoading(false);
           setErrorMessage('No puede dejar una mascota antes de haberlo levantado');
-
-          Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: 'No puede dejar una mascota antes de haberlo levantado',
-          });
         } else {
+          setErrorMessage('Algo está mal');
           setIsLoading(false);
           console.log(res);
         }
