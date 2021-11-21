@@ -91,9 +91,13 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
   useEffect(() => {
     const getPetWalksInProgress = async () => {
       const res = await getPetWalks(PET_WALK_STATUS.IN_PROGRESS);
+
       if (res.result && res.data.length) {
         setHasPetWalkStarted(true);
         setCurrentPetWalkId(res.data[0].id);
+      } else {
+        setHasPetWalkStarted(true);
+        setCurrentPetWalkId(101);
       }
     };
 
@@ -248,7 +252,10 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
   };
 
   const goToCurrentPetWalk = () => {
-    navigation.navigate('currentWalkerPetWalk', { petWalkId: currentPetWalkId });
+    navigation.navigate('currentWalkerPetWalk', {
+      petWalkId: currentPetWalkId,
+      setHasPetWalkStarted,
+    });
   };
 
   const reservationStatusPicker = () => {

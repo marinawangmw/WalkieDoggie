@@ -14,3 +14,4 @@ export { default as DatePicker } from './DatePicker';
 export { default as MapViewWithOwners } from './MapViewWithOwners';
 export { default as CurrentWalkBanner } from './CurrentWalkBanner';
 export { default as PetWalkInstructionsList } from './PetWalkInstructionsList';
+export { default as LocationWalkerSideComponent } from './LocationWalkerSide';

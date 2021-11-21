@@ -59,8 +59,6 @@ const HomeTabNavigator = () => {
             userProfile,
           }}
         />
-        <Tabs.Screen name="ChatScreen" component={ChatScreen} options={{ headerShown: false }} />
-
         <Tabs.Screen
           name="ComplaintsScreen"
           component={ComplaintsStackNavigator}

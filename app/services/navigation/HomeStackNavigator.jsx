@@ -101,7 +101,7 @@ const HomeStackNavigator = ({ route }) => {
       <Stack.Screen
         name="currentWalkerPetWalk"
         component={CurrentWalkerPetWalkScreen}
-        options={{ headerShown: false }}
+        options={{ title: 'Tu paseo en curso' }}
       />
     </Stack.Navigator>
   );
