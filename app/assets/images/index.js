@@ -44,3 +44,4 @@ export { default as achievement2Icon } from './achievement2.png';
 export { default as achievement3Icon } from './achievement3.png';
 export { default as petWalkIcon } from './pet-walk.png';
 export { default as lockIcon } from './lock.png';
+export { default as calificationIcon } from './califications.png';

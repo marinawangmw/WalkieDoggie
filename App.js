@@ -54,7 +54,6 @@ export default function App() {
           if (res.result) {
             setUserToken(res.data);
             registerForPushNotificationsAsync().then((newPushToken) => {
-              console.log(newPushToken);
               setStorageItem('push_token', newPushToken);
               addPushTokenToUser(newPushToken);
             });
@@ -80,6 +79,10 @@ export default function App() {
 
           if (resSignIn.result && resOB.result) {
             setUserToken(resSignIn.data);
+            registerForPushNotificationsAsync().then((newPushToken) => {
+              setStorageItem('push_token', newPushToken);
+              addPushTokenToUser(newPushToken);
+            });
           }
           setIsLoading(false);
         } catch (e) {
@@ -108,8 +111,8 @@ export default function App() {
   useEffect(() => {
     const initUserTokens = async () => {
       setIsLoading(true);
-      // await Location.requestBackgroundPermissionsAsync();
-      // await Location.requestForegroundPermissionsAsync();
+      await Location.requestBackgroundPermissionsAsync();
+      await Location.requestForegroundPermissionsAsync();
       const token = await getAccessTokenStorage('access_token');
       setUserToken(token);
 
@@ -138,26 +141,6 @@ export default function App() {
     //   Notifications.removeNotificationSubscription(responseListener.current);
     // };
   }, []);
-
-  TaskManager.defineTask(TASK_NAME, ({ data, error }) => {
-    if (error) {
-      // Error occurred - check `error.message` for more details.
-      return;
-    }
-    if (data) {
-      const { locations } = data;
-      // do something with the locations captured in the background
-      console.log(locations);
-      // Alert.alert('Entró');
-      // pubnub.publish({
-      //   channel: CHANNEL,
-      //   message: {
-      //     latitude: this.state.latitude,
-      //     longitude: this.state.longitude,
-      //   },
-      // });
-    }
-  });
 
   if (isLoading) {
     return <LoadingScreen logo />;
