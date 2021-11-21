@@ -107,3 +107,13 @@ export const handlePetWalkInstruction = (pet_walk_id, instruction_id, code) => {
     .then((data) => ({ result: true, data }))
     .catch((error) => ({ result: false, data: error.metadata }));
 };
+
+export const finishPetWalk = (pet_walk_id) => {
+  const config = {
+    method: HTTP_METHOD.PATCH,
+    url: `pet-walks/${pet_walk_id}/finish`,
+  };
+  return privateRequest(config)
+    .then((data) => ({ result: true, data }))
+    .catch((error) => ({ result: false, data: error.metadata }));
+};

@@ -40,7 +40,6 @@ const PaymentScreen = ({ route, navigation }) => {
     const image = 26;
 
     setChangePetWalkId(petWalkId);
-
     fetchPetWalk(petWalkId);
     setImageIcon(image);
   }, [route.params, fetchPetWalk]);

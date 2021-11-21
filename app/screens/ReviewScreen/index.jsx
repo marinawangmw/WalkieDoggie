@@ -8,8 +8,6 @@ import { CustomButton } from '../../components';
 import { createReview } from '../../services/api/review/review';
 
 const ReviewScreen = ({ navigation, route }) => {
-  const { setHasPendingReviewWalks } = route.params;
-
   const handleNavigateHome = () => {
     navigation.navigate('home');
   };
@@ -69,7 +67,7 @@ const ReviewScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     const { changePetWalkId, changeFirstName, changeLastName } = route.params;
-
+    console.log(changePetWalkId);
     setChangePetWalkId(changePetWalkId);
     setChangeFirstName(changeFirstName);
     setChangeLastName(changeLastName);
@@ -107,9 +105,7 @@ const ReviewScreen = ({ navigation, route }) => {
           selectedStar={ratingCompleted}
         />
 
-        <Text style={styles.opinion}>
-          Contanos tu experiencia con {changeFirstName}
-        </Text>
+        <Text style={styles.opinion}>Contanos tu experiencia con {changeFirstName}</Text>
 
         <TextInput
           style={styles.message}
