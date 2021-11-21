@@ -13,6 +13,8 @@ import {
   FindSheltersScreen,
 } from 'screens';
 import GooglePlaceSearcher from '../../screens/CreateReservationScreen/GooglePlaceSearcher';
+import CurrentOwnerPetWalkScreen from '../../screens/CurrentOwnerPetWalkScreen';
+import CurrentWalkerPetWalkScreen from '../../screens/CurrentWalkerPetWalkScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -91,6 +93,16 @@ const HomeStackNavigator = ({ route }) => {
           }}
         />
       </Stack.Group>
+      <Stack.Screen
+        name="currentOwnerPetWalk"
+        component={CurrentOwnerPetWalkScreen}
+        options={{ title: 'Paseo en curso' }}
+      />
+      <Stack.Screen
+        name="currentWalkerPetWalk"
+        component={CurrentWalkerPetWalkScreen}
+        options={{ title: 'Tu paseo en curso' }}
+      />
     </Stack.Navigator>
   );
 };

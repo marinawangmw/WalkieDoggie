@@ -21,6 +21,10 @@ import {
 } from './app/services/api/users/pushNotifications';
 import { USER_TYPES } from './app/utils/constants';
 import { theme } from './app/theme';
+import * as Location from 'expo-location';
+import * as TaskManager from 'expo-task-manager';
+
+const TASK_NAME = 'background_task';
 
 LogBox.ignoreAllLogs();
 
@@ -50,7 +54,6 @@ export default function App() {
           if (res.result) {
             setUserToken(res.data);
             registerForPushNotificationsAsync().then((newPushToken) => {
-              console.log(newPushToken);
               setStorageItem('push_token', newPushToken);
               addPushTokenToUser(newPushToken);
             });
@@ -76,6 +79,10 @@ export default function App() {
 
           if (resSignIn.result && resOB.result) {
             setUserToken(resSignIn.data);
+            registerForPushNotificationsAsync().then((newPushToken) => {
+              setStorageItem('push_token', newPushToken);
+              addPushTokenToUser(newPushToken);
+            });
           }
           setIsLoading(false);
         } catch (e) {
@@ -104,6 +111,8 @@ export default function App() {
   useEffect(() => {
     const initUserTokens = async () => {
       setIsLoading(true);
+      await Location.requestBackgroundPermissionsAsync();
+      await Location.requestForegroundPermissionsAsync();
       const token = await getAccessTokenStorage('access_token');
       setUserToken(token);
 

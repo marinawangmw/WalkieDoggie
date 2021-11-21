@@ -196,8 +196,16 @@ const CreateReservationScreen = ({ route, navigation }) => {
 
     //Filtrar ranges por día de la semana
     const dayWeekSelected = DAYS_OF_WEEK_ARR[currentDate.getDay()];
+
     const auxRanges = walkerRanges.filter((r) => r.day_of_week === dayWeekSelected);
+
     setWalkerRangesFiltered(auxRanges);
+
+    if (auxRanges && auxRanges.length > 0) {
+      setSelectedRange(auxRanges[0].id);
+    } else {
+      setSelectedRange('');
+    }
   };
 
   const handleChangeDuration = (text) => {
@@ -243,7 +251,9 @@ const CreateReservationScreen = ({ route, navigation }) => {
           <Picker
             style={styles.dataContainer}
             selectedValue={selectedRange}
-            onValueChange={(itemValue) => setSelectedRange(itemValue)}
+            onValueChange={(itemValue) => {
+              setSelectedRange(itemValue);
+            }}
           >
             {Boolean(walkerRangesFiltered) &&
               Boolean(walkerRangesFiltered.length) &&
@@ -298,7 +308,7 @@ const CreateReservationScreen = ({ route, navigation }) => {
           </View>
           <TouchableOpacity
             style={styles.dataContainer}
-            onPress={() => handleNavigatePlaceSearch(address_end)}
+            onPress={() => handleNavigatePlaceSearch(address_start)}
             disabled={startSameHome}
           >
             <Text style={styles.dataContent}>

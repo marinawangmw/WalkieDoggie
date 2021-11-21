@@ -25,8 +25,11 @@ export const RESERVATION_STATUS = {
   REJECTED_BY_OWNER: 'REJECTED_BY_OWNER',
   REJECTED_BY_WALKER: 'REJECTED_BY_WALKER',
   REJECTED_BY_SYSTEM: 'REJECTED_BY_SYSTEM',
+  PENDING_REVIEW: 'PENDING_REVIEW',
+  REVIEWED: 'REVIEWED',
 };
 
+// IMPORTANTE: EL ELEMENTO 'Todos' TIENE QUE ESTAR AL FINAL
 export const ReservationStatusSpanish = [
   { id: RESERVATION_STATUS.PENDING, name: 'Pendiente' },
   { id: RESERVATION_STATUS.ACCEPTED_BY_OWNER, name: 'Aceptado por el dueño' },
@@ -34,7 +37,9 @@ export const ReservationStatusSpanish = [
   { id: RESERVATION_STATUS.REJECTED_BY_OWNER, name: 'Rechazado por el dueño' },
   { id: RESERVATION_STATUS.REJECTED_BY_WALKER, name: 'Rechazado por el paseador' },
   { id: RESERVATION_STATUS.REJECTED_BY_SYSTEM, name: 'Rechazado por el sistema' },
-  { id: '', name: 'Todos' },
+  { id: RESERVATION_STATUS.PENDING_REVIEW, name: 'Pendiente de revisión' },
+  { id: RESERVATION_STATUS.REVIEWED, name: 'Finalizada' },
+  { id: 'ALL', name: 'Todos' },
 ];
 
 export const dayOfTheWeekSpanish = {
@@ -65,4 +70,9 @@ export const NOTIFICATION_TYPES = {
   OWNER_PET_WALK_STARTED: 'OWNER_PET_WALK_STARTED',
   WALKER_PET_WALK_STARTED: 'WALKER_PET_WALK_STARTED',
   PET_WALK_CANCELLED: 'PET_WALK_CANCELLED',
+};
+
+export const INSTRUCTION_TYPE = {
+  PICK_UP: 'PICK_UP',
+  LEAVE: 'LEAVE',
 };

@@ -96,3 +96,14 @@ export const getPetWalkDetail = async (pet_walk_id) => {
     .then((data) => ({ result: true, data }))
     .catch((error) => ({ result: false, data: error.metadata }));
 };
+
+export const handlePetWalkInstruction = (pet_walk_id, instruction_id, code) => {
+  const config = {
+    method: HTTP_METHOD.PATCH,
+    url: `pet-walks/${pet_walk_id}/instructions/${instruction_id}`,
+    params: { code },
+  };
+  return privateRequest(config)
+    .then((data) => ({ result: true, data }))
+    .catch((error) => ({ result: false, data: error.metadata }));
+};
