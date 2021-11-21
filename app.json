@@ -18,13 +18,26 @@
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/images/adaptive-icon.png",
         "backgroundColor": "#F3F3EB"
-      }
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyB91ZIPiKccyyrJknxrLWxe3_AzfNtI6No"
+        }
+      },
+      "package": "com.ulukacher.WalkieDoggie",
+      "versionCode": 1,
+      "useNextNotificationsApi": true
     },
     "web": {
       "favicon": "./app/assets/images/favicon.png"
+    },
+    "notification": {
+      "icon": "./app/assets/images/pushIcon.png",
+      "color": "#F3B340"
     }
   }
 }

@@ -7,7 +7,7 @@ export { default as AddressScreen } from './AddressScreen';
 export { default as FindWalkersScreen } from './FindWalkersScreen';
 export { default as CreateReservationScreen } from './CreateReservationScreen';
 export { default as LoadingScreen } from './LoadingScreen';
-export { default as WalkerReservationsScreen } from './WalkerReservationsScreen';
+export { default as WalkerHomeScreen } from './WalkerHomeScreen';
 export { default as RejectReservationsScreen } from './RejectReservationsScreen';
 export { default as ProgramWalkScreen } from './ProgramWalkScreen';
 export { default as FindComplaintsScreen } from './FindComplaintsScreen';

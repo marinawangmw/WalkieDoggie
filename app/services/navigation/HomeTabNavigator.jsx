@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeStackNavigator from './HomeStackNavigator';
 import ProfileStackNavigator from './ProfileStackNavigator';
 import { TabIcon } from 'components';
-import { LoadingScreen } from 'screens';
+import { LoadingScreen, ChatScreen } from 'screens';
 import { getCurrentUserId } from 'utils/storage';
 import { getProfile } from 'services/api/users/profile';
 import ComplaintsStackNavigator from './ComplaintsStackNavigator';
@@ -59,7 +59,6 @@ const HomeTabNavigator = () => {
             userProfile,
           }}
         />
-
         <Tabs.Screen
           name="ComplaintsScreen"
           component={ComplaintsStackNavigator}

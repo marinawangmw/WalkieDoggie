@@ -1,14 +1,28 @@
 import React, { useEffect, useState, useMemo, useCallback, useRef } from 'react';
-import { View, Text, FlatList, CheckBox, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  CheckBox,
+  TouchableOpacity,
+  ActivityIndicator,
+  Button,
+} from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { Picker } from '@react-native-community/picker';
 import { getReservations } from 'services/api/rides/reservations';
-import { DatePicker, CustomButton } from 'components';
+import { DatePicker, CustomButton, CurrentWalkBanner } from 'components';
 import { formatDate } from 'components/DatePicker';
 import { styles } from './styles';
-import { ReservationStatusSpanish, RESERVATION_STATUS, dayOfTheWeekSpanish } from 'utils/constants';
+import {
+  ReservationStatusSpanish,
+  RESERVATION_STATUS,
+  dayOfTheWeekSpanish,
+  NOTIFICATION_TYPES,
+  PET_WALK_STATUS,
+} from 'utils/constants';
 import * as Notifications from 'expo-notifications';
-import { NOTIFICATION_TYPES } from '../../utils/constants';
+import { getPetWalks } from 'services/api/rides/petWalks';
 
 const dateFilterLabel = 'Filtro 1: Fecha de paseo';
 const statusFilterLabel = 'Filtro 2: Estado de reserva';
@@ -17,7 +31,9 @@ const showAllButtonLabel = 'Mostrar todas las reservas';
 const chooseReservationsFromSameDateError =
   'Por favor seleccione reservas de la misma fecha y mismo horario';
 
-const WalkerReservationsScreen = ({ navigation, userProfile }) => {
+const WalkerHomeScreen = ({ navigation, userProfile }) => {
+  const allReservationsStatus = ReservationStatusSpanish.find((r) => r.id === 'ALL').id;
+
   const isFocused = useIsFocused();
   const initialDate = useMemo(() => new Date(), []);
   const [date, setDate] = useState(initialDate);
@@ -27,18 +43,24 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
   const [walkerRanges, setWalkerRanges] = useState([]);
   const [selectedRangeId, setSelectedRangeId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasPetWalkStarted, setHasPetWalkStarted] = useState(false);
+  const [showAllReservations, setShowAllReservations] = useState(false);
+
   const [errorMessage, setErrorMessage] = useState(null);
+  const [currentPetWalkId, setCurrentPetWalkId] = useState(null);
   const notificationListener = useRef();
   const responseListener = useRef();
 
   const checked = useMemo(() => checkedStatus.some((item) => !!item), [checkedStatus]);
 
   const handleNotificationResponse = useCallback(async (notification) => {
-    const { type } = notification.request.content.data;
+    const { type, petWalkId } = notification.request.content.data;
+
     if (type === NOTIFICATION_TYPES.NEW_RESERVATION) {
       setIsLoading(true);
-      setStatus(RESERVATION_STATUS.PENDING);
-      const res = await getReservations({ status: RESERVATION_STATUS.PENDING });
+      setShowAllReservations(true);
+      setStatus('ALL');
+      const res = await getReservations();
       if (res.result) {
         setData(res.data);
         const initializeCheckedStatusWithNulls = new Array(res.data.length).fill(null);
@@ -46,20 +68,18 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
       }
       setIsLoading(false);
     } else if (type === NOTIFICATION_TYPES.WALKER_PET_WALK_STARTED) {
-      // Comenzó un nuevo paseo
-      // TODO: redirigir a la pantalla de paseo en curso desde la perspectiva del paseador
+      setCurrentPetWalkId(petWalkId);
+      setHasPetWalkStarted(true);
     }
   }, []);
 
   useEffect(() => {
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      console.log('Notification received', notification);
-      handleNotificationResponse(notification);
+      handleNotificationResponse(notification, 'foreground');
     });
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       (notification) => {
-        console.log('Notification tapped or interacted', notification);
-        handleNotificationResponse(notification);
+        handleNotificationResponse(notification.notification, 'tap');
       },
     );
     return () => {
@@ -67,6 +87,22 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, [handleNotificationResponse]);
+
+  useEffect(() => {
+    const getPetWalksInProgress = async () => {
+      const res = await getPetWalks(PET_WALK_STATUS.IN_PROGRESS);
+
+      if (res.result && res.data.length) {
+        setHasPetWalkStarted(true);
+        setCurrentPetWalkId(res.data[0].id);
+      } else {
+        setHasPetWalkStarted(true);
+        setCurrentPetWalkId(101);
+      }
+    };
+
+    getPetWalksInProgress();
+  }, []);
 
   //get ranges according to date day of the week
   useEffect(() => {
@@ -94,13 +130,14 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
     };
 
     const filterDate = formatDate(date);
-
-    if (status) {
-      getData({ status, date: filterDate });
-    } else {
-      getData({ date: filterDate });
+    if (!showAllReservations) {
+      if (status && status !== 'ALL') {
+        getData({ status, date: filterDate });
+      } else {
+        getData({ date: filterDate });
+      }
     }
-  }, [status, date, isFocused]);
+  }, [status, date, isFocused, showAllReservations]);
 
   const statusInSpanish = (currentStatus) => {
     const statusObject = ReservationStatusSpanish.find((item) => item.id === currentStatus);
@@ -121,8 +158,9 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
     setIsLoading(true);
     const res = await getReservations();
     setIsLoading(false);
+    setShowAllReservations(true);
 
-    setStatus(ReservationStatusSpanish[6].id);
+    setStatus(allReservationsStatus);
     if (res.result) {
       setData(res.data);
       const initializeCheckedStatusWithNulls = new Array(res.data.length).fill(null);
@@ -213,6 +251,13 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
     );
   };
 
+  const goToCurrentPetWalk = () => {
+    navigation.navigate('currentWalkerPetWalk', {
+      petWalkId: currentPetWalkId,
+      setHasPetWalkStarted,
+    });
+  };
+
   const reservationStatusPicker = () => {
     return (
       <View style={styles.data}>
@@ -220,7 +265,10 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
         <Picker
           style={styles.dataContainer}
           selectedValue={status}
-          onValueChange={(itemValue) => setStatus(itemValue)}
+          onValueChange={(itemValue) => {
+            setStatus(itemValue);
+            setShowAllReservations(false);
+          }}
         >
           {Boolean(ReservationStatusSpanish) &&
             Boolean(ReservationStatusSpanish.length) &&
@@ -307,7 +355,18 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
   const renderContent = () => {
     return (
       <View style={styles.container}>
-        <DatePicker date={date} setDate={setDate} label={dateFilterLabel} />
+        {/* <Button
+          onPress={() => navigation.navigate('currentWalkerPetWalk', { petWalkId: 101 })}
+          title="Prueba"
+        /> */}
+        {hasPetWalkStarted && <CurrentWalkBanner handleNext={goToCurrentPetWalk} />}
+
+        <DatePicker
+          date={date}
+          setDate={setDate}
+          setShowAllReservations={setShowAllReservations}
+          label={dateFilterLabel}
+        />
         {reservationStatusPicker()}
         {/* {timeRangePicker()} */}
         {showAllButton()}
@@ -327,4 +386,4 @@ const WalkerReservationsScreen = ({ navigation, userProfile }) => {
   return <FlatList data={[]} renderItem={() => {}} ListHeaderComponent={renderContent()} />;
 };
 
-export default WalkerReservationsScreen;
+export default WalkerHomeScreen;

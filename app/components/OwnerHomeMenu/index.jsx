@@ -1,46 +1,51 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, StyleSheet, ScrollView, Text, Pressable } from 'react-native';
 import Modal from 'react-native-modal';
-import { CustomButton } from 'components';
+import { CustomButton, CurrentWalkBanner } from 'components';
 import HomeMenuItem from './HomeMenuItem';
 import ConfirmBanner from './ConfirmBanner';
 // eslint-disable-next-line import/no-unresolved
 import { walker, shelter, petBoarding, colonies } from 'images';
 import { getReservations } from 'services/api/rides/reservations';
-import { handleReservationByOwner } from 'services/api/rides/petWalks';
-import { RESERVATION_STATUS } from 'utils/constants';
+import { handleReservationByOwner, getPetWalks } from 'services/api/rides/petWalks';
+import { RESERVATION_STATUS, NOTIFICATION_TYPES, PET_WALK_STATUS } from 'utils/constants';
 import LoadingScreen from 'screens/LoadingScreen';
 import * as Notifications from 'expo-notifications';
 import moment from 'moment';
-import { NOTIFICATION_TYPES } from '../../utils/constants';
+// eslint-disable-next-line import/no-unresolved
+import { greetingIcon, calificationIcon } from 'images';
 
 const OwnerHomeMenu = ({ navigation }) => {
   const [hasPendingWalks, setHasPendingWalks] = useState(false);
   const [pendingWalks, setPendingWalks] = useState(null);
+  const [hasPetWalkStarted, setHasPetWalkStarted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPetWalkId, setCurrentPetWalkId] = useState(null);
+  const [hasPendingReviewWalks, setHasPendingReviewWalks] = useState(false);
+  const [pendingReviewWalks, setPendingReviewWalks] = useState(null);
+
   const notificationListener = useRef();
   const responseListener = useRef();
 
-  const handleNotificationResponse = useCallback((notification) => {
-    const { type } = notification.request.content.data;
+  const handleNotificationResponse = useCallback((notification, event) => {
+    const { type, petWalkId } = notification.request.content.data;
+
     if (type === NOTIFICATION_TYPES.NEW_PET_WALK) {
       getReservationForOwner();
     } else if (type === NOTIFICATION_TYPES.OWNER_PET_WALK_STARTED) {
-      // Comenzó un nuevo paseo
-      // TODO: ir a la pantalla del paseo desde la perspectiva del dueño
+      setCurrentPetWalkId(petWalkId);
+      setHasPetWalkStarted(true);
     }
   }, []);
 
   useEffect(() => {
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      console.log('Notification received', notification);
-      handleNotificationResponse(notification);
+      handleNotificationResponse(notification, 'foreground');
     });
     responseListener.current = Notifications.addNotificationResponseReceivedListener(
       (notification) => {
-        console.log('Notification tapped or interacted', notification);
-        handleNotificationResponse(notification);
+        handleNotificationResponse(notification.notification, 'tap');
       },
     );
     return () => {
@@ -48,6 +53,19 @@ const OwnerHomeMenu = ({ navigation }) => {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, [handleNotificationResponse]);
+
+  useEffect(() => {
+    const getPetWalksInProgress = async () => {
+      const res = await getPetWalks(PET_WALK_STATUS.IN_PROGRESS);
+
+      if (res.result && res.data.length) {
+        setHasPetWalkStarted(true);
+        setCurrentPetWalkId(res.data[0].id);
+      }
+    };
+
+    getPetWalksInProgress();
+  }, []);
 
   const homeOptions = [
     { title: 'Paseadores', icon: walker, navigateTo: 'findWalker' },
@@ -68,7 +86,34 @@ const OwnerHomeMenu = ({ navigation }) => {
           setPendingWalks(validResults);
         } else {
           setHasPendingWalks(false);
+          setPendingWalks(res.data);
         }
+      } else {
+        setHasPendingWalks(false);
+        setPendingWalks(res.data);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const getPendingReviewWalks = async () => {
+    try {
+      const res = await getReservations({ status: RESERVATION_STATUS.PENDING_REVIEW });
+
+      if (res.result && res.data.length) {
+        const validResults = res.data.filter((r) => !!r.pet_walk.id);
+
+        if (validResults.length) {
+          setHasPendingReviewWalks(true);
+          setPendingReviewWalks(validResults);
+        } else {
+          setHasPendingReviewWalks(false);
+          setPendingReviewWalks(res.data);
+        }
+      } else {
+        setHasPendingReviewWalks(false);
+        setPendingReviewWalks(res.data);
       }
     } catch (e) {
       console.log(e);
@@ -77,6 +122,7 @@ const OwnerHomeMenu = ({ navigation }) => {
 
   useEffect(() => {
     getReservationForOwner();
+    getPendingReviewWalks();
   }, []);
 
   const handleNext = () => {
@@ -181,16 +227,38 @@ const OwnerHomeMenu = ({ navigation }) => {
     return <LoadingScreen />;
   }
 
+  const goToCurrentPetWalk = () => {
+    navigation.navigate('currentOwnerPetWalk', { petWalkId: currentPetWalkId });
+  };
+
+  const handleNextPendingReview = () => {};
+
   return (
     <View style={styles.container}>
+      {/* <Button
+        onPress={() => navigation.navigate('currentOwnerPetWalk', { petWalkId: 101 })}
+        title="Prueba"
+      /> */}
       {visible && showModal()}
-      {hasPendingWalks && (
-        <ConfirmBanner
-          title="Paseos pendientes de confirmación"
-          description="¡Hola! Estos son los paseos programados que requieren tu confirmación"
-          handleNext={handleNext}
-        />
-      )}
+      <View style={styles.banners}>
+        {hasPetWalkStarted && <CurrentWalkBanner handleNext={goToCurrentPetWalk} />}
+        {hasPendingReviewWalks && (
+          <ConfirmBanner
+            title="Paseos para calificar"
+            description="¡Hola! Estos son los paseos que no calificaste aún"
+            handleNext={handleNextPendingReview}
+            imageIcon={calificationIcon}
+          />
+        )}
+        {hasPendingWalks && (
+          <ConfirmBanner
+            title="Paseos pendientes de confirmación"
+            description="¡Hola! Estos son los paseos programados que requieren tu confirmación"
+            handleNext={handleNext}
+            imageIcon={greetingIcon}
+          />
+        )}
+      </View>
       <View style={styles.iconsContainer}>
         {homeOptions.map((option, idx) => (
           <HomeMenuItem menuItem={option} navigation={navigation} key={idx} />
@@ -205,6 +273,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  banners: {
+    position: 'absolute',
+    top: 0,
+    width: '100%',
   },
   iconsContainer: {
     flexWrap: 'wrap',

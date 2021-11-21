@@ -15,6 +15,7 @@ export const HTTP_METHOD = {
   POST: 'post',
   DELETE: 'delete',
   PUT: 'put',
+  PATCH: 'patch',
 };
 
 const axiosInstance = axios.create({
@@ -25,6 +26,7 @@ const axiosInstance = axios.create({
 });
 
 export const publicRequest = async (config) => {
+  // console.log(config);
   return axiosInstance.request(config);
 };
 

@@ -2,13 +2,13 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 // eslint-disable-next-line import/no-unresolved
-import { greetingIcon, rightArrowIcon } from 'images';
+import { rightArrowIcon } from 'images';
 
-const ConfirmBanner = ({ title, description, handleNext }) => {
+const ConfirmBanner = ({ title, description, handleNext, imageIcon }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleNext} style={styles.banner}>
-        <Image source={greetingIcon} style={styles.icon} />
+        <Image source={imageIcon} style={styles.icon} />
         <View style={styles.body}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.description}>{description}</Text>
@@ -25,12 +25,11 @@ export default ConfirmBanner;
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    top: 0,
     width: '100%',
   },
   banner: {
     margin: 20,
+    marginTop: 5,
     paddingHorizontal: 10,
     paddingVertical: 10,
     backgroundColor: 'white',
@@ -41,8 +40,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   icon: {
-    height: 50,
-    width: 50,
+    height: 40,
+    width: 40,
   },
   arrowContainer: {
     justifyContent: 'center',

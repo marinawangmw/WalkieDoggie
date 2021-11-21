@@ -18,6 +18,7 @@ import { AuthContext } from 'utils/authContext';
 import { USER_TYPES } from 'utils/constants';
 import { removeProps } from 'helpers/objectHelper';
 import { styles, name, personal } from './ProfileScreen.styles';
+import { getAchievementsById } from 'utils/achievements';
 
 // eslint-disable-next-line import/no-unresolved
 import {
