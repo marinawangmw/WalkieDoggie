@@ -12,6 +12,8 @@ import { RESERVATION_STATUS, NOTIFICATION_TYPES, PET_WALK_STATUS } from 'utils/c
 import LoadingScreen from 'screens/LoadingScreen';
 import * as Notifications from 'expo-notifications';
 import moment from 'moment';
+// eslint-disable-next-line import/no-unresolved
+import { greetingIcon, calificationIcon } from 'images';
 
 const OwnerHomeMenu = ({ navigation }) => {
   const [hasPendingWalks, setHasPendingWalks] = useState(false);
@@ -242,9 +244,10 @@ const OwnerHomeMenu = ({ navigation }) => {
         {hasPetWalkStarted && <CurrentWalkBanner handleNext={goToCurrentPetWalk} />}
         {hasPendingReviewWalks && (
           <ConfirmBanner
-            title="Paseos pendientes de calificación"
+            title="Paseos para calificar"
             description="¡Hola! Estos son los paseos que no calificaste aún"
             handleNext={handleNextPendingReview}
+            imageIcon={calificationIcon}
           />
         )}
         {hasPendingWalks && (
@@ -252,6 +255,7 @@ const OwnerHomeMenu = ({ navigation }) => {
             title="Paseos pendientes de confirmación"
             description="¡Hola! Estos son los paseos programados que requieren tu confirmación"
             handleNext={handleNext}
+            imageIcon={greetingIcon}
           />
         )}
       </View>
