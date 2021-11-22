@@ -76,12 +76,14 @@ const PetInfo = ({ id, addPet, removePet, handleChange }) => {
         style={styles.input}
         value={birthYear}
         onChangeText={(value) => handleInput('birth_year', value)}
+        keyboardType="numeric"
       />
       <TextInput
         placeholder="Peso (kg)"
         style={styles.input}
         value={weight}
         onChangeText={(value) => handleInput('weight', value)}
+        keyboardType="numeric"
       />
 
       <View style={styles.switchWrapper}>

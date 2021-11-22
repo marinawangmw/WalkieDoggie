@@ -6,7 +6,8 @@ const styles = StyleSheet.create({
     paddingTop: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1,
+    flexGrow: 1,
+    marginVertical: '31%',
   },
   placeInput: {
     paddingHorizontal: 20,
