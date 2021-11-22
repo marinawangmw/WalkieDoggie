@@ -13,7 +13,6 @@ import Accordion from 'react-native-collapsible/Accordion';
 import Modal from 'react-native-modal';
 import { INSTRUCTION_TYPE } from 'utils/constants';
 import { styles } from './styles';
-import Toast from 'react-native-toast-message';
 // eslint-disable-next-line import/no-unresolved
 import { profileIcon, adaptiveIcon } from 'images';
 import { handlePetWalkInstruction, finishPetWalk } from 'services/api/rides/petWalks';
