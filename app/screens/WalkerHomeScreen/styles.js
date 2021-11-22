@@ -48,4 +48,8 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#D32F2F',
   },
+  customButtonStyles: {
+    flex: 1,
+    alignSelf: 'center',
+  },
 });

@@ -11,7 +11,7 @@ const CurrentWalkBanner = ({ handleNext }) => {
         <Image source={petWalkIcon} style={styles.icon} />
         <View style={styles.body}>
           <Text style={styles.title}>Usted tiene un paseo en curso</Text>
-          <Text style={styles.description}>Haga click para ver mas detalle</Text>
+          <Text style={styles.description}>Haga click para ver más detalles</Text>
         </View>
         <View style={styles.arrowContainer}>
           <Image source={rightArrowIcon} style={styles.arrowIcon} />

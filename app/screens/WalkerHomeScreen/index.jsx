@@ -331,12 +331,14 @@ const WalkerHomeScreen = ({ navigation, userProfile }) => {
         handleOnclick={handleProgramWalk}
         buttonLabel="Programar paseo"
         btnColor="#f4b445d9"
+        customStyles={styles.customButtonStyles}
       />
 
       <CustomButton
         handleOnclick={handleRejectReservations}
         buttonLabel="Rechazar reservas"
         btnColor="#D32F2Fd9"
+        customStyles={styles.customButtonStyles}
       />
     </View>
   );

@@ -3,7 +3,15 @@ import { Text, TouchableOpacity } from 'react-native';
 
 import styles from './styles';
 
-const CustomButton = ({ handleOnclick, buttonLabel, id, disabled, centered, btnColor }) => {
+const CustomButton = ({
+  handleOnclick,
+  buttonLabel,
+  id,
+  disabled,
+  centered,
+  btnColor,
+  customStyles,
+}) => {
   return (
     <TouchableOpacity
       style={[
@@ -11,6 +19,7 @@ const CustomButton = ({ handleOnclick, buttonLabel, id, disabled, centered, btnC
         disabled ? styles.disabled : styles.enabled,
         centered && { alignSelf: 'center', width: '50%' },
         btnColor && { backgroundColor: `${btnColor}` },
+        customStyles,
       ]}
       onPress={() => handleOnclick(id)}
       disabled={disabled}

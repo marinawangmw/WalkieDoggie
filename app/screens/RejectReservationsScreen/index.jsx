@@ -75,12 +75,14 @@ const RejectReservationsScreen = ({ route, navigation }) => {
           handleOnclick={handleRejectReservation}
           buttonLabel="Aceptar"
           btnColor="#f4b445d9"
+          customStyles={styles.customButtonStyles}
         />
 
         <CustomButton
           handleOnclick={handleCancelRejection}
           buttonLabel="Cancelar"
           btnColor="#757575d9"
+          customStyles={styles.customButtonStyles}
         />
       </View>
     );

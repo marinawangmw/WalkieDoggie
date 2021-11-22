@@ -1,21 +1,18 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, StyleSheet, ScrollView, Text, Pressable } from 'react-native';
 import Modal from 'react-native-modal';
+import { useIsFocused } from '@react-navigation/native';
 import { CustomButton, CurrentWalkBanner } from 'components';
 import HomeMenuItem from './HomeMenuItem';
 import ConfirmBanner from './ConfirmBanner';
 // eslint-disable-next-line import/no-unresolved
-import { walker, shelter, petBoarding, colonies } from 'images';
+import { walker, shelter, petBoarding, colonies, greetingIcon, calificationIcon } from 'images';
 import { getReservations } from 'services/api/rides/reservations';
 import { handleReservationByOwner, getPetWalks } from 'services/api/rides/petWalks';
 import { RESERVATION_STATUS, NOTIFICATION_TYPES, PET_WALK_STATUS } from 'utils/constants';
 import LoadingScreen from 'screens/LoadingScreen';
 import * as Notifications from 'expo-notifications';
 import moment from 'moment';
-// eslint-disable-next-line import/no-unresolved
-import { greetingIcon, calificationIcon } from 'images';
-
-import { useIsFocused } from '@react-navigation/native';
 
 const OwnerHomeMenu = ({ navigation }) => {
   const isFocused = useIsFocused();
@@ -43,7 +40,7 @@ const OwnerHomeMenu = ({ navigation }) => {
         setHasPetWalkStarted(true);
       } else if (type === NOTIFICATION_TYPES.PET_WALK_FINISHED) {
         // Ir a la pantalla de pago
-        // setHasPetWalkStarted(false);
+        setHasPetWalkStarted(false);
         // setHasPendingReviewWalks(true);
         navigation.navigate('paymentScreen', { petWalkId: currentPetWalkId });
       }
@@ -86,6 +83,9 @@ const OwnerHomeMenu = ({ navigation }) => {
         setHasPetWalkStarted(true);
         setCurrentPetWalkId(res.data[0].id);
       }
+    } else {
+      setHasPetWalkStarted(false);
+      setCurrentPetWalkId(null);
     }
   }, [currentPetWalkId]);
 
@@ -101,15 +101,8 @@ const OwnerHomeMenu = ({ navigation }) => {
       const res = await getReservations({ status: RESERVATION_STATUS.ACCEPTED_BY_WALKER });
 
       if (res.result && res.data.length) {
-        const validResults = res.data.filter((r) => !!r.pet_walk.id);
-
-        if (validResults.length) {
-          setHasPendingWalks(true);
-          setPendingWalks(validResults);
-        } else {
-          setHasPendingWalks(false);
-          setPendingWalks(res.data);
-        }
+        setHasPendingWalks(true);
+        setPendingWalks(res.data);
       } else {
         setHasPendingWalks(false);
         setPendingWalks(res.data);
@@ -124,15 +117,8 @@ const OwnerHomeMenu = ({ navigation }) => {
       const res = await getReservations({ status: RESERVATION_STATUS.PENDING_REVIEW });
 
       if (res.result && res.data.length) {
-        const validResults = res.data.filter((r) => !!r.pet_walk.id);
-
-        if (validResults.length) {
-          setHasPendingReviewWalks(true);
-          setPendingReviewWalks(validResults);
-        } else {
-          setHasPendingReviewWalks(false);
-          setPendingReviewWalks(res.data);
-        }
+        setHasPendingReviewWalks(true);
+        setPendingReviewWalks(res.data);
       } else {
         setHasPendingReviewWalks(false);
         setPendingReviewWalks(res.data);
@@ -141,6 +127,10 @@ const OwnerHomeMenu = ({ navigation }) => {
       console.log(e);
     }
   };
+
+  // useEffect(() => {
+  //   getReservationForOwner();
+  // }, []);
 
   useEffect(() => {
     getReservationForOwner();
@@ -211,8 +201,16 @@ const OwnerHomeMenu = ({ navigation }) => {
         </Text>
 
         <View style={styles.btnContainer}>
-          <CustomButton handleOnclick={() => onReject(walk.id)} buttonLabel="Rechazar" />
-          <CustomButton handleOnclick={() => onAccept(walk.id)} buttonLabel="Confirmar" />
+          <CustomButton
+            handleOnclick={() => onReject(walk.id)}
+            buttonLabel="Rechazar"
+            customStyles={styles.customButtonStyles}
+          />
+          <CustomButton
+            handleOnclick={() => onAccept(walk.id)}
+            buttonLabel="Confirmar"
+            customStyles={styles.customButtonStyles}
+          />
         </View>
       </View>
     );
@@ -345,6 +343,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 25,
     alignSelf: 'flex-end',
+  },
+  customButtonStyles: {
+    flex: 1,
+    alignSelf: 'center',
   },
 });
 export default OwnerHomeMenu;

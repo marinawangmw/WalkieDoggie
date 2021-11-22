@@ -8,6 +8,14 @@ import { CustomButton } from '../../components';
 import { createReview } from '../../services/api/review/review';
 
 const ReviewScreen = ({ navigation, route }) => {
+  const [changeStarValue, setChangeStarValue] = useState(1);
+  const [changeOpinion, setChangeOpinion] = useState('');
+  const [newFirstName, setNewFirstName] = useState('');
+  const [newLastName, setNewLastName] = useState('');
+  const [newPetWalkId, setNewPetWalkId] = useState(0);
+  const [changeFiles, setChangeFiles] = useState([]);
+  const [descriptionError, setDescriptionError] = useState('');
+
   const handleNavigateHome = () => {
     navigation.navigate('home');
   };
@@ -18,7 +26,7 @@ const ReviewScreen = ({ navigation, route }) => {
 
       review.score = changeStarValue;
       review.description = changeOpinion;
-      review.petWalkId = changePetWalkId;
+      review.petWalkId = newPetWalkId;
 
       const response = await createReview(review);
       showResultCreateReview(response);
@@ -43,14 +51,6 @@ const ReviewScreen = ({ navigation, route }) => {
     }
   };
 
-  const [changeStarValue, setChangeStarValue] = useState(1);
-  const [changeOpinion, setChangeOpinion] = useState('');
-  const [changeFirstName, setChangeFirstName] = useState('');
-  const [changeLastName, setChangeLastName] = useState('');
-  const [changePetWalkId, setChangePetWalkId] = useState(0);
-  const [changeFiles, setChangeFiles] = useState([]);
-  const [descriptionError, setDescriptionError] = useState('');
-
   useEffect(() => {
     if (route.params) {
       const { files } = route.params;
@@ -67,10 +67,9 @@ const ReviewScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     const { changePetWalkId, changeFirstName, changeLastName } = route.params;
-    console.log(changePetWalkId);
-    setChangePetWalkId(changePetWalkId);
-    setChangeFirstName(changeFirstName);
-    setChangeLastName(changeLastName);
+    setNewPetWalkId(changePetWalkId);
+    setNewFirstName(changeFirstName);
+    setNewLastName(changeLastName);
   }, [route.params]);
 
   const validateDescription = (text) => {
@@ -92,7 +91,7 @@ const ReviewScreen = ({ navigation, route }) => {
       <ScrollView style={styles.container}>
         <Image source={26} style={styles.picture} />
 
-        <Text style={styles.reviewName}>¡Calificá a {changeFirstName + ' ' + changeLastName}!</Text>
+        <Text style={styles.reviewName}>¡Calificá a {newFirstName + ' ' + newLastName}!</Text>
 
         <StarRating
           containerStyle={styles.starContainer}
@@ -105,7 +104,7 @@ const ReviewScreen = ({ navigation, route }) => {
           selectedStar={ratingCompleted}
         />
 
-        <Text style={styles.opinion}>Contanos tu experiencia con {changeFirstName}</Text>
+        <Text style={styles.opinion}>Contanos tu experiencia con {newFirstName}</Text>
 
         <TextInput
           style={styles.message}

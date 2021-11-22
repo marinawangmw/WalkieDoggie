@@ -42,6 +42,7 @@ const AdressScreen = ({ navigation, signupData }) => {
         handleOnclick={() => handleOnclick()}
         buttonLabel="Siguiente"
         disabled={Boolean(!lat) && Boolean(!long) && Boolean(!address)}
+        centered
       />
     </View>
   );

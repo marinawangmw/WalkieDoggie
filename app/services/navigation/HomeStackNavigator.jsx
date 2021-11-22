@@ -11,13 +11,13 @@ import {
   FindColoniesScreen,
   FindDayCaresScreen,
   FindSheltersScreen,
+  ReviewScreen,
 } from 'screens';
 import GooglePlaceSearcher from 'screens/CreateReservationScreen/GooglePlaceSearcher';
 import WalkerReviewsScreen from 'screens/ProfileScreen/reviews';
 import CurrentOwnerPetWalkScreen from 'screens/CurrentOwnerPetWalkScreen';
 import CurrentWalkerPetWalkScreen from 'screens/CurrentWalkerPetWalkScreen';
 import PaymentScreen from 'screens/PaymentScreen';
-import { ReviewScreen } from 'screens';
 
 const Stack = createNativeStackNavigator();
 
