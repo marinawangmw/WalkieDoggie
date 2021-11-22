@@ -152,7 +152,6 @@ const styles = StyleSheet.create({
 });
 
 const buildOwnerMarkers = (reservation) => {
-  console.log(reservation);
   const { address_start, address_end } = reservation;
 
   let ownerMarkers = [];

@@ -23,6 +23,7 @@ import { USER_TYPES } from './app/utils/constants';
 import { theme } from './app/theme';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
+import { checkDeviceCanUseLocation } from './app/helpers/deviceHelper';
 
 const TASK_NAME = 'background_task';
 
@@ -111,8 +112,12 @@ export default function App() {
   useEffect(() => {
     const initUserTokens = async () => {
       setIsLoading(true);
-      //await Location.requestBackgroundPermissionsAsync();
-      //await Location.requestForegroundPermissionsAsync();
+
+      if (checkDeviceCanUseLocation()) {
+        await Location.requestBackgroundPermissionsAsync();
+        await Location.requestForegroundPermissionsAsync();
+      }
+
       const token = await getAccessTokenStorage('access_token');
       setUserToken(token);
 

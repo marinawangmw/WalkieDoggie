@@ -5,6 +5,7 @@ import PubNub from 'pubnub';
 
 // eslint-disable-next-line import/no-unresolved
 import { PUBNUB_PUBLISH_KEY, PUBNUB_SUBSCRIBE_KEY } from 'react-native-dotenv';
+import Toast from 'react-native-toast-message';
 
 const { width, height } = Dimensions.get('window');
 
@@ -34,7 +35,7 @@ export default class LocationOwnerSideComponent extends React.Component {
       longitude: initialWalkerLongitude,
       latitudeDelta: LATITUDE_DELTA,
       longitudeDelta: LONGITUDE_DELTA,
-      markerDescription: `Paseador: ${walker.first_name} ${walker.last_name}`,
+      markerDescription: `${walker.first_name} ${walker.last_name}`,
       coordinate: new AnimatedRegion({
         latitude: initialWalkerLatitude,
         longitude: initialWalkerLongitude,
@@ -42,11 +43,13 @@ export default class LocationOwnerSideComponent extends React.Component {
         longitudeDelta: LONGITUDE_DELTA,
       }),
       ownerMarkers,
+      hasReceivedLocation: false,
     };
   }
 
   componentDidMount() {
     this.subscribeToPubNub();
+    this.checkHasReceivedWalkerLocation();
   }
 
   subscribeToPubNub = () => {
@@ -59,7 +62,6 @@ export default class LocationOwnerSideComponent extends React.Component {
 
     pubnub.addListener({
       message: function (obj) {
-        // console.log(obj.message);
         const { latitude, longitude } = obj.message;
         const newCoordinate = {
           latitude,
@@ -71,8 +73,22 @@ export default class LocationOwnerSideComponent extends React.Component {
           latitude,
           longitude,
         });
+
+        if (!self.state.hasReceivedLocation) self.state.hasReceivedLocation = true;
       },
     });
+  };
+
+  checkHasReceivedWalkerLocation = () => {
+    setInterval(() => {
+      if (!this.state.hasReceivedLocation) {
+        Toast.show({
+          type: 'error',
+          text1: 'Ups!',
+          text2: 'No podemos obtener información de la ubicación de tu paseador',
+        });
+      }
+    }, 40000);
   };
 
   getMapRegion = () => ({
@@ -103,6 +119,7 @@ export default class LocationOwnerSideComponent extends React.Component {
               ref={(marker) => {
                 this.marker = marker;
               }}
+              title={'Paseador'}
               description={this.state.markerDescription}
               coordinate={this.state.coordinate}
             />

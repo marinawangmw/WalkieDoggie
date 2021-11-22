@@ -50,13 +50,34 @@ export default class LocationWalkerSideComponent extends React.Component {
   }
 
   async componentDidMount() {
-    this.watchLocation();
+    if (this.canUseForeGroundLocation()) {
+      console.log('Procediendo a trackear ubicación del paseador');
+      this.watchLocation();
+    }
 
     // await Location.startLocationUpdatesAsync(TASK_NAME, {
     //   accuracy: Location.Accuracy.Highest,
     //   timeInterval: TIME_INTERVAL,
     //   distanceInterval: 1,
     // });
+  }
+
+  async canUseForeGroundLocation() {
+    let canUseForeGroundLocation = false;
+    const { granted } = await Location.getForegroundPermissionsAsync();
+    if (!granted) {
+      // console.log('No habia permisos otorgados');
+      const responseRequestPermission = await Location.requestForegroundPermissionsAsync();
+      if (responseRequestPermission.granted) {
+        // console.log('Se acaba de dar permisos');
+        canUseForeGroundLocation = true;
+      }
+    } else {
+      // console.log('Sí habia permisos otorgados');
+      canUseForeGroundLocation = true;
+    }
+
+    return canUseForeGroundLocation;
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -135,6 +156,7 @@ export default class LocationWalkerSideComponent extends React.Component {
                 this.marker = marker;
               }}
               coordinate={this.state.coordinate}
+              title={'Yo'}
             />
           </MapView>
         </View>
