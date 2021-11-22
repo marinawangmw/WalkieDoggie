@@ -6,7 +6,6 @@ import StarRating from 'react-native-star-rating';
 
 const FindResultsList = ({ result }) => {
   const renderItem = (item) => {
-    console.log('item: ', item.item);
     return (
       <View style={styles.container}>
         <Text style={styles.textReviewer}>

@@ -12,8 +12,6 @@ export const createReview = (params) => {
     },
   };
 
-  console.log(config);
-
   return privateRequest(config)
     .then((data) => ({ result: true, data }))
     .catch((error) => ({ result: false, data: error.metadata }));

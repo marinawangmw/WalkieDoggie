@@ -21,9 +21,7 @@ const FindWalkerScreen = ({ navigation }) => {
           walkers = await getWalkers();
         }
 
-        if (walkers && walkers.data.walkers.length) {
-          setWalkersData(walkers.data.walkers);
-        }
+        setWalkersData(walkers.data.walkers);
       } catch (e) {
         console.log(e);
       }
