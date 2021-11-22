@@ -23,6 +23,7 @@ import { USER_TYPES } from './app/utils/constants';
 import { theme } from './app/theme';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
+import * as Device from 'expo-device';
 
 const TASK_NAME = 'background_task';
 
@@ -111,8 +112,14 @@ export default function App() {
   useEffect(() => {
     const initUserTokens = async () => {
       setIsLoading(true);
-      await Location.requestBackgroundPermissionsAsync();
-      await Location.requestForegroundPermissionsAsync();
+      const osMajorVersion = Device.osVersion.split('.')[0];
+      const osName = Device.osName.toLowerCase();
+
+      if (osName === 'android' && osMajorVersion <= 9) {
+        await Location.requestBackgroundPermissionsAsync();
+        await Location.requestForegroundPermissionsAsync();
+      }
+
       const token = await getAccessTokenStorage('access_token');
       setUserToken(token);
 
