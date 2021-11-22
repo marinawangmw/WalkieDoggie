@@ -29,7 +29,7 @@ const TASK_NAME = 'background_task';
 export default class LocationWalkerSideComponent extends React.Component {
   constructor(props) {
     super(props);
-    const { addressStart, petWalkId } = props;
+    const { addressStart, petWalkId, ownersMarkers } = props;
     const initialWalkerLatitude = parseFloat(addressStart.latitude);
     const initialWalkerLongitude = parseFloat(addressStart.longitude);
 
@@ -46,6 +46,7 @@ export default class LocationWalkerSideComponent extends React.Component {
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA,
       }),
+      ownersMarkers,
     };
   }
 
@@ -158,6 +159,15 @@ export default class LocationWalkerSideComponent extends React.Component {
               coordinate={this.state.coordinate}
               title={'Yo'}
             />
+            {this.state.ownersMarkers?.map((marker, index) => (
+              <Marker
+                key={index}
+                coordinate={marker.latlng}
+                title={marker.title}
+                description={marker.description}
+                pinColor={marker.pinColor}
+              />
+            ))}
           </MapView>
         </View>
       </SafeAreaView>

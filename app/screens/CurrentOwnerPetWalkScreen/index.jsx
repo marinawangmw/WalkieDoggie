@@ -173,7 +173,7 @@ const buildOwnerMarkers = (reservation) => {
           latitude: parseFloat(address_start.latitude),
           longitude: parseFloat(address_start.longitude),
         },
-        title: 'Punto de recodiga',
+        title: 'Punto de partida',
         description: address_start.description,
       },
       {
