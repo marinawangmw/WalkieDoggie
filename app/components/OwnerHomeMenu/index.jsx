@@ -66,18 +66,28 @@ const OwnerHomeMenu = ({ navigation }) => {
     };
   }, [handleNotificationResponse]);
 
-  useEffect(() => {
-    const getPetWalksInProgress = async () => {
-      const res = await getPetWalks(PET_WALK_STATUS.IN_PROGRESS);
+  const getPetWalksInProgress = useCallback(async () => {
+    const res = await getPetWalks(PET_WALK_STATUS.IN_PROGRESS);
 
-      if (res.result && res.data.length) {
+    if (res.result && res.data.length) {
+      if (currentPetWalkId) {
+        const res2 = await getReservations({
+          status: RESERVATION_STATUS.ACCEPTED_BY_OWNER,
+          pet_walk_id: currentPetWalkId,
+        });
+
+        if (res2.result && !res2.data.length) {
+          setHasPetWalkStarted(false);
+        } else if (res2.result && res2.data.length) {
+          setHasPetWalkStarted(true);
+          setCurrentPetWalkId(res.data[0].id);
+        }
+      } else {
         setHasPetWalkStarted(true);
         setCurrentPetWalkId(res.data[0].id);
       }
-    };
-
-    getPetWalksInProgress();
-  }, []);
+    }
+  }, [currentPetWalkId]);
 
   const homeOptions = [
     { title: 'Paseadores', icon: walker, navigateTo: 'findWalker' },
@@ -135,7 +145,8 @@ const OwnerHomeMenu = ({ navigation }) => {
   useEffect(() => {
     getReservationForOwner();
     getPendingReviewWalks();
-  }, [isFocused]);
+    getPetWalksInProgress();
+  }, [isFocused, getPetWalksInProgress]);
 
   const handleNext = () => {
     setVisible(true);
